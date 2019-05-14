@@ -1,3 +1,261 @@
-from django.shortcuts import render
+from rest_framework import status, generics, permissions, viewsets
+from rest_framework.decorators import api_view, action
+from rest_framework.response import Response
+from django_filters.rest_framework import DjangoFilterBackend
+from rest_framework import filters
 
-# Create your views here.
+from inventory.models import Parts, Tasks, Jobs, Categories, PartsMarkup, TasksParts, TagTypesChoices
+from inventory.serializers import *
+from inventory.custom_pagination import *
+
+
+class TagTypesView(generics.ListAPIView):
+  queryset = TagTypesChoices.objects.all()
+  serializer_class = TagTypesChoicesSerializer
+
+
+class PartsExcludedView(generics.ListAPIView):
+  queryset = Parts.objects.exclude(is_active=False).order_by('id')
+  serializer_class = PartsExcludedSerializer
+  permission_classes = (permissions.IsAuthenticatedOrReadOnly, )
+  pagination_class = PartsCustomResultsSetPagination
+
+
+# demo purposes only. Remove later
+class PartsAdminView(generics.ListAPIView):
+  queryset = Parts.objects.all()
+  serializer_class = PartsAdminSerializer
+  permission_classes = (permissions.IsAuthenticatedOrReadOnly, )
+  pagination_class = PartsCustomResultsSetPagination
+
+
+class PartsCreate(generics.CreateAPIView):
+  queryset = Parts.objects.all()
+  serializer_class = PartsCreateSerializer
+  # permission_classes = (permissions.IsAdminUser, )
+
+  def perform_create(self, serializer):
+    serializer.save()
+
+
+class PartsDetailView(generics.RetrieveAPIView):
+  queryset = Parts.objects.all()
+  serializer_class = PartsDetailEditSerializer
+  permission_classes = (permissions.IsAuthenticatedOrReadOnly, )
+
+
+class PartsEdit(generics.RetrieveUpdateAPIView):
+  queryset = Parts.objects.all()
+  serializer_class = PartsDetailEditSerializer
+  # permission_classes = (permissions.IsAuthenticatedOrReadOnly, )
+
+
+class PartsEditTagTypes(generics.RetrieveUpdateAPIView):
+  queryset = Parts.tag_types.through.objects.all()
+  serializer_class = PartsTagTypesEditSerializer
+
+
+class PartsTagTypes(generics.ListCreateAPIView):
+  queryset = Parts.tag_types.through.objects.all()
+  serializer_class = PartsTagTypesSerializer
+
+
+# TODO: remove this later
+class PartsEditOrDelete(generics.RetrieveUpdateDestroyAPIView):
+  queryset = Parts.objects.all()
+  serializer_class = PartsDetailEditSerializer
+  permissions_classes = (permissions.IsAuthenticatedOrReadOnly, )
+
+
+class PartsSearchableList(generics.ListAPIView):
+  queryset = Parts.objects.exclude(is_active=False)
+  serializer_class = PartsSearchableListSerializer
+  # filter_backends = (DjangoFilterBackend, )
+  filter_backends = (filters.SearchFilter, )
+  # filter_fields = ('part_name', 'part_desc')
+  search_fields = ('part_name', 'part_desc')
+  pagination_class = PartsSearchResultsSetPagination
+
+
+class TasksExcludedView(generics.ListAPIView):
+  queryset = Tasks.objects.all()
+  serializer_class = TasksExcludedSerializer
+  permissions_classes = (permissions.IsAuthenticatedOrReadOnly, )
+  pagination_class = TasksCustomResultsSetPagination
+
+
+class TasksCreate(generics.CreateAPIView):
+  queryset = Tasks.objects.all()
+  serializer_class = TasksCreateSerializer
+  # permission_classes = (permissions.IsAdminUser, )
+
+  def perform_create(self, serializer):
+    serializer.save()
+
+
+class TasksEdit(generics.RetrieveUpdateAPIView):
+  queryset = Tasks.objects.all()
+  serializer_class = TasksDetailEditSerializer
+  permissions_classes = (permissions.IsAuthenticatedOrReadOnly, )
+
+
+class TasksDetailView(generics.RetrieveAPIView):
+  queryset = Tasks.objects.all()
+  serializer_class = TasksDetailEditSerializer
+  permissions_classes = (permissions.IsAuthenticatedOrReadOnly, )
+
+
+class TasksSearchableList(generics.ListAPIView):
+  queryset = Tasks.objects.exclude(is_active=False)
+  serializer_class = TasksSearchableListSerializer
+  filter_backends = (filters.SearchFilter, )
+  search_fields = ('task_name', 'task_desc')
+  pagination_class = TasksSearchResultsSetPagination
+
+class TasksPartsEdit(generics.RetrieveUpdateAPIView):
+  queryset = TasksParts.objects.all()
+  serializer_class = TasksPartsEditSerializer
+  # permissions_class  
+
+
+class TasksPartsFilterByPart(generics.ListAPIView):
+  serializer_class = TasksPartsFilterByPartSerializer
+  filterset_fields = ('part')
+
+  def get_queryset(self):
+    queryset = TasksParts.objects.all()
+    part_id = self.request.query_params.get('part', None)
+    if part_id is not None:
+      queryset = queryset.filter(part__id=part_id)
+
+    return queryset
+
+
+class TasksPartsFilterByTask(generics.ListAPIView):
+  serializer_class = TasksPartsSerializer
+  # filter_backends = (DjangoFilterBackend, )
+  filterset_fields = ('task')
+
+  def get_queryset(self):
+    queryset = TasksParts.objects.all()
+    task_id = self.request.query_params.get('task', None)
+    if task_id is not None:
+      queryset = queryset.filter(task__id=task_id)
+
+    return queryset
+
+
+class TasksPartsViewSet(viewsets.ReadOnlyModelViewSet):
+  queryset = TasksParts.objects.all()
+  serializer_class = TasksPartsSerializer
+  # filter_backends = (DjangoFilterBackend, )
+  filterset_fields = ('task')
+
+
+  @action(detail=True, methods=['post'])
+  def delete_tasks_by_id(self, request, *arg, **kwargs):
+    task_id = self.request.query_params.get('task', None)
+    if task_id is not None:
+      qs = self.get_queryset().filter(task__id=task_id)
+      qs.delete()
+    return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+
+class CategoriesExcludedView(generics.ListAPIView):
+  queryset = Categories.objects.all()
+  serializer_class = CategoriesExcludedSerializer
+  pagination_class = CategoriesCustomResultsSetPagination
+  # permissions
+
+  def perform_create(self, serializer):
+    serializer.save()
+
+
+class CategoriesCreate(generics.CreateAPIView):
+  queryset = Categories.objects.all()
+  serializer_class = CategoriesCreateSerializer
+
+  def perform_create(self, serializer):
+    serializer.save()
+    
+
+class CategoriesEdit(generics.RetrieveUpdateAPIView):
+  queryset = Categories.objects.all()
+  serializer_class = CategoriesEditSerializer
+  # permissions
+
+
+class CategoriesDetailView(generics.RetrieveAPIView):
+  queryset = Categories.objects.all()
+  serializer_class = CategoriesDetailSerializer
+
+
+class CategoriesSearchableList(generics.ListAPIView):
+  queryset = Categories.objects.exclude(is_active=False)
+  serializer_class = CategoriesSearchableListSerializer
+  filter_backends = (filters.SearchFilter, )
+  search_fields = ('category_name', 'category_desc')
+  pagination_class = CategoriesSearchResultsSetPagination
+
+
+class JobsExcludedView(generics.ListAPIView):
+  queryset = Jobs.objects.all()
+  serializer_class = JobsExcludedSerializer
+  pagination_class = JobsCustomResultsSetPagination
+  permissions_classes = (permissions.IsAuthenticatedOrReadOnly, )
+
+
+class JobsCreate(generics.CreateAPIView):
+  queryset = Jobs.objects.all()
+  serializer_class = JobsCreateSerializer
+
+  def perform_create(self, serializer):
+    serializer.save()
+
+
+class JobsDetailView(generics.RetrieveAPIView):
+  queryset = Jobs.objects.all()
+  serializer_class = JobsDetailSerializer
+
+
+class JobsEdit(generics.RetrieveUpdateAPIView):
+  queryset = Jobs.objects.all()
+  serializer_class = JobsEditSerializer
+
+
+class JobsSearchableList(generics.ListAPIView):
+  queryset = Jobs.objects.all()
+  serializer_class = JobsSearchableListSerializer
+  pagination_class = JobsCustomResultsSetPagination
+  filter_backends = (filters.SearchFilter, )
+  search_fields = ('job_name', 'job_desc')
+
+
+class PartsMarkupList(generics.ListAPIView):
+  queryset = PartsMarkup.objects.all()
+  serializer_class = PartsMarkupSerializer
+
+
+class PartsMarkupCreate(generics.CreateAPIView):
+  queryset = PartsMarkup.objects.all()
+  serializer_class = PartsMarkupSerializer
+
+  # add permissions
+  def perform_create(self, serializer):
+    serializer.save()
+
+class PartsMarkupEdit(generics.RetrieveUpdateAPIView):
+  queryset = PartsMarkup.objects.all()
+  serializer_class = PartsMarkupSerializer
+
+
+class TasksPartsList(generics.ListCreateAPIView):
+  queryset = TasksParts.objects.all()
+  serializer_class = TasksPartsSerializer
+
+
+class GlobalMarkupView(generics.ListCreateAPIView):
+  queryset = GlobalMarkup.objects.all()
+  serializer_class = GlobalMarkupSerializer
+
