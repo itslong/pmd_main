@@ -1,0 +1,62 @@
+<html>
+  <h2>Parts List</h2>
+  <a href="{% url 'part_create' %}">
+    Create a new part
+  </a>
+  <table>
+    <thead>
+      <tr>
+        {% for head in headers %}
+        <th>{{ head }}</th>
+        {% endfor %}
+      </tr>
+    </thead>
+    <tbody>
+      {% for obj in objects %}
+        <tr>
+          <td>
+            {{ obj.id }}
+          </td>
+          <td>
+            <a href="{% url 'part_edit' pk=obj.id %}">{{ obj.part_name }}</a>
+          </td>
+          <td>
+            {{ obj.master_part_num }}
+          </td>
+          <td>
+            {{ obj.customer_part_num }}
+          </td>
+          <td>
+            {{ obj.mfg_part_num }}
+          </td>
+          <td>
+            {{ obj.upc_num }}
+          </td>
+          <td>
+            {{ obj.part_desc }}
+          </td>
+          <td>
+            {{ obj.base_part_cost }}
+          </td>
+          <td>
+            {{ obj.markup_percent_id }}
+          </td>
+          <td>
+            {{ obj.use_custom_markup }}
+          </td>
+          <td>
+            {{ obj.custom_markup_percent }}
+          </td>
+          <td>
+            {{ obj.retail_cost }}
+          </td>
+          <td>
+            {{ obj.is_active }}
+          </td>
+
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+
+</html>

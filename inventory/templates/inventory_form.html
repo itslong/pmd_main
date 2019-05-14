@@ -1,0 +1,14 @@
+<html>
+  <h2>{{ action }}</h2>
+  <form method="POST" class="post-form">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit" class="save btn btn-default">
+      Save
+    </button>
+    <button onclick="window.history.back();">
+      Cancel
+    </button>
+  </form>
+
+</html>
