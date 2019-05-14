@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
+    'webpack_loader',
     'inventory',
     'web',
     'django_filters',
@@ -140,3 +141,16 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/2.2/howto/static-files/
 
 STATIC_URL = '/static/'
+
+
+# webpack loader config
+WEBPACK_LOADER = {
+  'DEFAULT': {
+    'CACHE': not DEBUG,
+    'BUNDLE_DIR_NAME': 'web/bundles/',
+    'STATS_FILE': os.path.join(BASE_DIR + '/web/', 'webpack-stats.dev.json'),
+    'POLL_INTERVAL': 0.1,
+    'TIMEOUT': None,
+    'IGNORE': ['.+\.hot-update.js', '.+\.map']
+  }
+}
