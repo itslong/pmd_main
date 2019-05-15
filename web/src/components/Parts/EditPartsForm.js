@@ -8,7 +8,7 @@ import {
   GetPartsMarkupPercents,
   FetchTagTypesChoices,
   CSRFToken 
-} from '../data';
+} from '../endpoints';
 
 
 class EditPartsForm extends Component {
