@@ -107,6 +107,7 @@ const UpdatePart = (partId, formData) => {
   const url = 'http://localhost:8000/api/part/';
   const action = '/edit-or-delete/';
   const endpoint = url + partId + action
+  const csrfToken = GetCookie('csrftoken');
 
   return fetch(endpoint, {
     method: 'PUT',
@@ -115,7 +116,7 @@ const UpdatePart = (partId, formData) => {
     headers: {
       'Accept': 'application/json',
       'Content-Type': 'application/json',
-      // 'X-CSRFToken': csrfToken
+      'X-CSRFToken': csrfToken
     },
   })
   .then(response => {
@@ -131,6 +132,7 @@ const UpdatePartTagTypes = (partId, formData) => {
   const url = 'http://localhost:8000/api/part/';
   const action = '/edit-or-delete/';
   const endpoint = url + partId + action
+  const csrfToken = GetCookie('csrftoken');
 
   return fetch(endpoint, {
     method: 'PATCH',
@@ -139,7 +141,7 @@ const UpdatePartTagTypes = (partId, formData) => {
     headers: {
       'Accept': 'application/json',
       'Content-Type': 'application/json',
-      // 'X-CSRFToken': csrfToken
+      'X-CSRFToken': csrfToken
     },
   })
   .then(response => {
@@ -158,6 +160,7 @@ const DeletePart = (partId, formData) => {
   const url = 'http://localhost:8000/api/part/';
   const action = '/edit-or-delete/';
   const endpoint = url + partId + action
+  const csrfToken = GetCookie('csrftoken');
 
   return fetch(endpoint, {
     method: 'PATCH',
@@ -166,6 +169,7 @@ const DeletePart = (partId, formData) => {
     headers: {
       'Accept': 'application/json',
       'Content-Type': 'application/json',
+      'X-CSRFToken': csrfToken
     }
   })
   .then(response => {
@@ -324,6 +328,7 @@ const UpdateTaskOnly = (taskId, formData) => {
   const url = 'http://localhost:8000/api/task/';
   const action = '/edit-only';
   const endpoint = url + taskId + action;
+  const csrfToken = GetCookie('csrftoken');
 
   return fetch(endpoint, {
     method: 'PUT',
@@ -332,7 +337,7 @@ const UpdateTaskOnly = (taskId, formData) => {
     headers: {
       'Accept': 'application/json',
       'Content-Type': 'application/json',
-      // 'X-CSRFToken': csrfToken
+      'X-CSRFToken': csrfToken
     },
   })
   .then(response => {
@@ -372,6 +377,8 @@ const UpdateTaskRelatedPartsSubmit = (taskId, partsArr) => {
 
 const CreateTaskParts = (taskPartsObj) => {
   const endpoint = 'http://localhost:8000/api/tasks-parts/';
+  const csrfToken = GetCookie('csrftoken');
+
   let options = {
     method: 'POST',
     mode: 'same-origin',
@@ -379,6 +386,7 @@ const CreateTaskParts = (taskPartsObj) => {
     headers: {
       'Accept': 'application/json',
       'Content-Type': 'application/json',
+      'X-CSRFToken': csrfToken
     }
   };
 
@@ -409,6 +417,7 @@ const FetchAllTasksRelatedToParts = (partId) => {
 const RemoveRelatedTaskParts = (taskId) => {
   const url = 'http://localhost:8000/api/tasks-parts/filter-then-delete/?task=';
   const endpoint = url + taskId;
+  const csrfToken = GetCookie('csrftoken');
 
   return fetch(endpoint, {
     method: 'POST',
@@ -417,13 +426,14 @@ const RemoveRelatedTaskParts = (taskId) => {
     headers: {
       'Accept': 'application/json',
       'Content-Type': 'application/json',
+      'X-CSRFToken': csrfToken
     },
   })
   .then(response => {
     return response;
   })
   .catch(error => {
-    return Promise.reject('Tasks Related Parts Error: ' + error);
+    return Promise.reject('Remove Related TasksParts Error: ' + error);
   })
 }
 
@@ -497,6 +507,7 @@ const UpdateCategoryAndRelatedTasks = (categoryId, formData) => {
   const url = 'http://localhost:8000/api/category/';
   const action = '/edit-only';
   const endpoint = url + categoryId + action;
+  const csrfToken = GetCookie('csrftoken');
 
   return fetch(endpoint, {
     method: 'PUT',
@@ -505,7 +516,7 @@ const UpdateCategoryAndRelatedTasks = (categoryId, formData) => {
     headers: {
       'Accept': 'application/json',
       'Content-Type': 'application/json',
-      // 'X-CSRFToken': csrfToken
+      'X-CSRFToken': csrfToken
     },
   })
   .then(response => {
@@ -598,6 +609,7 @@ const UpdateJobAndRelatedCategories = (jobId, formData) => {
   const url = 'http://localhost:8000/api/job/';
   const action = '/edit-only';
   const endpoint = url + jobId + action;
+  const csrfToken = GetCookie('csrftoken');
 
   return fetch(endpoint, {
     method: 'PUT',
@@ -606,7 +618,7 @@ const UpdateJobAndRelatedCategories = (jobId, formData) => {
     headers: {
       'Accept': 'application/json',
       'Content-Type': 'application/json',
-      // 'X-CSRFToken': csrfToken
+      'X-CSRFToken': csrfToken
     },
   })
   .then(response => {

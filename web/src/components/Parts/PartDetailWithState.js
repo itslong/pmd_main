@@ -5,7 +5,7 @@ import NotFound from '../NotFound';
 import DialogModal from '../DialogModal'
 import Modal from '../Modal';
 import EditPartsForm from './EditPartsForm';
-import { Button, Table, DetailTable } from '../common';
+import { Button, Table, DetailsTable } from '../common';
 import { renameStaticTableFields, renameStaticObjTableFields } from '../fieldNameAliases';
 
 

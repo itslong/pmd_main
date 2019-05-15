@@ -7,7 +7,6 @@ import MainRoutes from './MainRoutes';
 const App = () => {
   return (
     <div>
-      <p>App Entry</p>
       <NavBar />
       <MainRoutes />
     </div>
