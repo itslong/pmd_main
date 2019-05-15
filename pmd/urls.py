@@ -21,7 +21,7 @@ urlpatterns = [
 ]
 
 urlpatterns += [
-  path('inv/', include('inventory.urls')),
+  path('api/', include('inventory.urls')),
 ]
 
 urlpatterns += [
