@@ -7,7 +7,7 @@ import {
   UpdatePart,
   GetPartsMarkupPercents,
   FetchTagTypesChoices,
-  CSRFToken 
+  CSRFToken
 } from '../endpoints';
 
 
@@ -98,7 +98,8 @@ class EditPartsForm extends Component {
     e.preventDefault();
 
     // clean state
-    const { tag_types_as_values, parts_markup_data, tag_types_choices, ...formData }  = this.state;
+    const { tag_types_as_values, tag_types_choices, tag_types_display, parts_markup_data, actionType,...formData }  = this.state;
+
 
     if (this.state.actionType === 'delete') {
       formData.is_active = false;
@@ -135,9 +136,12 @@ class EditPartsForm extends Component {
   }
 
   handleBasePartCost(e) {
+    const { set_custom_part_cost, parts_markup_data } = this.state;
+
     this.setState({ base_part_cost: e.target.value }, () => {
-      if (!this.state.set_custom_part_cost) {
-        const costObj = calculateRetailCost(this.state.base_part_cost, this.state.parts_markup_data);
+      if (!set_custom_part_cost) {
+        // must reference 'this.state.base_part_cost' to get the value AFTER setState.
+        const costObj = calculateRetailCost(this.state.base_part_cost, parts_markup_data);
         this.handleRetailPartCost(costObj);
       }
     });
@@ -189,6 +193,7 @@ class EditPartsForm extends Component {
   }
 
   handleRetailPartCost(cost) {
+    // TODO: Add error handling when markup data does not exist.
     let markupId = cost.markupId ? cost.markupId : '';
     let retailCost = cost.retailCost ? cost.retailCost : 'Base Part Cost Exceeded.';
 
@@ -199,7 +204,6 @@ class EditPartsForm extends Component {
   }
 
   render() {
-    // console.log('the action type: ' + this.state.actionType)
     const {actionType, part_name, tag_types, tag_types_display, tag_types_choices, tag_types_as_values} = this.state;
     let showCustomRetailPartCostField = this.state.set_custom_part_cost ?
       <Input 
