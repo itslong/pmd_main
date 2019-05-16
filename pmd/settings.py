@@ -44,9 +44,11 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
+    'corsheaders',
     'webpack_loader',
     'inventory',
     'web',
+    'pmd_auth',
     'django_filters',
     'localflavor',
 ]
@@ -54,6 +56,7 @@ INSTALLED_APPS = [
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -153,4 +156,25 @@ WEBPACK_LOADER = {
     'TIMEOUT': None,
     'IGNORE': ['.+\.hot-update.js', '.+\.map']
   }
+}
+
+
+# rest_framework configs
+REST_FRAMEWORK = {
+  'DEFAULT_PERMISSION_CLASSES': {
+    'rest_framework.permissions.IsAuthenticated',
+  },
+  'DEFAULT_AUTHENTICATION_CLASSES': {
+    'rest_framework_jwt.authentication.JSONWebTokenAuthentication',
+    'rest_framework.authentication.SessionAuthentication',
+    'rest_framework.authentication.BasicAuthentication',
+  },
+}
+
+CORS_ORIGIN_WHITELIST = (
+  'http://localhost:8000',
+)
+
+JWT_AUTH = {
+  'JWT_RESPONSE_PAYLOAD_HANDLER': 'pmd.utils.pmd_auth_jwt_response_handler'
 }
