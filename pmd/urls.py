@@ -21,6 +21,10 @@ urlpatterns = [
 ]
 
 urlpatterns += [
+  path('user/', include('pmd_auth.urls'))
+]
+
+urlpatterns += [
   path('api/', include('inventory.urls')),
 ]
 
