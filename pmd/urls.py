@@ -21,6 +21,10 @@ urlpatterns = [
 ]
 
 urlpatterns += [
+  path('auth/', include('knox.urls')),
+]
+
+urlpatterns += [
   path('user/', include('pmd_auth.urls'))
 ]
 
