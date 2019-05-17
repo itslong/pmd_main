@@ -13,6 +13,8 @@ class LoginViewAsKnox(KnoxLoginView):
 
 class RegistrationView(generics.GenericAPIView):
   serializer_class = SignupUserSerializer
+  # per client spec: only allow Admins to create new users.
+  permission_classes = (permissions.IsAdminUser, )
 
   def post(self, request, *args, **kwargs):
     serializer = self.get_serializer(data=request.data)

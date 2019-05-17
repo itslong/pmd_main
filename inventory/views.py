@@ -12,12 +12,13 @@ from inventory.custom_pagination import *
 class TagTypesView(generics.ListAPIView):
   queryset = TagTypesChoices.objects.all()
   serializer_class = TagTypesChoicesSerializer
+  permission_classes = (permissions.IsAuthenticated, )
 
 
 class PartsExcludedView(generics.ListAPIView):
   queryset = Parts.objects.exclude(is_active=False).order_by('id')
   serializer_class = PartsExcludedSerializer
-  permission_classes = (permissions.IsAuthenticatedOrReadOnly, )
+  permission_classes = (permissions.IsAuthenticated, )
   pagination_class = PartsCustomResultsSetPagination
 
 
@@ -25,14 +26,14 @@ class PartsExcludedView(generics.ListAPIView):
 class PartsAdminView(generics.ListAPIView):
   queryset = Parts.objects.all()
   serializer_class = PartsAdminSerializer
-  permission_classes = (permissions.IsAuthenticatedOrReadOnly, )
+  permission_classes = (permissions.IsAuthenticated, )
   pagination_class = PartsCustomResultsSetPagination
 
 
 class PartsCreate(generics.CreateAPIView):
   queryset = Parts.objects.all()
   serializer_class = PartsCreateSerializer
-  # permission_classes = (permissions.IsAdminUser, )
+  permission_classes = (permissions.IsAuthenticated, )
 
   def perform_create(self, serializer):
     serializer.save()
@@ -41,30 +42,32 @@ class PartsCreate(generics.CreateAPIView):
 class PartsDetailView(generics.RetrieveAPIView):
   queryset = Parts.objects.all()
   serializer_class = PartsDetailEditSerializer
-  permission_classes = (permissions.IsAuthenticatedOrReadOnly, )
+  permission_classes = (permissions.IsAuthenticated, )
 
 
 class PartsEdit(generics.RetrieveUpdateAPIView):
   queryset = Parts.objects.all()
   serializer_class = PartsDetailEditSerializer
-  # permission_classes = (permissions.IsAuthenticatedOrReadOnly, )
+  permission_classes = (permissions.IsAuthenticated, )
 
 
 class PartsEditTagTypes(generics.RetrieveUpdateAPIView):
   queryset = Parts.tag_types.through.objects.all()
   serializer_class = PartsTagTypesEditSerializer
+  permission_classes = (permissions.IsAuthenticated, )
 
 
 class PartsTagTypes(generics.ListCreateAPIView):
   queryset = Parts.tag_types.through.objects.all()
   serializer_class = PartsTagTypesSerializer
+  permission_classes = (permissions.IsAuthenticated, )
 
 
 # TODO: remove this later
 class PartsEditOrDelete(generics.RetrieveUpdateDestroyAPIView):
   queryset = Parts.objects.all()
   serializer_class = PartsDetailEditSerializer
-  permissions_classes = (permissions.IsAuthenticatedOrReadOnly, )
+  permission_classes = (permissions.IsAuthenticated, )
 
 
 class PartsSearchableList(generics.ListAPIView):
@@ -75,19 +78,20 @@ class PartsSearchableList(generics.ListAPIView):
   # filter_fields = ('part_name', 'part_desc')
   search_fields = ('part_name', 'part_desc')
   pagination_class = PartsSearchResultsSetPagination
+  permission_classes = (permissions.IsAuthenticated, )
 
 
 class TasksExcludedView(generics.ListAPIView):
   queryset = Tasks.objects.all()
   serializer_class = TasksExcludedSerializer
-  permissions_classes = (permissions.IsAuthenticatedOrReadOnly, )
+  permission_classes = (permissions.IsAuthenticated, )
   pagination_class = TasksCustomResultsSetPagination
 
 
 class TasksCreate(generics.CreateAPIView):
   queryset = Tasks.objects.all()
   serializer_class = TasksCreateSerializer
-  # permission_classes = (permissions.IsAdminUser, )
+  permission_classes = (permissions.IsAuthenticated, )
 
   def perform_create(self, serializer):
     serializer.save()
@@ -96,13 +100,13 @@ class TasksCreate(generics.CreateAPIView):
 class TasksEdit(generics.RetrieveUpdateAPIView):
   queryset = Tasks.objects.all()
   serializer_class = TasksDetailEditSerializer
-  permissions_classes = (permissions.IsAuthenticatedOrReadOnly, )
+  permission_classes = (permissions.IsAuthenticated, )
 
 
 class TasksDetailView(generics.RetrieveAPIView):
   queryset = Tasks.objects.all()
   serializer_class = TasksDetailEditSerializer
-  permissions_classes = (permissions.IsAuthenticatedOrReadOnly, )
+  permission_classes = (permissions.IsAuthenticated, )
 
 
 class TasksSearchableList(generics.ListAPIView):
@@ -111,16 +115,18 @@ class TasksSearchableList(generics.ListAPIView):
   filter_backends = (filters.SearchFilter, )
   search_fields = ('task_name', 'task_desc')
   pagination_class = TasksSearchResultsSetPagination
+  permission_classes = (permissions.IsAuthenticated, )
 
 class TasksPartsEdit(generics.RetrieveUpdateAPIView):
   queryset = TasksParts.objects.all()
   serializer_class = TasksPartsEditSerializer
-  # permissions_class  
+  permission_classes = (permissions.IsAuthenticated, )
 
 
 class TasksPartsFilterByPart(generics.ListAPIView):
   serializer_class = TasksPartsFilterByPartSerializer
   filterset_fields = ('part')
+  permission_classes = (permissions.IsAuthenticated, )
 
   def get_queryset(self):
     queryset = TasksParts.objects.all()
@@ -133,8 +139,8 @@ class TasksPartsFilterByPart(generics.ListAPIView):
 
 class TasksPartsFilterByTask(generics.ListAPIView):
   serializer_class = TasksPartsSerializer
-  # filter_backends = (DjangoFilterBackend, )
   filterset_fields = ('task')
+  permission_classes = (permissions.IsAuthenticated, )
 
   def get_queryset(self):
     queryset = TasksParts.objects.all()
@@ -148,8 +154,8 @@ class TasksPartsFilterByTask(generics.ListAPIView):
 class TasksPartsViewSet(viewsets.ReadOnlyModelViewSet):
   queryset = TasksParts.objects.all()
   serializer_class = TasksPartsSerializer
-  # filter_backends = (DjangoFilterBackend, )
   filterset_fields = ('task')
+  permission_classes = (permissions.IsAuthenticated, )
 
 
   @action(detail=True, methods=['post'])
@@ -166,7 +172,7 @@ class CategoriesExcludedView(generics.ListAPIView):
   queryset = Categories.objects.all()
   serializer_class = CategoriesExcludedSerializer
   pagination_class = CategoriesCustomResultsSetPagination
-  # permissions
+  permission_classes = (permissions.IsAuthenticated, )
 
   def perform_create(self, serializer):
     serializer.save()
@@ -175,6 +181,7 @@ class CategoriesExcludedView(generics.ListAPIView):
 class CategoriesCreate(generics.CreateAPIView):
   queryset = Categories.objects.all()
   serializer_class = CategoriesCreateSerializer
+  permission_classes = (permissions.IsAuthenticated, )
 
   def perform_create(self, serializer):
     serializer.save()
@@ -183,12 +190,13 @@ class CategoriesCreate(generics.CreateAPIView):
 class CategoriesEdit(generics.RetrieveUpdateAPIView):
   queryset = Categories.objects.all()
   serializer_class = CategoriesEditSerializer
-  # permissions
+  permission_classes = (permissions.IsAuthenticated, )
 
 
 class CategoriesDetailView(generics.RetrieveAPIView):
   queryset = Categories.objects.all()
   serializer_class = CategoriesDetailSerializer
+  permission_classes = (permissions.IsAuthenticated, )
 
 
 class CategoriesSearchableList(generics.ListAPIView):
@@ -197,6 +205,7 @@ class CategoriesSearchableList(generics.ListAPIView):
   filter_backends = (filters.SearchFilter, )
   search_fields = ('category_name', 'category_desc')
   pagination_class = CategoriesSearchResultsSetPagination
+  permission_classes = (permissions.IsAuthenticated, )
 
 
 class JobsExcludedView(generics.ListAPIView):
@@ -204,11 +213,13 @@ class JobsExcludedView(generics.ListAPIView):
   serializer_class = JobsExcludedSerializer
   pagination_class = JobsCustomResultsSetPagination
   permissions_classes = (permissions.IsAuthenticatedOrReadOnly, )
+  permission_classes = (permissions.IsAuthenticated, )
 
 
 class JobsCreate(generics.CreateAPIView):
   queryset = Jobs.objects.all()
   serializer_class = JobsCreateSerializer
+  permission_classes = (permissions.IsAuthenticated, )
 
   def perform_create(self, serializer):
     serializer.save()
@@ -217,12 +228,12 @@ class JobsCreate(generics.CreateAPIView):
 class JobsDetailView(generics.RetrieveAPIView):
   queryset = Jobs.objects.all()
   serializer_class = JobsDetailSerializer
-
+  permission_classes = (permissions.IsAuthenticated, )
 
 class JobsEdit(generics.RetrieveUpdateAPIView):
   queryset = Jobs.objects.all()
   serializer_class = JobsEditSerializer
-
+  permission_classes = (permissions.IsAuthenticated, )
 
 class JobsSearchableList(generics.ListAPIView):
   queryset = Jobs.objects.all()
@@ -230,32 +241,36 @@ class JobsSearchableList(generics.ListAPIView):
   pagination_class = JobsCustomResultsSetPagination
   filter_backends = (filters.SearchFilter, )
   search_fields = ('job_name', 'job_desc')
+  permission_classes = (permissions.IsAuthenticated, )
 
 
 class PartsMarkupList(generics.ListAPIView):
   queryset = PartsMarkup.objects.all()
   serializer_class = PartsMarkupSerializer
+  permission_classes = (permissions.IsAuthenticated, )
 
 
 class PartsMarkupCreate(generics.CreateAPIView):
   queryset = PartsMarkup.objects.all()
   serializer_class = PartsMarkupSerializer
+  permission_classes = (permissions.IsAuthenticated, )
 
-  # add permissions
   def perform_create(self, serializer):
     serializer.save()
 
 class PartsMarkupEdit(generics.RetrieveUpdateAPIView):
   queryset = PartsMarkup.objects.all()
   serializer_class = PartsMarkupSerializer
+  permission_classes = (permissions.IsAuthenticated, )
 
 
 class TasksPartsList(generics.ListCreateAPIView):
   queryset = TasksParts.objects.all()
   serializer_class = TasksPartsSerializer
+  permission_classes = (permissions.IsAuthenticated, )
 
 
 class GlobalMarkupView(generics.ListCreateAPIView):
   queryset = GlobalMarkup.objects.all()
   serializer_class = GlobalMarkupSerializer
-
+  permission_classes = (permissions.IsAuthenticated, )
