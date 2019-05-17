@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
+    'knox',
     'corsheaders',
     'webpack_loader',
     'inventory',
@@ -160,14 +161,9 @@ WEBPACK_LOADER = {
 
 
 # rest_framework configs
-# REST_FRAMEWORK = {
-  # 'DEFAULT_PERMISSION_CLASSES': {
-  #   'rest_framework.permissions.IsAuthenticated',
-  # },
-  # 'DEFAULT_AUTHENTICATION_CLASSES': {
-
-  # },
-# }
+REST_FRAMEWORK = {
+  'DEFAULT_AUTHENTICATION_CLASSES': ('knox.auth.TokenAuthentication', ),
+}
 
 CORS_ORIGIN_WHITELIST = (
   'http://localhost:8000',
