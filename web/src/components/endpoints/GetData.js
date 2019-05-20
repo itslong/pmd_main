@@ -12,7 +12,13 @@ const FetchAllParts = (pageNum=1, pageSize=10) => {
   const pageQuery = '?' + currentPageNum + '&' + currentPageSize;
   const endpointWithPageQuery = endpoint + pageQuery;
 
-  return fetch(endpointWithPageQuery)
+  const token = localStorage.getItem('token');
+  const headers = {
+    'Content-Type': 'application/json',
+    'Authorization': `Token ${token}`,
+  };
+
+  return fetch(endpointWithPageQuery, {headers, })
   .then(response => {
     if (response.ok) {
       return response.json();
@@ -34,9 +40,14 @@ const FetchAllPartsAdmin = (pageNum=1, pageSize=10) => {
   const currentPageSize = 'page_size=' + pageSize;
   const pageQuery = '?' + currentPageNum + '&' + currentPageSize;
   const endpointWithPageQuery = endpoint + pageQuery;
-  console.log(endpointWithPageQuery)
 
-  return fetch(endpoint)
+  const token = localStorage.getItem('token');
+  const headers = {
+    'Content-Type': 'application/json',
+    'Authorization': `Token ${token}`,
+  };
+
+  return fetch(endpoint, {headers, })
   .then(response => {
     if (response.ok) {
       return response.json();
@@ -53,7 +64,14 @@ const FetchAllPartsAdmin = (pageNum=1, pageSize=10) => {
 // Get a single Part
 const FetchPart = (partId) => {
   const endpoint = 'http://localhost:8000/api/part/' + partId + '/';
-  return fetch(endpoint)
+
+  const token = localStorage.getItem('token');
+  const headers = {
+    'Content-Type': 'application/json',
+    'Authorization': `Token ${token}`,
+  };
+
+  return fetch(endpoint, {headers, })
   .then(response => {
     return response.json();
   })
@@ -66,16 +84,21 @@ const FetchPart = (partId) => {
 // PostParts
 const CreatePart = (formData) => {
   const endpoint = 'http://localhost:8000/api/part/create/';
-  // const csrfToken = GetCookie('csrftoken');
+  const csrfToken = GetCookie('csrftoken');
+
+  const token = localStorage.getItem('token');
+  const headers = {
+    'Accept': 'application/json',
+    'Content-Type': 'application/json',
+    'X-CSRFToken': csrfToken,
+    'Authorization': `Token ${token}`,
+  };
+
   return fetch(endpoint, {
     method: 'POST',
     mode: 'same-origin',
     body: JSON.stringify(formData),
-    headers: {
-      'Accept': 'application/json',
-      'Content-Type': 'application/json',
-      // 'X-CSRFToken': csrfToken
-    },
+    headers,
   })
   .then(response => {
     console.log('create part response: ' + JSON.stringify(response))
@@ -109,15 +132,19 @@ const UpdatePart = (partId, formData) => {
   const endpoint = url + partId + action
   const csrfToken = GetCookie('csrftoken');
 
+  const token = localStorage.getItem('token');
+  const headers = {
+    'Accept': 'application/json',
+    'Content-Type': 'application/json',
+    'X-CSRFToken': csrfToken,
+    'Authorization': `Token ${token}`,
+  };
+
   return fetch(endpoint, {
     method: 'PUT',
     mode: 'same-origin',
     body: JSON.stringify(formData),
-    headers: {
-      'Accept': 'application/json',
-      'Content-Type': 'application/json',
-      'X-CSRFToken': csrfToken
-    },
+    headers,
   })
   .then(response => {
     return response.json();
@@ -134,15 +161,19 @@ const UpdatePartTagTypes = (partId, formData) => {
   const endpoint = url + partId + action
   const csrfToken = GetCookie('csrftoken');
 
+  const token = localStorage.getItem('token');
+  const headers = {
+    'Accept': 'application/json',
+    'Content-Type': 'application/json',
+    'X-CSRFToken': csrfToken,
+    'Authorization': `Token ${token}`,
+  };
+
   return fetch(endpoint, {
     method: 'PATCH',
     mode: 'same-origin',
     body: JSON.stringify(formData),
-    headers: {
-      'Accept': 'application/json',
-      'Content-Type': 'application/json',
-      'X-CSRFToken': csrfToken
-    },
+    headers,
   })
   .then(response => {
     return response.json();
@@ -162,15 +193,19 @@ const DeletePart = (partId, formData) => {
   const endpoint = url + partId + action
   const csrfToken = GetCookie('csrftoken');
 
+  const token = localStorage.getItem('token');
+  const headers = {
+    'Accept': 'application/json',
+    'Content-Type': 'application/json',
+    'X-CSRFToken': csrfToken,
+    'Authorization': `Token ${token}`,
+  };
+
   return fetch(endpoint, {
     method: 'PATCH',
     mode: 'same-origin',
     body: JSON.stringify(formData),
-    headers: {
-      'Accept': 'application/json',
-      'Content-Type': 'application/json',
-      'X-CSRFToken': csrfToken
-    }
+    headers,
   })
   .then(response => {
     console.log('part set to is_active: False : ' + partId)
@@ -205,7 +240,13 @@ const SearchForParts = (searchString) => {
   const query = '/?search=';
   const endpoint = url + query + searchString;
 
-  return fetch(endpoint)
+  const token = localStorage.getItem('token');
+  const headers = {
+    'Content-Type': 'application/json',
+    'Authorization': `Token ${token}`,
+  };
+
+  return fetch(endpoint, {headers, })
   .then(response => {
     if (response.ok) {
       return response.json();
@@ -234,7 +275,13 @@ const SearchForItems = (searchString, searchType, pageNum=1, pageSize=10) => {
   const pageQuery = '?' + currentPageNum + '&' + currentPageSize + query;
   const endpointWithPageQuery = endpoint + pageQuery;
 
-  return fetch(endpointWithPageQuery)
+  const token = localStorage.getItem('token');
+  const headers = {
+    'Content-Type': 'application/json',
+    'Authorization': `Token ${token}`,
+  };
+
+  return fetch(endpointWithPageQuery, {headers, })
   .then(response => {
     if (response.ok) {
       return response.json();
@@ -258,7 +305,13 @@ const FetchAllTasks = (pageNum=1, pageSize=10) => {
   const pageQuery = '?' + currentPageNum + '&' + currentPageSize;
   const endpointWithPageQuery = endpoint + pageQuery;
 
-  return fetch(endpointWithPageQuery)
+  const token = localStorage.getItem('token');
+  const headers = {
+    'Content-Type': 'application/json',
+    'Authorization': `Token ${token}`,
+  };
+
+  return fetch(endpointWithPageQuery, {headers, })
   .then(response => {
     if (response.ok) {
       return response.json();
@@ -275,7 +328,14 @@ const FetchAllTasks = (pageNum=1, pageSize=10) => {
 
 const FetchTask = (taskId) => {
   const endpoint = 'http://localhost:8000/api/task/' + taskId + '/';
-  return fetch(endpoint)
+
+  const token = localStorage.getItem('token');
+  const headers = {
+    'Content-Type': 'application/json',
+    'Authorization': `Token ${token}`,
+  };
+
+  return fetch(endpoint, {headers, })
   .then(response => {
     return response.json();
   })
@@ -286,16 +346,21 @@ const FetchTask = (taskId) => {
 
 const CreateTask = (formData) => {
   const endpoint = 'http://localhost:8000/api/task/create/';
-  // const csrfToken = GetCookie('csrftoken');
+  const csrfToken = GetCookie('csrftoken');
+
+  const token = localStorage.getItem('token');
+  const headers = {
+    'Accept': 'application/json',
+    'Content-Type': 'application/json',
+    'X-CSRFToken': csrfToken,
+    'Authorization': `Token ${token}`,
+  };
+
   return fetch(endpoint, {
     method: 'POST',
     mode: 'same-origin',
     body: JSON.stringify(formData),
-    headers: {
-      'Accept': 'application/json',
-      'Content-Type': 'application/json',
-      // 'X-CSRFToken': csrfToken
-    },
+    headers,
   })
   .then(response => {
     console.log('create task response: ' + JSON.stringify(response))
@@ -330,15 +395,19 @@ const UpdateTaskOnly = (taskId, formData) => {
   const endpoint = url + taskId + action;
   const csrfToken = GetCookie('csrftoken');
 
+  const token = localStorage.getItem('token');
+  const headers = {
+    'Accept': 'application/json',
+    'Content-Type': 'application/json',
+    'X-CSRFToken': csrfToken,
+    'Authorization': `Token ${token}`,
+  };
+
   return fetch(endpoint, {
     method: 'PUT',
     mode: 'same-origin',
     body: JSON.stringify(formData),
-    headers: {
-      'Accept': 'application/json',
-      'Content-Type': 'application/json',
-      'X-CSRFToken': csrfToken
-    },
+    headers,
   })
   .then(response => {
     return response.json();
@@ -379,15 +448,19 @@ const CreateTaskParts = (taskPartsObj) => {
   const endpoint = 'http://localhost:8000/api/tasks-parts/';
   const csrfToken = GetCookie('csrftoken');
 
+  const token = localStorage.getItem('token');
+  const headers = {
+    'Accept': 'application/json',
+    'Content-Type': 'application/json',
+    'X-CSRFToken': csrfToken,
+    'Authorization': `Token ${token}`,
+  };
+
   let options = {
     method: 'POST',
     mode: 'same-origin',
     body: JSON.stringify(taskPartsObj),
-    headers: {
-      'Accept': 'application/json',
-      'Content-Type': 'application/json',
-      'X-CSRFToken': csrfToken
-    }
+    headers,
   };
 
   return fetch(endpoint, options).then(response => {
@@ -403,7 +476,13 @@ const FetchAllTasksRelatedToParts = (partId) => {
   const filterQuery = '?part=';
   const endpointWithFilterQuery = endpoint + filterQuery + partId;
 
-  return fetch(endpointWithFilterQuery)
+  const token = localStorage.getItem('token');
+  const headers = {
+    'Content-Type': 'application/json',
+    'Authorization': `Token ${token}`,
+  };
+
+  return fetch(endpointWithFilterQuery, {headers, })
   .then(response => {
     if (response.ok) {
       return response.json();
@@ -419,15 +498,19 @@ const RemoveRelatedTaskParts = (taskId) => {
   const endpoint = url + taskId;
   const csrfToken = GetCookie('csrftoken');
 
+  const token = localStorage.getItem('token');
+  const headers = {
+    'Accept': 'application/json',
+    'Content-Type': 'application/json',
+    'X-CSRFToken': csrfToken,
+    'Authorization': `Token ${token}`,
+  };
+
   return fetch(endpoint, {
     method: 'POST',
     mode: 'same-origin',
     body: {}, // does not need a body
-    headers: {
-      'Accept': 'application/json',
-      'Content-Type': 'application/json',
-      'X-CSRFToken': csrfToken
-    },
+    headers,
   })
   .then(response => {
     return response;
@@ -446,7 +529,13 @@ const FetchAllCategories = (pageNum=1, pageSize=10) => {
   const pageQuery = '?' + currentPageNum + '&' + currentPageSize;
   const endpointWithPageQuery = endpoint + pageQuery;
 
-  return fetch(endpointWithPageQuery)
+  const token = localStorage.getItem('token');
+  const headers = {
+    'Content-Type': 'application/json',
+    'Authorization': `Token ${token}`,
+  };
+
+  return fetch(endpointWithPageQuery, {headers, })
   .then(response => {
     if (response.ok) {
       return response.json();
@@ -463,6 +552,13 @@ const FetchAllCategories = (pageNum=1, pageSize=10) => {
 
 const FetchCategory = (categoryId) => {
   const endpoint = 'http://localhost:8000/api/category/' + categoryId + '/';
+
+  const token = localStorage.getItem('token');
+  const headers = {
+    'Content-Type': 'application/json',
+    'Authorization': `Token ${token}`,
+  };
+
   return fetch(endpoint)
   .then(response => {
     return response.json();
@@ -474,16 +570,21 @@ const FetchCategory = (categoryId) => {
 
 const CreateCategory = (formData) => {
   const endpoint = 'http://localhost:8000/api/category/create/';
-  // const csrfToken = GetCookie('csrftoken');
+  const csrfToken = GetCookie('csrftoken');
+
+  const token = localStorage.getItem('token');
+  const headers = {
+    'Accept': 'application/json',
+    'Content-Type': 'application/json',
+    'X-CSRFToken': csrfToken,
+    'Authorization': `Token ${token}`,
+  };
+
   return fetch(endpoint, {
     method: 'POST',
     mode: 'same-origin',
     body: JSON.stringify(formData),
-    headers: {
-      'Accept': 'application/json',
-      'Content-Type': 'application/json',
-      // 'X-CSRFToken': csrfToken
-    },
+    headers,
   })
   .then(response => {
     if (response.status !== 201) {
@@ -509,15 +610,19 @@ const UpdateCategoryAndRelatedTasks = (categoryId, formData) => {
   const endpoint = url + categoryId + action;
   const csrfToken = GetCookie('csrftoken');
 
+  const token = localStorage.getItem('token');
+  const headers = {
+    'Accept': 'application/json',
+    'Content-Type': 'application/json',
+    'X-CSRFToken': csrfToken,
+    'Authorization': `Token ${token}`,
+  };
+
   return fetch(endpoint, {
     method: 'PUT',
     mode: 'same-origin',
     body: JSON.stringify(formData),
-    headers: {
-      'Accept': 'application/json',
-      'Content-Type': 'application/json',
-      'X-CSRFToken': csrfToken
-    },
+    headers,
   })
   .then(response => {
     if (response.ok) {
@@ -542,7 +647,13 @@ const FetchAllJobs = (pageNum=1, pageSize=10) => {
   const pageQuery = '?' + currentPageNum + '&' + currentPageSize;
   const endpointWithPageQuery = endpoint + pageQuery;
 
-  return fetch(endpoint)
+  const token = localStorage.getItem('token');
+  const headers = {
+    'Content-Type': 'application/json',
+    'Authorization': `Token ${token}`,
+  };
+
+  return fetch(endpoint, {headers, })
   .then(response => {
     if (response.ok) {
       return response.json();
@@ -559,7 +670,14 @@ const FetchAllJobs = (pageNum=1, pageSize=10) => {
 
 const FetchJob = (jobId) => {
   const endpoint = 'http://localhost:8000/api/job/' + jobId + '/';
-  return fetch(endpoint)
+
+  const token = localStorage.getItem('token');
+  const headers = {
+    'Content-Type': 'application/json',
+    'Authorization': `Token ${token}`,
+  };
+
+  return fetch(endpoint, {headers, })
   .then(response => {
     if (response.ok) {
       return response.json();
@@ -575,16 +693,21 @@ const FetchJob = (jobId) => {
 
 const CreateJob = (formData) => {
   const endpoint = 'http://localhost:8000/api/job/create/';
-  // const csrfToken = GetCookie('csrftoken');
+  const csrfToken = GetCookie('csrftoken');
+
+  const token = localStorage.getItem('token');
+  const headers = {
+    'Accept': 'application/json',
+    'Content-Type': 'application/json',
+    'X-CSRFToken': csrfToken,
+    'Authorization': `Token ${token}`,
+  };
+
   return fetch(endpoint, {
     method: 'POST',
     mode: 'same-origin',
     body: JSON.stringify(formData),
-    headers: {
-      'Accept': 'application/json',
-      'Content-Type': 'application/json',
-      // 'X-CSRFToken': csrfToken
-    },
+    headers,
   })
   .then(response => {
     if (response.status !== 201) {
@@ -611,15 +734,19 @@ const UpdateJobAndRelatedCategories = (jobId, formData) => {
   const endpoint = url + jobId + action;
   const csrfToken = GetCookie('csrftoken');
 
+  const token = localStorage.getItem('token');
+  const headers = {
+    'Accept': 'application/json',
+    'Content-Type': 'application/json',
+    'X-CSRFToken': csrfToken,
+    'Authorization': `Token ${token}`,
+  };
+
   return fetch(endpoint, {
     method: 'PUT',
     mode: 'same-origin',
     body: JSON.stringify(formData),
-    headers: {
-      'Accept': 'application/json',
-      'Content-Type': 'application/json',
-      'X-CSRFToken': csrfToken
-    },
+    headers,
   })
   .then(response => {
     if (response.ok) {
@@ -639,7 +766,13 @@ const UpdateJobAndRelatedCategories = (jobId, formData) => {
 const GetPartsMarkupPercents = () => {
   const endpoint = 'http://localhost:8000/api/parts-markup/list/';
 
-  return fetch(endpoint)
+  const token = localStorage.getItem('token');
+  const headers = {
+    'Content-Type': 'application/json',
+    'Authorization': `Token ${token}`,
+  };
+
+  return fetch(endpoint, {headers, })
   .then(response => {
     if (response.ok) {
       return response.json()
@@ -654,7 +787,13 @@ const GetPartsMarkupPercents = () => {
 const FetchTagTypesChoices = () => {
   const endpoint = 'http://localhost:8000/api/tags/';
 
-  return fetch(endpoint)
+  const token = localStorage.getItem('token');
+  const headers = {
+    'Content-Type': 'application/json',
+    'Authorization': `Token ${token}`,
+  };
+
+  return fetch(endpoint, {headers, })
   .then(response => {
     if (response.ok) {
       return response.json()
@@ -669,7 +808,13 @@ const FetchTagTypesChoices = () => {
 const FetchGlobalMarkup = () => {
   const endpoint = 'http://localhost:8000/api/global-markup/';
 
-  return fetch(endpoint)
+  const token = localStorage.getItem('token');
+  const headers = {
+    'Content-Type': 'application/json',
+    'Authorization': `Token ${token}`,
+  };
+
+  return fetch(endpoint, {headers, })
   .then(response => {
     if (response.ok) {
       return response.json()

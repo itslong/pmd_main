@@ -31,6 +31,7 @@ import {
   JobDetail,
   JobEdit
 } from './Jobs';
+import { LoginForm, SignupForm } from './Auth';
 // import SearchByRoute from './SearchByRoute';
 import NotFound from './NotFound';
 import {
@@ -52,7 +53,9 @@ import {
   JOB_DETAIL_PATH,
   JOB_EDIT_PATH,
   PART_EDIT_PATH,
-  SEARCH_RESULTS_PATH
+  SEARCH_RESULTS_PATH,
+  LOGIN_PATH,
+  SIGNUP_PATH,
 } from './frontendBaseRoutes';
 
 // admin route for display purposes only
@@ -61,6 +64,9 @@ const MainRoutes = () => {
     <main>
       <Switch>
         <Route path={HOME_PATH} />
+        <Route exact path={LOGIN_PATH} component={LoginForm} />
+        <Route exact path={SIGNUP_PATH} component={SignupForm} />
+
         <Route path={PARTS_DISPLAY_ADMIN_PATH} component={PartsAdminDisplay} />
         <Route exact path={PARTS_DISPLAY_PATH} component={PartsDisplay} />
         <Route exact path={PART_DETAIL_PATH} component={PartDetailWithState} />

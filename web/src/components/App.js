@@ -1,14 +1,11 @@
 import React from 'react';
-import NavBar from './NavBar';
-import MainRoutes from './MainRoutes';
 // import GlobalSearch from './GlobalSearch';
-
+import AppState from './AppState';
 
 const App = () => {
   return (
     <div>
-      <NavBar />
-      <MainRoutes />
+      <AppState />
     </div>
   );
 }

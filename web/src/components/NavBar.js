@@ -3,6 +3,7 @@ import { Route, Link } from 'react-router-dom';
 
 import {
   HOME_PATH,
+  BASE_PATH,
   PARTS_DISPLAY_PATH,
   PARTS_DISPLAY_ADMIN_PATH,
   CREATE_PARTS_PATH,
@@ -22,7 +23,8 @@ const ulStyle = {
   justifyContent: 'space-evenly'
 }
 
-const NavBar = () => {
+const NavBar = ({ handleLogout }) => {
+
   return (
     <div>
       <ul style={ulStyle}>
@@ -41,6 +43,7 @@ const NavBar = () => {
         <li><Link to={TASKS_DISPLAY_PATH}>Tasks</Link></li>
         <li><Link to={CATEGORIES_DISPLAY_PATH}>Categories</Link></li>
         <li><Link to={JOBS_DISPLAY_PATH}>Jobs</Link></li>
+        <li><Link to={BASE_PATH} onClick={handleLogout}>Logout</Link></li>
       </ul>
       <ul style={ulStyle}>
         <li><Link to={CREATE_PARTS_PATH}>Add Part</Link></li>

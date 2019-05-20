@@ -12,6 +12,7 @@ class SignupForm extends Component {
     };
 
     this.handleValueChange = this.handleValueChange.bind(this);
+    this.handleSubmit = this.handleSubmit.bind(this);
   }
 
   handleValueChange(e) {
@@ -22,9 +23,12 @@ class SignupForm extends Component {
       const newState = { ...prevState };
 
       newState[name] = value;
-      console.log('new state item: ', newState);
       return newState;
     });
+  }
+
+  handleSubmit(e) {
+    e.preventDefault();
   }
 
   render() {
@@ -58,7 +62,7 @@ class SignupForm extends Component {
           id={'submit'}
           type={'primary'}
           title={'Enter'}
-          action={() => null}
+          action={this.handleSubmit}
         />
 
       </form>
