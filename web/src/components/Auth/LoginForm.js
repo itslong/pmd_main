@@ -12,6 +12,7 @@ class LoginForm extends Component {
     };
 
     this.handleValueChange = this.handleValueChange.bind(this);
+    this.handleFormSubmit = this.handleFormSubmit.bind(this);
   }
 
   handleValueChange(e) {
@@ -22,9 +23,14 @@ class LoginForm extends Component {
       const newState = { ...prevState };
 
       newState[name] = value;
-      console.log('new state item: ', newState);
       return newState;
     });
+  }
+
+  handleFormSubmit(e) {
+    e.preventDefault();
+    const formData = this.state;
+    this.props.submitForm(formData, 'login');
   }
 
   render() {
@@ -58,7 +64,7 @@ class LoginForm extends Component {
           id={'submit'}
           type={'primary'}
           title={'Enter'}
-          action={() => null}
+          action={this.handleFormSubmit}
         />
 
       </form>

@@ -1,5 +1,6 @@
 
 const PATH = '/web';
+const BASE_PATH = PATH;
 
 const HOME_PATH = PATH + '/home';
 
@@ -26,6 +27,9 @@ const JOB_EDIT_PATH = PATH + '/job/edit/:id';
 
 const SEARCH_RESULTS_PATH = PATH + '/search-results';
 
+const LOGIN_PATH = PATH + '/login';
+const SIGNUP_PATH = PATH + '/register';
+
 const itemPaths = {
   parts: PATH + '/part',
   part: PATH + '/part',
@@ -45,7 +49,8 @@ const editPathWithId = (id, pathType) => {
   return itemPaths[pathType] + '/edit/' + id;
 }
 
-export { 
+export {
+  BASE_PATH,
   HOME_PATH,
   PARTS_DISPLAY_PATH,
   PARTS_DISPLAY_ADMIN_PATH,
@@ -65,6 +70,8 @@ export {
   JOB_DETAIL_PATH,
   JOB_EDIT_PATH,
   SEARCH_RESULTS_PATH,
+  LOGIN_PATH,
+  SIGNUP_PATH,
   itemPathWithId,
   editPathWithId
 };

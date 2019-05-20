@@ -1,6 +1,7 @@
-import React, { Component, cloneElement, Children } from 'react';
+import React, { Component, cloneElement, Children, useContext } from 'react';
 import { withRouter } from 'react-router-dom';
 
+import { IsAdminContext } from './AppContext';
 import { Input, Button, Table, TableRowWithButtons, TableRowWithCheckbox } from './common';
 import Modal from './Modal';
 import DialogModal from './DialogModal';
@@ -60,6 +61,7 @@ class DisplayComponent extends Component {
 
   componentDidMount() {
     const { initFetch, initDataKeyToParse, initPageSize, initPageNum } = this.props;
+
     let getAllData = Promise.all([
       initFetch(initPageNum, initPageSize),
       FetchGlobalMarkup()
@@ -237,6 +239,8 @@ class DisplayComponent extends Component {
         actionType
       })
     );
+    // TODO: if admin, display edit/delete controls
+
     const handleEdit = (editType === 'modal') ? this.handleClickEditInModal : this.handleClickEditByRoute;
 
     // create Edit Delete buttons here
@@ -327,5 +331,4 @@ class DisplayComponent extends Component {
 }
 
 export default withRouter(DisplayComponent);
-
-
+DisplayComponent.contextType = IsAdminContext;

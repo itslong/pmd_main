@@ -1,6 +1,6 @@
 export { default as CSRFToken } from './CSRFToken';
 export { default as GetCookie } from './GetCookie';
-
+export { LoginUser } from './AuthData';
 export {
   FetchAllParts, 
   FetchPart,
