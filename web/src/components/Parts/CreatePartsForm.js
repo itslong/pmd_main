@@ -89,7 +89,6 @@ class CreatePartsForm extends Component {
     create.then(data => {
       console.log('created: ' + JSON.stringify(data))
       this.handleRedirectAfterSubmit();
-      this.handleClearForm(e);
     })
 
   }
