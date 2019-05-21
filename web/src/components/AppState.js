@@ -15,10 +15,11 @@ class AppState extends Component {
     super(props);
 
     const isAuth = localStorage.getItem('token') ? true : false;
-
+    // demo only
+    const UserIsAdmin = localStorage.getItem('isAdmin') ? true : false;
     this.state = {
       isAuthenticated: isAuth,
-      isAdmin: false,
+      isAdmin: UserIsAdmin,
       username: '',
       isLoading: true
     };
@@ -28,17 +29,20 @@ class AppState extends Component {
     this.toggleAdmin = this.toggleAdmin.bind(this);
   }
 
-  handleSubmit(formData, submitType) {
+  handleSubmit(formData) {
     // TODO: allow new user registration by admins only.
-    const submit = submitType === 'login' ? LoginUser(formData) : '';
+    const submit = LoginUser(formData);
     submit.then(data => {
       localStorage.setItem('token', data.token);
+      // for demo only
+      const adminStatus = data.user.is_staff === true ? true : false;
+      localStorage.setItem('isAdmin', adminStatus);
 
       this.setState({
         isAuthenticated: true,
         isLoading: false,
         username: data.user.username,
-        isAdmin: data.user.is_staff
+        isAdmin: adminStatus, //after demo, read from user object
       });
     })
     .then(() => {
@@ -47,8 +51,8 @@ class AppState extends Component {
   }
 
   handleLogout() {
-    localStorage.removeItem('token');
-
+    // localStorage.removeItem('token');
+    localStorage.clear();
     this.setState({
       isAuthenticated: false,
       isAdmin: false,
@@ -59,6 +63,10 @@ class AppState extends Component {
   toggleAdmin() {
     this.setState({
       isAdmin: !this.state.isAdmin
+    }, () => {
+      if (!this.state.isAdmin) {
+        this.props.history.push(HOME_PATH);
+      }
     });
   }
 
@@ -73,18 +81,17 @@ class AppState extends Component {
         title={'Toggle admin status.'}
       /> : '';
 
-    const { pathname } = this.props.location;
-    const currentPathComponent = (pathname.toString()).includes('login') ?
-      <LoginForm submitForm={this.handleSubmit} />
-      : <SignupForm />;
-
+    const demoUserAdmin = isAuthenticated ? isAdmin : isAdmin;
 
     const loadRoutes = isAuthenticated ?
       <IsAdminContext.Provider value={isAdmin}>
-        <NavBar handleLogout={this.handleLogout} />
+        <NavBar 
+          handleLogout={this.handleLogout}
+          userIsAdmin={demoUserAdmin}
+        />
         <MainRoutes />
       </IsAdminContext.Provider>
-      : currentPathComponent;
+      : <LoginForm submitForm={this.handleSubmit} />;
 
     // const loadingModal = isLoading ?
     //   <Modal 

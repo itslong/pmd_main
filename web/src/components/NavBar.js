@@ -12,7 +12,8 @@ import {
   CATEGORIES_DISPLAY_PATH,
   CREATE_CATEGORIES_PATH,
   JOBS_DISPLAY_PATH,
-  CREATE_JOBS_PATH
+  CREATE_JOBS_PATH,
+  SIGNUP_PATH,
 } from './frontendBaseRoutes';
 
 const ulStyle = {
@@ -23,7 +24,10 @@ const ulStyle = {
   justifyContent: 'space-evenly'
 }
 
-const NavBar = ({ handleLogout }) => {
+const NavBar = ({ handleLogout, userIsAdmin }) => {
+  const registerLink = userIsAdmin ?
+    <li><Link to={SIGNUP_PATH}>Register New User</Link></li>
+    : '';
 
   return (
     <div>
@@ -50,6 +54,7 @@ const NavBar = ({ handleLogout }) => {
         <li><Link to={CREATE_TASKS_PATH}>Add Task</Link></li>
         <li><Link to={CREATE_CATEGORIES_PATH}>Add Category</Link></li>
         <li><Link to={CREATE_JOBS_PATH}>Add Job</Link></li>
+        {registerLink}
       </ul>
     </div>
   )
