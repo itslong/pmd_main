@@ -9,7 +9,6 @@ const LoginUser = (formData) => {
     headers: {
       'Accept': 'application/json',
       'Content-Type': 'application/json',
-      // 'X-CSRFToken': csrfToken
     },
   })
   .then(response => {
@@ -32,13 +31,12 @@ const LoginUser = (formData) => {
       return response.data;
     } else {
       console.log('Login failed. ', response);
-      throw response.data;
+      return response.data;
     }
     // return a rejected Promise.
   })
   .catch(error => {
-    console.log('Login error details: ' + JSON.stringify(error))
-    // return Promise.reject('Post Error: ' + error);
+    console.log('Login error details: ' + JSON.stringify(error));
     return Promise.reject({
       status: error,
       errorMsg: 'Login from this endpoint: ' + endpoint

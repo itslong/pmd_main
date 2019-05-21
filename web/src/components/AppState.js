@@ -21,18 +21,29 @@ class AppState extends Component {
       isAuthenticated: isAuth,
       isAdmin: UserIsAdmin,
       username: '',
-      isLoading: true
+      isLoading: false,
+      errorMsg: null,
     };
 
     this.handleSubmit = this.handleSubmit.bind(this);
     this.handleLogout = this.handleLogout.bind(this);
     this.toggleAdmin = this.toggleAdmin.bind(this);
+    this.validateFormData = this.validateFormData.bind(this);
   }
 
   handleSubmit(formData) {
     // TODO: allow new user registration by admins only.
     const submit = LoginUser(formData);
     submit.then(data => {
+      const { non_field_errors } = data;
+
+      if (non_field_errors) {
+        return this.setState({
+          errorMsg: 'Unable to log in with provided credentials.',
+          isLoading: false
+        });
+      }
+
       localStorage.setItem('token', data.token);
       // for demo only
       const adminStatus = data.user.is_staff === true ? true : false;
@@ -43,11 +54,42 @@ class AppState extends Component {
         isLoading: false,
         username: data.user.username,
         isAdmin: adminStatus, //after demo, read from user object
+        errorMsg: '',
       });
     })
     .then(() => {
       this.props.history.push(HOME_PATH);
-    })
+    });
+  }
+
+  validateFormData(formData) {
+    if (formData.username !== '' && formData.password !== '') {
+      return this.setState({
+        errorMsg: '',
+        isLoading: true,
+      }, () => {
+        this.handleSubmit(formData);
+      });
+    }
+
+    if (formData.username === '' && formData.password === '') {
+      return this.setState({
+        errorMsg: 'Username field and Password field may not be blank.'
+      });
+    }
+
+    if (formData.username === '') {
+      return this.setState({
+        errorMsg: 'Username field may not be blank.'
+      });
+    }
+
+    if (formData.password === '') {
+      return this.setState({
+        errorMsg: 'Password field may not be blank.'
+      });
+    }
+
   }
 
   handleLogout() {
@@ -71,7 +113,7 @@ class AppState extends Component {
   }
 
   render() {
-    const { isAuthenticated, isAdmin } = this.state;
+    const { isAuthenticated, isAdmin, errorMsg, isLoading } = this.state;
 
     // demo: admin toggle
     const isAd = isAuthenticated ? `Are you admin?: ${isAdmin}.` : '';
@@ -83,6 +125,8 @@ class AppState extends Component {
 
     const demoUserAdmin = isAuthenticated ? isAdmin : isAdmin;
 
+    const displayErrorMsg = errorMsg ? errorMsg : '';
+
     const loadRoutes = isAuthenticated ?
       <IsAdminContext.Provider value={isAdmin}>
         <NavBar 
@@ -91,7 +135,7 @@ class AppState extends Component {
         />
         <MainRoutes />
       </IsAdminContext.Provider>
-      : <LoginForm submitForm={this.handleSubmit} />;
+      : <LoginForm submitForm={this.validateFormData} errorMsg={displayErrorMsg} />;
 
     // const loadingModal = isLoading ?
     //   <Modal 

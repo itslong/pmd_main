@@ -35,11 +35,12 @@ class LoginForm extends Component {
 
   render() {
     const { username, password } = this.state;
+    const { errorMsg } = this.props;
 
     return (
       <form>
         <h4>Log In</h4>
-
+        {errorMsg}
         <Input
           title={'Username'}
           id={'username'}
@@ -66,7 +67,6 @@ class LoginForm extends Component {
           title={'Enter'}
           action={this.handleFormSubmit}
         />
-
       </form>
     )
   }
