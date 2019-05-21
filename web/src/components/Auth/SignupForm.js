@@ -9,6 +9,7 @@ class SignupForm extends Component {
     this.state = {
       username: '',
       password: '',
+      verifyPassword: '',
     };
 
     this.handleValueChange = this.handleValueChange.bind(this);
@@ -32,14 +33,14 @@ class SignupForm extends Component {
   }
 
   render() {
-    const { username, password } = this.state;
+    const { username, password, verifyPassword, errors } = this.state;
 
     return (
       <form>
         <h4>Sign Up</h4>
 
         <Input
-          name={'Username'}
+          title={'Username'}
           id={'username'}
           name={'username'}
           type={'text'}
@@ -49,13 +50,23 @@ class SignupForm extends Component {
         />
 
         <Input
-          name={'Password'}
+          title={'Password'}
           id={'password'}
           name={'password'}
           type={'password'}
           value={password}
           handleChange={this.handleValueChange}
           placeholder={'Enter password here.'}
+        />
+
+        <Input
+          title={'Verify Password'}
+          id={'password'}
+          name={'verifyPassword'}
+          type={'password'}
+          value={verifyPassword}
+          handleChange={this.handleValueChange}
+          placeholder={'Enter password again.'}
         />
 
         <Button

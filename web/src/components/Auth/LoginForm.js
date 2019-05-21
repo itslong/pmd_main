@@ -30,7 +30,7 @@ class LoginForm extends Component {
   handleFormSubmit(e) {
     e.preventDefault();
     const formData = this.state;
-    this.props.submitForm(formData, 'login');
+    this.props.submitForm(formData);
   }
 
   render() {
@@ -41,7 +41,7 @@ class LoginForm extends Component {
         <h4>Log In</h4>
 
         <Input
-          name={'Username'}
+          title={'Username'}
           id={'username'}
           name={'username'}
           type={'text'}
@@ -51,7 +51,7 @@ class LoginForm extends Component {
         />
 
         <Input
-          name={'Password'}
+          title={'Password'}
           id={'password'}
           name={'password'}
           type={'password'}
