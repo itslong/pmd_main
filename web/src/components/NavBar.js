@@ -1,6 +1,7 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { Route, Link } from 'react-router-dom';
 
+import { IsAdminContext } from './AppContext';
 import {
   HOME_PATH,
   BASE_PATH,
@@ -24,7 +25,8 @@ const ulStyle = {
   justifyContent: 'space-evenly'
 }
 
-const NavBar = ({ handleLogout, userIsAdmin }) => {
+const NavBar = ({ handleLogout }) => {
+  const userIsAdmin = useContext(IsAdminContext);
   const registerLink = userIsAdmin ?
     <li><Link to={SIGNUP_PATH}>Register New User</Link></li>
     : '';
