@@ -14,6 +14,8 @@ import { renameStaticTableFields } from './fieldNameAliases';
 
 
 class DisplayComponent extends Component {
+  _isMounted = false;
+
   constructor(props) {
     super(props);
     this.state = {
@@ -60,6 +62,7 @@ class DisplayComponent extends Component {
   }
 
   componentDidMount() {
+    this._isMounted = true;
     const { initFetch, initDataKeyToParse, initPageSize, initPageNum } = this.props;
 
     let getAllData = Promise.all([
@@ -68,17 +71,18 @@ class DisplayComponent extends Component {
     ]);
 
     getAllData.then(([data, markupData]) => {
-
-      this.setState({
-        items: data[initDataKeyToParse],
-        isLoaded: true,
-        totalItemsCount: data.count,
-        totalPages: data.total_pages,
-        nextPage: data.next,
-        previousPage: data.previous,
-        globalMarkup: markupData
-      });
-    })
+      if (this._isMounted) {
+        this.setState({
+          items: data[initDataKeyToParse],
+          isLoaded: true,
+          totalItemsCount: data.count,
+          totalPages: data.total_pages,
+          nextPage: data.next,
+          previousPage: data.previous,
+          globalMarkup: markupData
+        });        
+      }
+    });
   }
 
   componentDidUpdate(prevProps, prevState) {
@@ -105,6 +109,10 @@ class DisplayComponent extends Component {
         });
       })
     }
+  }
+
+  componentWillUnmount() {
+    this._isMounted = false;
   }
 
   filterOutputData() {

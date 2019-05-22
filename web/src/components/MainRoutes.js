@@ -32,6 +32,8 @@ import {
   JobEdit
 } from './Jobs';
 import { LoginForm, SignupForm } from './Auth';
+import { PrivateRoute } from './helpers';
+import HomeComponent from './HomeComponent';
 // import SearchByRoute from './SearchByRoute';
 import NotFound from './NotFound';
 import {
@@ -63,31 +65,31 @@ const MainRoutes = () => {
   return (
     <main>
       <Switch>
-        <Route path={HOME_PATH} />
+        <PrivateRoute path={HOME_PATH} component={HomeComponent} />
         <Route exact path={LOGIN_PATH} component={LoginForm} />
-        <Route exact path={SIGNUP_PATH} component={SignupForm} />
+        <PrivateRoute exact path={SIGNUP_PATH} component={SignupForm} />
 
-        <Route path={PARTS_DISPLAY_ADMIN_PATH} component={PartsAdminDisplay} />
-        <Route exact path={PARTS_DISPLAY_PATH} component={PartsDisplay} />
-        <Route exact path={PART_DETAIL_PATH} component={PartDetailWithState} />
-        <Route path={PART_EDIT_PATH} component={EditPartsForm} />
+        <PrivateRoute path={PARTS_DISPLAY_ADMIN_PATH} component={PartsAdminDisplay} />
+        <PrivateRoute exact path={PARTS_DISPLAY_PATH} component={PartsDisplay} />
+        <PrivateRoute exact path={PART_DETAIL_PATH} component={PartDetailWithState} />
+        <PrivateRoute path={PART_EDIT_PATH} component={EditPartsForm} />
 
-        <Route exact path={TASKS_DISPLAY_PATH} component={TasksDisplay} />
-        <Route exact path={TASK_DETAIL_PATH} component={TaskDetail} />
-        <Route exact path={TASK_EDIT_PATH} component={TaskEdit} />
+        <PrivateRoute exact path={TASKS_DISPLAY_PATH} component={TasksDisplay} />
+        <PrivateRoute exact path={TASK_DETAIL_PATH} component={TaskDetail} />
+        <PrivateRoute exact path={TASK_EDIT_PATH} component={TaskEdit} />
 
-        <Route exact path={CATEGORIES_DISPLAY_PATH} component={CategoriesDisplay} />
-        <Route exact path={CATEGORY_DETAIL_PATH} component={CategoryDetail} />
-        <Route exact path={CATEGORY_EDIT_PATH} component={CategoryEdit} />
+        <PrivateRoute exact path={CATEGORIES_DISPLAY_PATH} component={CategoriesDisplay} />
+        <PrivateRoute exact path={CATEGORY_DETAIL_PATH} component={CategoryDetail} />
+        <PrivateRoute exact path={CATEGORY_EDIT_PATH} component={CategoryEdit} />
 
-        <Route exact path={JOBS_DISPLAY_PATH} component={JobsDisplay} />
-        <Route exact path={JOB_DETAIL_PATH} component={JobDetail} />
-        <Route exact path={JOB_EDIT_PATH} component={JobEdit} />
+        <PrivateRoute exact path={JOBS_DISPLAY_PATH} component={JobsDisplay} />
+        <PrivateRoute exact path={JOB_DETAIL_PATH} component={JobDetail} />
+        <PrivateRoute exact path={JOB_EDIT_PATH} component={JobEdit} />
         
-        <Route exact path={CREATE_PARTS_PATH} component={CreatePartsForm} />
-        <Route exact path={CREATE_TASKS_PATH} component={CreateTasksForm} />
-        <Route exact path={CREATE_CATEGORIES_PATH} component={CreateCategoriesForm} />
-        <Route exact path={CREATE_JOBS_PATH} component={CreateJobsForm} />
+        <PrivateRoute exact path={CREATE_PARTS_PATH} component={CreatePartsForm} />
+        <PrivateRoute exact path={CREATE_TASKS_PATH} component={CreateTasksForm} />
+        <PrivateRoute exact path={CREATE_CATEGORIES_PATH} component={CreateCategoriesForm} />
+        <PrivateRoute exact path={CREATE_JOBS_PATH} component={CreateJobsForm} />
         <Route component={NotFound} />
       </Switch>
     </main>

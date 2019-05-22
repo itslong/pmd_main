@@ -5,9 +5,8 @@ import MainRoutes from './MainRoutes';
 import NavBar from './NavBar';
 import { LoginForm, SignupForm } from './Auth';
 import { Button } from './common';
-import { LoginUser } from './endpoints';
-import { IsAdminContext } from './AppContext';
-import { BASE_PATH, HOME_PATH } from './frontendBaseRoutes';
+import { IsAdminContext, IsAuthContext } from './AppContext';
+import { HOME_PATH } from './frontendBaseRoutes';
 
 
 class AppState extends Component {
@@ -20,76 +19,29 @@ class AppState extends Component {
     this.state = {
       isAuthenticated: isAuth,
       isAdmin: UserIsAdmin,
-      username: '',
-      isLoading: false,
-      errorMsg: null,
     };
 
-    this.handleSubmit = this.handleSubmit.bind(this);
+    this.updateAuthState = this.updateAuthState.bind(this);
     this.handleLogout = this.handleLogout.bind(this);
     this.toggleAdmin = this.toggleAdmin.bind(this);
-    this.validateFormData = this.validateFormData.bind(this);
   }
 
-  handleSubmit(formData) {
-    // TODO: allow new user registration by admins only.
-    const submit = LoginUser(formData);
-    submit.then(data => {
-      const { non_field_errors } = data;
-
-      if (non_field_errors) {
-        return this.setState({
-          errorMsg: 'Unable to log in with provided credentials.',
-          isLoading: false
-        });
-      }
-
-      localStorage.setItem('token', data.token);
+  updateAuthState(authObj) {
+    const { token, isAdmin } = authObj;
+    if (token) {
+      localStorage.setItem('token', token);
       // for demo only
-      const adminStatus = data.user.is_staff === true ? true : false;
+      const adminStatus = isAdmin ? true : false;
       localStorage.setItem('isAdmin', adminStatus);
 
       this.setState({
         isAuthenticated: true,
-        isLoading: false,
-        username: data.user.username,
-        isAdmin: adminStatus, //after demo, read from user object
-        errorMsg: '',
-      });
-    })
-    .then(() => {
-      this.props.history.push(HOME_PATH);
-    });
-  }
-
-  validateFormData(formData) {
-    if (formData.username !== '' && formData.password !== '') {
-      return this.setState({
-        errorMsg: '',
-        isLoading: true,
+        isAdmin,
       }, () => {
-        this.handleSubmit(formData);
+        this.props.history.push(HOME_PATH);
+        // return (<Redirect to={'/web/home'} />)
       });
     }
-
-    if (formData.username === '' && formData.password === '') {
-      return this.setState({
-        errorMsg: 'Username field and Password field may not be blank.'
-      });
-    }
-
-    if (formData.username === '') {
-      return this.setState({
-        errorMsg: 'Username field may not be blank.'
-      });
-    }
-
-    if (formData.password === '') {
-      return this.setState({
-        errorMsg: 'Password field may not be blank.'
-      });
-    }
-
   }
 
   handleLogout() {
@@ -98,22 +50,23 @@ class AppState extends Component {
     this.setState({
       isAuthenticated: false,
       isAdmin: false,
-      username: '',
     });
   }
 
+  // demo only
   toggleAdmin() {
     this.setState({
       isAdmin: !this.state.isAdmin
     }, () => {
       if (!this.state.isAdmin) {
+        localStorage.clear();
         this.props.history.push(HOME_PATH);
       }
     });
   }
 
   render() {
-    const { isAuthenticated, isAdmin, errorMsg, isLoading } = this.state;
+    const { isAuthenticated, isAdmin } = this.state;
 
     // demo: admin toggle
     const isAd = isAuthenticated ? `Are you admin?: ${isAdmin}.` : '';
@@ -123,19 +76,16 @@ class AppState extends Component {
         title={'Toggle admin status.'}
       /> : '';
 
-    const demoUserAdmin = isAuthenticated ? isAdmin : isAdmin;
-
-    const displayErrorMsg = errorMsg ? errorMsg : '';
-
     const loadRoutes = isAuthenticated ?
       <IsAdminContext.Provider value={isAdmin}>
-        <NavBar 
-          handleLogout={this.handleLogout}
-          userIsAdmin={demoUserAdmin}
-        />
-        <MainRoutes />
+        <IsAuthContext.Provider value={isAuthenticated}>
+          <NavBar 
+            handleLogout={this.handleLogout}
+          />
+          <MainRoutes />
+        </IsAuthContext.Provider>
       </IsAdminContext.Provider>
-      : <LoginForm submitForm={this.validateFormData} errorMsg={displayErrorMsg} />;
+      : <LoginForm updateAuthState={this.updateAuthState} />;
 
     // const loadingModal = isLoading ?
     //   <Modal 

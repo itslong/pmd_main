@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 
 import { Input, Button } from '../common';
+import { BASE_PATH, HOME_PATH } from '../frontendBaseRoutes';
+import { LoginUser } from '../endpoints';
 
 
 class LoginForm extends Component {
@@ -9,10 +11,12 @@ class LoginForm extends Component {
     this.state = {
       username: '',
       password: '',
+      errorMsg: null,
+      isLoading: false,
     };
 
     this.handleValueChange = this.handleValueChange.bind(this);
-    this.handleFormSubmit = this.handleFormSubmit.bind(this);
+    this.validateFormData = this.validateFormData.bind(this);
   }
 
   handleValueChange(e) {
@@ -27,20 +31,83 @@ class LoginForm extends Component {
     });
   }
 
-  handleFormSubmit(e) {
+  handleFormSubmit() {
+    const { username, password } = this.state;
+    const formData = Object.assign({}, {
+      username,
+      password,
+    });
+
+    const submit = LoginUser(formData);
+    const authState = {};
+
+    submit.then(data => {
+      const { non_field_errors } = data;
+
+      if (non_field_errors) {
+        return this.setState({
+          errorMsg: 'Unable to log in with provided credentials.',
+          isLoading: false,
+          password: '',
+        });
+      }
+
+      this.setState({
+        username: '',
+        password: '',
+        errorMsg: '',
+      }, () => {
+        Object.assign(authState,{
+          token: data.token,
+          isAdmin: data.user.is_staff
+        });
+      });
+    })
+    .then(() => {
+      this.props.updateAuthState(authState);
+    })
+  }
+
+  validateFormData(e) {
     e.preventDefault();
-    const formData = this.state;
-    this.props.submitForm(formData);
+    const { username, password } = this.state;
+
+    if (username !== '' && password !== '') {
+      return this.setState({
+        errorMsg: '',
+        isLoading: true,
+      }, () => {
+        this.handleFormSubmit();
+      });
+    }
+
+    if (username === '' && password === '') {
+      return this.setState({
+        errorMsg: 'Username field and Password field may not be blank.'
+      });
+    }
+
+    if (username === '') {
+      return this.setState({
+        errorMsg: 'Username field may not be blank.'
+      });
+    }
+
+    if (password === '') {
+      return this.setState({
+        errorMsg: 'Password field may not be blank.'
+      });
+    }
   }
 
   render() {
-    const { username, password } = this.state;
-    const { errorMsg } = this.props;
+    const { username, password, errorMsg } = this.state;
+    const displayErrorMsg = errorMsg ? errorMsg : '';
 
     return (
       <form>
         <h4>Log In</h4>
-        {errorMsg}
+        {displayErrorMsg}
         <Input
           title={'Username'}
           id={'username'}
@@ -65,7 +132,7 @@ class LoginForm extends Component {
           id={'submit'}
           type={'primary'}
           title={'Enter'}
-          action={this.handleFormSubmit}
+          action={this.validateFormData}
         />
       </form>
     )
