@@ -32,7 +32,7 @@ SECRET_KEY = KEY_VALUE
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['localhost', 'pmd-dev.6u5pxx5d2p.us-west-1.elasticbeanstalk.com']
 
 
 # Application definition
