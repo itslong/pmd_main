@@ -21,12 +21,13 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 # SECURITY WARNING: keep the secret key used in production secret!
 try:
-   from pmd import local_settings as init_settings
+  from pmd import local_settings as init_settings
+  KEY_VALUE = init_settings.SECRET_KEY
 except ImportError:
-    # in prod: import prod_settings as init_settings
-    pass
+  # in prod: use elasticbeanstalk's environement vars
+  KEY_VALUE = os.getenv('DJANGO_SECRET_KEY')
 
-SECRET_KEY = init_settings.SECRET_KEY
+SECRET_KEY = KEY_VALUE
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
