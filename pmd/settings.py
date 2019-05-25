@@ -173,16 +173,26 @@ else:
 
 
 # webpack loader config
-WEBPACK_LOADER = {
-  'DEFAULT': {
-    'CACHE': not DEBUG,
-    'BUNDLE_DIR_NAME': 'web/bundles/',
-    'STATS_FILE': os.path.join(BASE_DIR + '/web/', 'webpack-stats.dev.json'),
-    'POLL_INTERVAL': 0.1,
-    'TIMEOUT': None,
-    'IGNORE': ['.+\.hot-update.js', '.+\.map']
+USE_WEBPACK_PROD = os.getenv('USE_WEBPACK_PROD') == 'TRUE'
+
+if USE_WEBPACK_PROD:
+  WEBPACK_LOADER = {
+    'DEFAULT': {
+      'BUNDLE_DIR_NAME': 'web/prod/bundles/',
+      'STATS_FILE': os.path.join(BASE_DIR + '/web/', 'webpack-stats.prod.json'),
+    }
   }
-}
+else:  
+  WEBPACK_LOADER = {
+    'DEFAULT': {
+      'CACHE': not DEBUG,
+      'BUNDLE_DIR_NAME': 'web/bundles/',
+      'STATS_FILE': os.path.join(BASE_DIR + '/web/', 'webpack-stats.dev.json'),
+      'POLL_INTERVAL': 0.1,
+      'TIMEOUT': None,
+      'IGNORE': ['.+\.hot-update.js', '.+\.map']
+    }
+  }
 
 
 # rest_framework configs
