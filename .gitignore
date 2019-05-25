@@ -16,3 +16,8 @@ local_settings.py
 node_modules
 
 web/webpack-stats.dev.json
+
+# Elastic Beanstalk Files
+.elasticbeanstalk/*
+!.elasticbeanstalk/*.cfg.yml
+!.elasticbeanstalk/*.global.yml
