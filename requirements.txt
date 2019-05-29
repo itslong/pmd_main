@@ -1,8 +1,9 @@
 asn1crypto==0.24.0
+awscli==1.16.167
 awsebcli==3.15.2
 blessed==1.15.0
 boto3==1.9.156
-botocore==1.12.156
+botocore==1.12.157
 cached-property==1.5.1
 cement==2.8.2
 certifi==2019.3.9
@@ -31,6 +32,7 @@ jmespath==0.9.4
 jsonschema==2.6.0
 mysqlclient==1.4.2.post1
 pathspec==0.5.9
+pyasn1==0.4.5
 pycparser==2.19
 Pygments==2.3.1
 PyJWT==1.7.1
@@ -39,6 +41,7 @@ python-dateutil==2.8.0
 pytz==2019.1
 PyYAML==3.13
 requests==2.21.0
+rsa==3.4.2
 s3transfer==0.2.0
 semantic-version==2.5.0
 six==1.12.0

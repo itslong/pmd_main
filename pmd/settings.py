@@ -179,7 +179,7 @@ USE_WEBPACK_PROD = os.getenv('USE_WEBPACK_PROD') == 'TRUE'
 if USE_WEBPACK_PROD:
   WEBPACK_LOADER = {
     'DEFAULT': {
-      'BUNDLE_DIR_NAME': 'web/prod/bundles/',
+      'BUNDLE_DIR_NAME': 'web/dist/bundles/',
       'STATS_FILE': os.path.join(BASE_DIR + '/web/dist/', 'webpack-stats.prod.json'),
     }
   }
