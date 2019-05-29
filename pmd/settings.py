@@ -180,20 +180,34 @@ if USE_WEBPACK_PROD:
   WEBPACK_LOADER = {
     'DEFAULT': {
       'BUNDLE_DIR_NAME': 'web/prod/bundles/',
-      'STATS_FILE': os.path.join(BASE_DIR + '/web/', 'webpack-stats.prod.json'),
+      'STATS_FILE': os.path.join(BASE_DIR + '/web/dist/', 'webpack-stats.prod.json'),
     }
   }
-else:  
-  WEBPACK_LOADER = {
-    'DEFAULT': {
-      'CACHE': not DEBUG,
-      'BUNDLE_DIR_NAME': 'web/bundles/',
-      'STATS_FILE': os.path.join(BASE_DIR + '/web/', 'webpack-stats.dev.json'),
-      'POLL_INTERVAL': 0.1,
-      'TIMEOUT': None,
-      'IGNORE': ['.+\.hot-update.js', '.+\.map']
+else:
+  # toggle this in local_settings
+  WEBPACK_PROD_TEST = init_settings.WEBPACK_PROD_TEST == 'TRUE'
+  if WEBPACK_PROD_TEST:
+    WEBPACK_LOADER = {
+      'DEFAULT': {
+        'CACHE': not DEBUG,
+        'BUNDLE_DIR_NAME': 'web/dist/bundles/',
+        'STATS_FILE': os.path.join(BASE_DIR + '/web/dist/', 'webpack-stats.prod.json'),
+        'POLL_INTERVAL': 0.1,
+        'TIMEOUT': None,
+        'IGNORE': ['.+\.hot-update.js', '.+\.map']
+      }
     }
-  }
+  else:
+    WEBPACK_LOADER = {
+      'DEFAULT': {
+        'CACHE': not DEBUG,
+        'BUNDLE_DIR_NAME': 'web/bundles/',
+        'STATS_FILE': os.path.join(BASE_DIR + '/web/', 'webpack-stats.dev.json'),
+        'POLL_INTERVAL': 0.1,
+        'TIMEOUT': None,
+        'IGNORE': ['.+\.hot-update.js', '.+\.map']
+      }
+    }
 
 
 # rest_framework configs

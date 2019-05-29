@@ -14,12 +14,12 @@ module.exports = {
     new CleanWebpackPlugin(),
     new BundleTracker({
       filename: 'webpack-stats.prod.json',
-      path: path.resolve(__dirname, './static/web/prod/')
+      path: path.resolve('./dist/')
     }),
   ],
   output: {
     filename: '[name]-[hash].prod.bundle.js',
-    path: path.resolve(__dirname, './static/web/prod/bundles/')
+    path: path.resolve('./dist/bundles/')
   },
   module: {
     rules: [

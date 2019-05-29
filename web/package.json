@@ -6,7 +6,8 @@
   "scripts": {
     "dev": "webpack --watch --mode development ./src/index.js --output ./static/web/main.js",
     "dev-wp": "webpack-dev-server --config webpack.config.js --mode development",
-    "build-prod": "webpack --mode production --config webpack.prod.js"
+    "build-prod": "webpack --mode production --config webpack.prod.js",
+    "test-build-prod": "webpack-dev-server --config webpack.prod.test.js --mode development"
   },
   "keywords": [],
   "author": "",
