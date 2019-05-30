@@ -32,7 +32,7 @@ SECRET_KEY = KEY_VALUE
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['localhost', 'pmd-dev.6u5pxx5d2p.us-west-1.elasticbeanstalk.com']
+ALLOWED_HOSTS = ['54.183.39.69', 'localhost', 'pmd-dev.6u5pxx5d2p.us-west-1.elasticbeanstalk.com']
 
 
 # Application definition
@@ -165,13 +165,14 @@ if USE_S3:
   AWS_LOCATION = 'static'
   STATIC_URL = 'https://%s/%s/' % (AWS_S3_CUSTOM_DOMAIN, AWS_LOCATION)
   STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+  STATICFILES_DIRS = (os.path.join(BASE_DIR + '/web/bundles'), )
   STATICFILES_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
   # separate this if media is required to be uploaded later
   DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
 else:
   STATIC_URL = '/static/'
   STATIC_ROOT = os.path.join(BASE_DIR, 'static')
-
+  STATICFILES_DIRS = (os.path.join(BASE_DIR, 'web/bundles'), )
 
 # webpack loader config
 USE_WEBPACK_PROD = os.getenv('USE_WEBPACK_PROD') == 'TRUE'
@@ -179,8 +180,8 @@ USE_WEBPACK_PROD = os.getenv('USE_WEBPACK_PROD') == 'TRUE'
 if USE_WEBPACK_PROD:
   WEBPACK_LOADER = {
     'DEFAULT': {
-      'BUNDLE_DIR_NAME': 'web/dist/bundles/',
-      'STATS_FILE': os.path.join(BASE_DIR + '/web/dist/', 'webpack-stats.prod.json'),
+      'BUNDLE_DIR_NAME': 'dist/',
+      'STATS_FILE': os.path.join(BASE_DIR + '/web/', 'webpack-stats.prod.json'),
     }
   }
 else:
@@ -190,8 +191,8 @@ else:
     WEBPACK_LOADER = {
       'DEFAULT': {
         'CACHE': not DEBUG,
-        'BUNDLE_DIR_NAME': 'web/dist/bundles/',
-        'STATS_FILE': os.path.join(BASE_DIR + '/web/dist/', 'webpack-stats.prod.json'),
+        'BUNDLE_DIR_NAME': '/test-true/dist/',
+        'STATS_FILE': os.path.join(BASE_DIR + '/test-true/dist/', 'webpack-stats.prod.json'),
         'POLL_INTERVAL': 0.1,
         'TIMEOUT': None,
         'IGNORE': ['.+\.hot-update.js', '.+\.map']
@@ -201,8 +202,8 @@ else:
     WEBPACK_LOADER = {
       'DEFAULT': {
         'CACHE': not DEBUG,
-        'BUNDLE_DIR_NAME': 'web/bundles/',
-        'STATS_FILE': os.path.join(BASE_DIR + '/web/', 'webpack-stats.dev.json'),
+        'BUNDLE_DIR_NAME': '/test-false/dist/',
+        'STATS_FILE': os.path.join(BASE_DIR + '/test-false/dist/', 'webpack-stats.dev.json'),
         'POLL_INTERVAL': 0.1,
         'TIMEOUT': None,
         'IGNORE': ['.+\.hot-update.js', '.+\.map']

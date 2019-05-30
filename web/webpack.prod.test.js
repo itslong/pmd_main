@@ -14,12 +14,12 @@ module.exports = {
   ],
   devtool: 'inline-source-map',
   output: {
-    path: path.resolve('./dist/bundles/'),
+    path: path.resolve('./static/dist/'),
     filename: '[name]-[hash].js',
     publicPath: 'http://localhost:3000/static/web/bundles/',
   },
   devServer: {
-    contentBase: './dist/bundles/',
+    contentBase: './static/dist/',
     historyApiFallback: true,
     hot: true,
     port: 3000,
@@ -43,7 +43,7 @@ module.exports = {
     new webpack.HotModuleReplacementPlugin(),
     new BundleTracker({
       filename: 'webpack-stats.prod.json',
-      path: path.resolve('./dist/')
+      path: path.resolve('./static/dist/')
     }),
   ],
   resolve: {
