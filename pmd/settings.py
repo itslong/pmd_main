@@ -187,12 +187,13 @@ if USE_WEBPACK_PROD:
 else:
   # toggle this in local_settings
   WEBPACK_PROD_TEST = init_settings.WEBPACK_PROD_TEST == 'TRUE'
+  # build-prod then test this path
   if WEBPACK_PROD_TEST:
     WEBPACK_LOADER = {
       'DEFAULT': {
         'CACHE': not DEBUG,
-        'BUNDLE_DIR_NAME': '/test-true/dist/',
-        'STATS_FILE': os.path.join(BASE_DIR + '/test-true/dist/', 'webpack-stats.prod.json'),
+        'BUNDLE_DIR_NAME': 'dist/',
+        'STATS_FILE': os.path.join(BASE_DIR + '/web/', 'webpack-stats.prod.json'),
         'POLL_INTERVAL': 0.1,
         'TIMEOUT': None,
         'IGNORE': ['.+\.hot-update.js', '.+\.map']
@@ -202,8 +203,8 @@ else:
     WEBPACK_LOADER = {
       'DEFAULT': {
         'CACHE': not DEBUG,
-        'BUNDLE_DIR_NAME': '/test-false/dist/',
-        'STATS_FILE': os.path.join(BASE_DIR + '/test-false/dist/', 'webpack-stats.dev.json'),
+        'BUNDLE_DIR_NAME': 'dev/bundles/',
+        'STATS_FILE': os.path.join(BASE_DIR + '/web/', 'webpack-stats.dev.json'),
         'POLL_INTERVAL': 0.1,
         'TIMEOUT': None,
         'IGNORE': ['.+\.hot-update.js', '.+\.map']
