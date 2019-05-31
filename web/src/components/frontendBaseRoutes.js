@@ -1,5 +1,5 @@
 
-const PATH = '/web';
+const PATH = '/app';
 const BASE_PATH = PATH;
 
 const HOME_PATH = PATH + '/home';
