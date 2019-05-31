@@ -237,7 +237,7 @@ class DisplayComponent extends Component {
       totalItemsCount, totalPages, previousPage, nextPage, 
       currentPageNum, currentPageSize, displaySearchResults
     } = this.state;
-    const { children, tableRowType, pageSizeLimits, tableNumLinks } = this.props;
+    const { children, tableRowType, pageSizeLimits, tableNumLinks, adminDisplayFields } = this.props;
     const childrenWithProps = Children.map(children, child => 
       cloneElement(child, {
         itemId,
@@ -266,7 +266,8 @@ class DisplayComponent extends Component {
       extraPropsLayout: null
     };
 
-    const renamedItemsForTable = this.filterOutputData();
+    // remove conditional after admin demo
+    const renamedItemsForTable = adminDisplayFields == 'admin' ? items : this.filterOutputData();
 
     const table = isLoaded && !displaySearchResults ? 
       <Table

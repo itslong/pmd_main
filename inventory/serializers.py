@@ -66,6 +66,11 @@ class PartsAdminSerializer(serializers.ModelSerializer):
     model = Parts
     fields = '__all__'
 
+  def to_representation(self, instance):
+    response = super().to_representation(instance)
+    response['tag_types'] = TagTypesChoicesSerializer(instance.tag_types, many=True).data
+    return response
+
 
 class PartsExcludedSerializer(serializers.ModelSerializer):
   class Meta:

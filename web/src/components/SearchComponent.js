@@ -261,6 +261,7 @@ class SearchComponent extends Component {
         extraColHeaders={tableExtraColHeaders}
         extraRowProps={tableExtraRowProps}
         extraPropsLayout={tableExtraPropsLayout}
+        numberOfLinks={1}
       /> : '';
 
 
