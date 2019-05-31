@@ -5,7 +5,8 @@ import GetCookie from './GetCookie';
 
 // Get All Parts
 const FetchAllParts = (pageNum=1, pageSize=10) => {
-  const endpoint = 'http://localhost:8000/api/parts/';
+  const path = process.env.BASE_PATH || process.env.LOCAL_PATH;
+  const endpoint = path + 'api/parts/';
 
   const currentPageNum = 'page=' + pageNum;
   const currentPageSize = 'page_size=' + pageSize;
@@ -34,7 +35,8 @@ const FetchAllParts = (pageNum=1, pageSize=10) => {
 
 
 const FetchAllPartsAdmin = (pageNum=1, pageSize=10) => {
-  const endpoint = 'http://localhost:8000/api/parts/admin/';
+  const path = process.env.BASE_PATH || process.env.LOCAL_PATH;
+  const endpoint = path + 'api/parts/admin/';
 
   const currentPageNum = 'page=' + pageNum;
   const currentPageSize = 'page_size=' + pageSize;
@@ -63,7 +65,8 @@ const FetchAllPartsAdmin = (pageNum=1, pageSize=10) => {
 
 // Get a single Part
 const FetchPart = (partId) => {
-  const endpoint = 'http://localhost:8000/api/part/' + partId + '/';
+  const path = process.env.BASE_PATH || process.env.LOCAL_PATH;
+  const endpoint = path + 'api/part/' + partId + '/';
 
   const token = localStorage.getItem('token');
   const headers = {
@@ -83,7 +86,8 @@ const FetchPart = (partId) => {
 
 // PostParts
 const CreatePart = (formData) => {
-  const endpoint = 'http://localhost:8000/api/part/create/';
+  const path = process.env.BASE_PATH || process.env.LOCAL_PATH;
+  const endpoint = path + 'api/part/create/';
   const csrfToken = GetCookie('csrftoken');
 
   const token = localStorage.getItem('token');
@@ -127,7 +131,8 @@ const CreatePart = (formData) => {
 
 // UpdateParts
 const UpdatePart = (partId, formData) => {
-  const url = 'http://localhost:8000/api/part/';
+  const path = process.env.BASE_PATH || process.env.LOCAL_PATH;
+  const url = path + 'api/part/';
   const action = '/edit-or-delete/';
   const endpoint = url + partId + action
   const csrfToken = GetCookie('csrftoken');
@@ -156,7 +161,8 @@ const UpdatePart = (partId, formData) => {
 }
 
 const UpdatePartTagTypes = (partId, formData) => {
-  const url = 'http://localhost:8000/api/part/';
+  const path = process.env.BASE_PATH || process.env.LOCAL_PATH;
+  const url = path + 'api/part/';
   const action = '/edit-or-delete/';
   const endpoint = url + partId + action
   const csrfToken = GetCookie('csrftoken');
@@ -188,7 +194,8 @@ const UpdatePartTagTypes = (partId, formData) => {
 // DeleteParts by setting is_active: false
 // same as UpdatePart but keeping the naming convention separate
 const DeletePart = (partId, formData) => {
-  const url = 'http://localhost:8000/api/part/';
+  const path = process.env.BASE_PATH || process.env.LOCAL_PATH;
+  const url = path + 'api/part/';
   const action = '/edit-or-delete/';
   const endpoint = url + partId + action
   const csrfToken = GetCookie('csrftoken');
@@ -218,7 +225,8 @@ const DeletePart = (partId, formData) => {
 
 
 const AdminDeletePart = (partId) => {
-  const url = 'http://localhost:8000/api/part/';
+  const path = process.env.BASE_PATH || process.env.LOCAL_PATH;
+  const url = path + 'api/part/';
   const action = '/edit-or-delete/';
   const endpoint = url + partId + action;
 
@@ -236,7 +244,8 @@ const AdminDeletePart = (partId) => {
 
 
 const SearchForParts = (searchString) => {
-  const url = 'http://localhost:8000/api/parts-searchable';
+  const path = process.env.BASE_PATH || process.env.LOCAL_PATH;
+  const url = path + 'api/parts-searchable';
   const query = '/?search=';
   const endpoint = url + query + searchString;
 
@@ -264,7 +273,8 @@ const SearchForParts = (searchString) => {
 
 // searchType: 'parts', 'tasks', etc
 const SearchForItems = (searchString, searchType, pageNum=1, pageSize=10) => {
-  const url = 'http://localhost:8000/api/';
+  const path = process.env.BASE_PATH || process.env.LOCAL_PATH;
+  const url = path + 'api/';
   const type = searchType + '-searchable/';
   const endpoint = url + type
 
@@ -298,7 +308,8 @@ const SearchForItems = (searchString, searchType, pageNum=1, pageSize=10) => {
 
 
 const FetchAllTasks = (pageNum=1, pageSize=10) => {
-  const endpoint = 'http://localhost:8000/api/tasks/';
+  const path = process.env.BASE_PATH || process.env.LOCAL_PATH;
+  const endpoint = path + 'api/tasks/';
   
   const currentPageNum = 'page=' + pageNum;
   const currentPageSize = 'page_size=' + pageSize;
@@ -327,7 +338,8 @@ const FetchAllTasks = (pageNum=1, pageSize=10) => {
 
 
 const FetchTask = (taskId) => {
-  const endpoint = 'http://localhost:8000/api/task/' + taskId + '/';
+  const path = process.env.BASE_PATH || process.env.LOCAL_PATH;
+  const endpoint = path + 'api/task/' + taskId + '/';
 
   const token = localStorage.getItem('token');
   const headers = {
@@ -345,7 +357,8 @@ const FetchTask = (taskId) => {
 }
 
 const CreateTask = (formData) => {
-  const endpoint = 'http://localhost:8000/api/task/create/';
+  const path = process.env.BASE_PATH || process.env.LOCAL_PATH;
+  const endpoint = path + 'api/task/create/';
   const csrfToken = GetCookie('csrftoken');
 
   const token = localStorage.getItem('token');
@@ -390,7 +403,8 @@ const CreateTask = (formData) => {
 
 
 const UpdateTaskOnly = (taskId, formData) => {
-  const url = 'http://localhost:8000/api/task/';
+  const path = process.env.BASE_PATH || process.env.LOCAL_PATH;
+  const url = path + 'api/task/';
   const action = '/edit-only';
   const endpoint = url + taskId + action;
   const csrfToken = GetCookie('csrftoken');
@@ -445,7 +459,8 @@ const UpdateTaskRelatedPartsSubmit = (taskId, partsArr) => {
 }
 
 const CreateTaskParts = (taskPartsObj) => {
-  const endpoint = 'http://localhost:8000/api/tasks-parts/';
+  const path = process.env.BASE_PATH || process.env.LOCAL_PATH;
+  const endpoint = path + 'api/tasks-parts/';
   const csrfToken = GetCookie('csrftoken');
 
   const token = localStorage.getItem('token');
@@ -472,7 +487,8 @@ const CreateTaskParts = (taskPartsObj) => {
 };
 
 const FetchAllTasksRelatedToParts = (partId) => {
-  const endpoint = 'http://localhost:8000/api/tasks-parts/part-filter/';
+  const path = process.env.BASE_PATH || process.env.LOCAL_PATH;
+  const endpoint = path + 'api/tasks-parts/part-filter/';
   const filterQuery = '?part=';
   const endpointWithFilterQuery = endpoint + filterQuery + partId;
 
@@ -494,7 +510,8 @@ const FetchAllTasksRelatedToParts = (partId) => {
 };
 
 const RemoveRelatedTaskParts = (taskId) => {
-  const url = 'http://localhost:8000/api/tasks-parts/filter-then-delete/?task=';
+  const path = process.env.BASE_PATH || process.env.LOCAL_PATH;
+  const url = path + 'api/tasks-parts/filter-then-delete/?task=';
   const endpoint = url + taskId;
   const csrfToken = GetCookie('csrftoken');
 
@@ -522,7 +539,8 @@ const RemoveRelatedTaskParts = (taskId) => {
 
 
 const FetchAllCategories = (pageNum=1, pageSize=10) => {
-  const endpoint = 'http://localhost:8000/api/categories/';
+  const path = process.env.BASE_PATH || process.env.LOCAL_PATH;
+  const endpoint = path + 'api/categories/';
   
   const currentPageNum = 'page=' + pageNum;
   const currentPageSize = 'page_size=' + pageSize;
@@ -551,7 +569,8 @@ const FetchAllCategories = (pageNum=1, pageSize=10) => {
 
 
 const FetchCategory = (categoryId) => {
-  const endpoint = 'http://localhost:8000/api/category/' + categoryId + '/';
+  const path = process.env.BASE_PATH || process.env.LOCAL_PATH;
+  const endpoint = path + 'api/category/' + categoryId + '/';
 
   const token = localStorage.getItem('token');
   const headers = {
@@ -569,7 +588,8 @@ const FetchCategory = (categoryId) => {
 }
 
 const CreateCategory = (formData) => {
-  const endpoint = 'http://localhost:8000/api/category/create/';
+  const path = process.env.BASE_PATH || process.env.LOCAL_PATH;
+  const endpoint = path + 'api/category/create/';
   const csrfToken = GetCookie('csrftoken');
 
   const token = localStorage.getItem('token');
@@ -605,7 +625,8 @@ const CreateCategory = (formData) => {
 };
 
 const UpdateCategoryAndRelatedTasks = (categoryId, formData) => {
-  const url = 'http://localhost:8000/api/category/';
+  const path = process.env.BASE_PATH || process.env.LOCAL_PATH;
+  const url = path + 'api/category/';
   const action = '/edit-only';
   const endpoint = url + categoryId + action;
   const csrfToken = GetCookie('csrftoken');
@@ -640,7 +661,8 @@ const UpdateCategoryAndRelatedTasks = (categoryId, formData) => {
 
 
 const FetchAllJobs = (pageNum=1, pageSize=10) => {
-  const endpoint = 'http://localhost:8000/api/jobs/';
+  const path = process.env.BASE_PATH || process.env.LOCAL_PATH;
+  const endpoint = path + 'api/jobs/';
 
   const currentPageNum = 'page=' + pageNum;
   const currentPageSize = 'page_size=' + pageSize;
@@ -669,7 +691,8 @@ const FetchAllJobs = (pageNum=1, pageSize=10) => {
 
 
 const FetchJob = (jobId) => {
-  const endpoint = 'http://localhost:8000/api/job/' + jobId + '/';
+  const path = process.env.BASE_PATH || process.env.LOCAL_PATH;
+  const endpoint = path + 'api/job/' + jobId + '/';
 
   const token = localStorage.getItem('token');
   const headers = {
@@ -692,7 +715,8 @@ const FetchJob = (jobId) => {
 }
 
 const CreateJob = (formData) => {
-  const endpoint = 'http://localhost:8000/api/job/create/';
+  const path = process.env.BASE_PATH || process.env.LOCAL_PATH;
+  const endpoint = path + 'api/job/create/';
   const csrfToken = GetCookie('csrftoken');
 
   const token = localStorage.getItem('token');
@@ -729,7 +753,8 @@ const CreateJob = (formData) => {
 
 
 const UpdateJobAndRelatedCategories = (jobId, formData) => {
-  const url = 'http://localhost:8000/api/job/';
+  const path = process.env.BASE_PATH || process.env.LOCAL_PATH;
+  const url = path + 'api/job/';
   const action = '/edit-only';
   const endpoint = url + jobId + action;
   const csrfToken = GetCookie('csrftoken');
@@ -764,7 +789,8 @@ const UpdateJobAndRelatedCategories = (jobId, formData) => {
 
 
 const GetPartsMarkupPercents = () => {
-  const endpoint = 'http://localhost:8000/api/parts-markup/list/';
+  const path = process.env.BASE_PATH || process.env.LOCAL_PATH;
+  const endpoint = path + 'api/parts-markup/list/';
 
   const token = localStorage.getItem('token');
   const headers = {
@@ -785,7 +811,8 @@ const GetPartsMarkupPercents = () => {
 }
 
 const FetchTagTypesChoices = () => {
-  const endpoint = 'http://localhost:8000/api/tags/';
+  const path = process.env.BASE_PATH || process.env.LOCAL_PATH;
+  const endpoint = path + 'api/tags/';
 
   const token = localStorage.getItem('token');
   const headers = {
@@ -806,7 +833,8 @@ const FetchTagTypesChoices = () => {
 }
 
 const FetchGlobalMarkup = () => {
-  const endpoint = 'http://localhost:8000/api/global-markup/';
+  const path = process.env.BASE_PATH || process.env.LOCAL_PATH;
+  const endpoint = path + 'api/global-markup/';
 
   const token = localStorage.getItem('token');
   const headers = {

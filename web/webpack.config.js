@@ -2,6 +2,7 @@
 var path = require('path');
 var webpack = require('webpack');
 var BundleTracker = require('webpack-bundle-tracker');
+var Dotenv = require('dotenv-webpack');
 
 
 module.exports = {
@@ -14,12 +15,12 @@ module.exports = {
   ],
   devtool: 'inline-source-map',
   output: {
-    path: path.resolve('./static/web/bundles/'),
+    path: path.resolve('./static/dev/bundles/'),
     filename: '[name]-[hash].js',
-    publicPath: 'http://localhost:3000/static/web/bundles/',
+    publicPath: 'http://localhost:3000/static/dev/bundles/',
   },
   devServer: {
-    contentBase: './static/web/bundles',
+    contentBase: './static/dev/bundles',
     historyApiFallback: true,
     hot: true,
     port: 3000,
@@ -42,6 +43,7 @@ module.exports = {
   plugins: [
     new webpack.HotModuleReplacementPlugin(),
     new BundleTracker({filename: 'webpack-stats.dev.json'}),
+    new Dotenv({path: '.env.dev'})
   ],
   resolve: {
     extensions: ['*', '.js', '.jsx']

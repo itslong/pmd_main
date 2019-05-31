@@ -1,6 +1,7 @@
 
 const LoginUser = (formData) => {
-  const endpoint = 'http://localhost:8000/user/login/';
+  const path = process.env.BASE_PATH || process.env.LOCAL_PATH;
+  const endpoint = path + 'user/login/';
 
   return fetch(endpoint, {
     method: 'POST',
