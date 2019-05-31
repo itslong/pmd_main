@@ -59,7 +59,7 @@ class AppState extends Component {
       isAdmin: !this.state.isAdmin
     }, () => {
       if (!this.state.isAdmin) {
-        localStorage.clear();
+        localStorage.setItem('admin', false);
         this.props.history.push(HOME_PATH);
       }
     });
@@ -69,7 +69,7 @@ class AppState extends Component {
     const { isAuthenticated, isAdmin } = this.state;
 
     // demo: admin toggle
-    const isAd = isAuthenticated ? `Are you admin?: ${isAdmin}.` : '';
+    const isAd = isAuthenticated ? `Your admin status is: ${isAdmin}.` : '';
     const toggleAdmin = isAuthenticated ?
       <Button
         action={this.toggleAdmin}

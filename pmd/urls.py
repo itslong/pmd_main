@@ -20,9 +20,9 @@ urlpatterns = [
     path('admin/', admin.site.urls),
 ]
 
-urlpatterns += [
-  path('auth/', include('knox.urls')),
-]
+# urlpatterns += [
+#   path('auth/', include('knox.urls')),
+# ]
 
 urlpatterns += [
   path('user/', include('pmd_auth.urls'))
@@ -33,5 +33,5 @@ urlpatterns += [
 ]
 
 urlpatterns += [
-  path('web/', include('web.urls')),
+  path('app/', include('web.urls')),
 ]
