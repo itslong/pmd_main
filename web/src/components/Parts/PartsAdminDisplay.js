@@ -2,7 +2,8 @@ import React from 'react';
 
 import DisplayComponent from '../DisplayComponent';
 import EditPartsForm from './EditPartsForm';
-import { FetchAllPartsAdmin } from '../endpoints';
+import { FetchAllPartsAdmin, SearchForItems } from '../endpoints';
+import { partsMainDisplayFields } from '../fieldNameAliases';
 
 
 const PartsAdminDisplay = () => {
@@ -13,10 +14,13 @@ const PartsAdminDisplay = () => {
       editType={'modal'}
       displayType={'parts'}
       tableRowType={'buttons'}
-      extraPropLayout={'stacked'}
-      pageSizeLimits={[10,25,50]}
+      extraPropsLayout={'stacked'}
+      pageSizeLimits={[10, 25, 50]}
       initPageSize={10}
       initPageNum={1}
+      searchEndpoint={SearchForItems}
+      tableNumLinks={2}
+      adminDisplayFields={'admin'}
     >
       <EditPartsForm />
     </DisplayComponent>
