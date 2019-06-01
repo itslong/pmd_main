@@ -217,7 +217,9 @@ REST_FRAMEWORK = {
   'DEFAULT_AUTHENTICATION_CLASSES': ('knox.auth.TokenAuthentication', ),
 }
 
-CORS_ORIGIN_WHITELIST = (
+CORS_ORIGIN_WHITELIST = [
   'http://localhost:8000',
-)
+  'http://pmd-dev.6u5pxx5d2p.us-west-1.elasticbeanstalk.com',
+  'https://pmd-web-static.s3.amazonaws.com',
+]
 
