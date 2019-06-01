@@ -1,5 +1,5 @@
 import React, { useContext } from 'react';
-import { Route, Link } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 
 import { IsAdminContext } from './AppContext';
 import {
@@ -23,7 +23,7 @@ const ulStyle = {
   width: '100%',
   // borderStyle: 'solid',
   justifyContent: 'space-evenly'
-}
+};
 
 const NavBar = ({ handleLogout }) => {
   const userIsAdmin = useContext(IsAdminContext);
