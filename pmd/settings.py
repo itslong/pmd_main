@@ -165,7 +165,10 @@ if USE_S3:
   AWS_LOCATION = 'static'
   STATIC_URL = 'https://%s/%s/' % (AWS_S3_CUSTOM_DOMAIN, AWS_LOCATION)
   STATIC_ROOT = os.path.join(BASE_DIR, 'static')
-  STATICFILES_DIRS = (os.path.join(BASE_DIR + '/web/bundles'), )
+  STATICFILES_DIRS = [
+    os.path.join(BASE_DIR + '/web/bundles'),
+    os.path.join(BASE_DIR + '/templates'),
+  ]
   STATICFILES_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
   # separate this if media is required to be uploaded later
   DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
