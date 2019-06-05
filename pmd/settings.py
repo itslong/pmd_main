@@ -32,7 +32,7 @@ SECRET_KEY = KEY_VALUE
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['localhost', 'pmd-v1-dev.us-west-1.elasticbeanstalk.com']
+ALLOWED_HOSTS = ['localhost']
 
 
 # Application definition
@@ -222,6 +222,5 @@ REST_FRAMEWORK = {
 
 CORS_ORIGIN_WHITELIST = [
   'http://localhost:8000',
-  'http://pmd-v1-dev.us-west-1.elasticbeanstalk.com',
 ]
 
