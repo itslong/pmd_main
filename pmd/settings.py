@@ -48,7 +48,6 @@ INSTALLED_APPS = [
     'knox',
     'corsheaders',
     'webpack_loader',
-    'storages',
     'inventory',
     'web',
     'pmd_auth',
@@ -90,28 +89,28 @@ WSGI_APPLICATION = 'pmd.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/2.2/ref/settings/#databases
-if 'RDS_HOSTNAME' in os.environ:
-  DATABASES = {
-    'default': {
-      'ENGINE': 'django.db.backends.mysql',
-      'NAME': os.environ['RDS_DB_NAME'],
-      'USER': os.environ['RDS_USERNAME'],
-      'PASSWORD': os.environ['RDS_PASSWORD'],
-      'HOST': os.environ['RDS_HOSTNAME'],
-      'PORT': os.environ['RDS_PORT'],
-    }
+# if 'RDS_HOSTNAME' in os.environ:
+#   DATABASES = {
+#     'default': {
+#       'ENGINE': 'django.db.backends.mysql',
+#       'NAME': os.environ['RDS_DB_NAME'],
+#       'USER': os.environ['RDS_USERNAME'],
+#       'PASSWORD': os.environ['RDS_PASSWORD'],
+#       'HOST': os.environ['RDS_HOSTNAME'],
+#       'PORT': os.environ['RDS_PORT'],
+#     }
+#   }
+# else:
+DATABASES = {
+  'default': {
+    'ENGINE': init_settings.LOCAL_DB['ENGINE'],
+    'NAME': init_settings.LOCAL_DB['NAME'],
+    'USER': init_settings.LOCAL_DB['USER'],
+    'PASSWORD': init_settings.LOCAL_DB['PASSWORD'],
+    'HOST': init_settings.LOCAL_DB['HOST'],
+    'PORT': init_settings.LOCAL_DB['PORT'],
   }
-else:
-  DATABASES = {
-    'default': {
-      'ENGINE': init_settings.LOCAL_DB['ENGINE'],
-      'NAME': init_settings.LOCAL_DB['NAME'],
-      'USER': init_settings.LOCAL_DB['USER'],
-      'PASSWORD': init_settings.LOCAL_DB['PASSWORD'],
-      'HOST': init_settings.LOCAL_DB['HOST'],
-      'PORT': init_settings.LOCAL_DB['PORT'],
-    }
-  }
+}
 
 
 # Password validation
