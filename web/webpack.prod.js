@@ -8,12 +8,12 @@ module.exports = {
   mode: 'production',
   devtool: 'source-map',
   entry: {
-    main: './src/index.js'
+    main: path.resolve('./web/src/index.js')
   },
   plugins: [
     new CleanWebpackPlugin(),
     new BundleTracker({
-      filename: 'webpack-stats.prod.json',
+      filename: path.resolve('./web/webpack-stats.prod.json'),
       // path: path.resolve('./static/dist/')
     }),
   ],
