@@ -1,7 +1,8 @@
 
 const LoginUser = (formData) => {
-  const path = process.env.BASE_PATH || process.env.LOCAL_PATH;
+  const path = process.env.API_LOGIN_PATH || process.env.LOCAL_PATH;
   const endpoint = path + 'user/login/';
+  console.log('login path: ', endpoint)
 
   return fetch(endpoint, {
     method: 'POST',
