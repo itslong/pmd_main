@@ -38,7 +38,7 @@ const HomeComponent = () => {
   return (
     <div>
       <ul style={ulStyle}>
-        <li style={ulRow}>
+        <ul style={ulRow}>
           <li><Link to={PARTS_DISPLAY_PATH}>Parts</Link></li>
           <li>
             <Link 
@@ -50,7 +50,7 @@ const HomeComponent = () => {
               Admin Parts: Demo only
             </Link>
           </li>
-        </li>
+        </ul>
         <li><Link to={TASKS_DISPLAY_PATH}>Tasks</Link></li>
         <li><Link to={CATEGORIES_DISPLAY_PATH}>Categories</Link></li>
         <li><Link to={JOBS_DISPLAY_PATH}>Jobs</Link></li>

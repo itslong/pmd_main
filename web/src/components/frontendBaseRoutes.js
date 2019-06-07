@@ -1,3 +1,6 @@
+// prod settings
+const PROD_BASE_PATH = 'https://pmd-dev.herokuapp.com/';
+const PROD_API_PATH = PROD_BASE_PATH + 'api/';
 
 const PATH = '/app';
 const BASE_PATH = PATH;
@@ -73,5 +76,7 @@ export {
   LOGIN_PATH,
   SIGNUP_PATH,
   itemPathWithId,
-  editPathWithId
+  editPathWithId,
+  PROD_BASE_PATH,
+  PROD_API_PATH,
 };

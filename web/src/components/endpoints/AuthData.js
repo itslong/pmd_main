@@ -1,7 +1,10 @@
+import { PROD_BASE_PATH } from '../frontendBaseRoutes';
+
 
 const LoginUser = (formData) => {
-  const path = process.env.BASE_PATH || process.env.LOCAL_PATH;
-  const endpoint = path + 'user/login/';
+  // const path =  process.env.NODE_ENV === 'production' ? 'pmd-dev.herokuapp.com/' : process.env.LOCAL_PATH;
+  const path =  process.env.NODE_ENV === 'development' ? process.env.LOCAL_PATH : PROD_BASE_PATH;
+  const endpoint = new URL(path + 'user/login/');
 
   return fetch(endpoint, {
     method: 'POST',
