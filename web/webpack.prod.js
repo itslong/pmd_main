@@ -8,18 +8,18 @@ module.exports = {
   mode: 'production',
   devtool: 'source-map',
   entry: {
-    main: './src/index.js'
+    main: './web/src/index.js'
   },
   plugins: [
     new CleanWebpackPlugin(),
     new BundleTracker({
-      filename: 'webpack-stats.prod.json',
+      filename: 'web/webpack-stats.prod.json',
       // path: path.resolve('./static/dist/')
     }),
   ],
   output: {
     filename: '[name]-[hash].prod.bundle.js',
-    path: path.resolve('./bundles/dist/')
+    path: path.resolve('./web/bundles/dist/')
   },
   module: {
     rules: [
@@ -27,7 +27,16 @@ module.exports = {
         test: /\.(js|jsx)$/,
         exclude: /node_modules/,
         use: {
-          loader: "babel-loader"
+          loader: "babel-loader",
+          options: {
+            presets: [
+              '@babel/preset-env', 
+              '@babel/preset-react', 
+              {
+                'plugins': ['transform-class-properties']
+              },
+            ]
+          }
         }
       }
     ]
