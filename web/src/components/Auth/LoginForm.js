@@ -59,7 +59,7 @@ class LoginForm extends Component {
       }, () => {
         Object.assign(authState,{
           token: data.token,
-          isAdmin: data.user.is_staff
+          username,
         });
       });
     })
