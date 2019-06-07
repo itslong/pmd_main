@@ -43,7 +43,7 @@ module.exports = {
   plugins: [
     new webpack.HotModuleReplacementPlugin(),
     new BundleTracker({filename: 'webpack-stats.dev.json'}),
-    new Dotenv({path: '.env'})
+    new Dotenv({path: '.env.dev'})
   ],
   resolve: {
     extensions: ['*', '.js', '.jsx']

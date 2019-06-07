@@ -16,7 +16,7 @@ module.exports = {
       filename: 'web/webpack-stats.prod.json',
       // path: path.resolve('./static/dist/')
     }),
-    new Dotenv({path: 'web/.env'})
+    // new Dotenv({path: 'web/.env'})
   ],
   output: {
     filename: '[name]-[hash].prod.bundle.js',
