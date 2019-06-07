@@ -9,7 +9,7 @@ static
 env/
 *.log
 build/
-.env.dev
+
 
 local_settings.py
 
