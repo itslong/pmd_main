@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 
 import { Input, Button } from '../common';
-
+import DialogModal from '../DialogModal';
 
 class SignupForm extends Component {
   constructor(props) {
@@ -10,10 +10,12 @@ class SignupForm extends Component {
       username: '',
       password: '',
       verifyPassword: '',
+      displayModal: false,
     };
 
     this.handleValueChange = this.handleValueChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
+    this.handleCloseModal = this.handleCloseModal.bind(this);
   }
 
   handleValueChange(e) {
@@ -30,10 +32,32 @@ class SignupForm extends Component {
 
   handleSubmit(e) {
     e.preventDefault();
+    this.setState({
+      password: '',
+      verifyPassword: '',
+      displayModal: true,
+    });
+  }
+
+  handleCloseModal(e) {
+    e.preventDefault();
+    this.setState({
+      username: '',
+      password: '',
+      verifyPassword: '',
+      displayModal: false,
+    });
   }
 
   render() {
-    const { username, password, verifyPassword, errors } = this.state;
+    const { username, password, verifyPassword, errors, displayModal } = this.state;
+
+    const modalText = 'Success or Failed!.. is what this will say if this feature was implemented.';
+    const modal = displayModal ?
+      <DialogModal
+        dialogText={modalText}
+        handleCloseDialog={this.handleCloseModal}
+      /> : '';
 
     return (
       <form>
@@ -75,6 +99,7 @@ class SignupForm extends Component {
           title={'Enter'}
           action={this.handleSubmit}
         />
+        {modal}
 
       </form>
     )
