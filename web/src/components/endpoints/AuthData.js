@@ -1,13 +1,12 @@
+import { PROD_BASE_PATH } from '../frontendBaseRoutes';
+
 
 const LoginUser = (formData) => {
   // const path =  process.env.NODE_ENV === 'production' ? 'pmd-dev.herokuapp.com/' : process.env.LOCAL_PATH;
-  const path =  process.env.NODE_ENV === 'production' ? process.env.API_LOGIN_PATH : process.env.LOCAL_PATH;
-  const endpoint = path + 'user/login/';
-  const newEndpoint = new URL('https://pmd-dev.herokuapp.com/' + 'user/login/');
-  console.log('the login path: ', endpoint)
-  console.log('the new path: ', newEndpoint)
+  const path =  process.env.NODE_ENV === 'development' ? process.env.LOCAL_PATH : PROD_BASE_PATH;
+  const endpoint = new URL(path + 'user/login/');
 
-  return fetch(newEndpoint, {
+  return fetch(endpoint, {
     method: 'POST',
     mode: 'same-origin',
     body: JSON.stringify(formData),
@@ -43,7 +42,7 @@ const LoginUser = (formData) => {
   .catch(error => {
     return Promise.reject({
       status: error,
-      errorMsg: 'Login from this endpoint: ' + newEndpoint
+      errorMsg: 'Login from this endpoint: ' + endpoint
     });
   })
 }
