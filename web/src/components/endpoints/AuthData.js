@@ -1,6 +1,7 @@
 
 const LoginUser = (formData) => {
-  const path =  process.env.NODE_ENV === 'production' ? 'pmd-dev.herokuapp.com/' : process.env.LOCAL_PATH;
+  // const path =  process.env.NODE_ENV === 'production' ? 'pmd-dev.herokuapp.com/' : process.env.LOCAL_PATH;
+  const path =  process.env.NODE_ENV === 'production' ? process.env.API_LOGIN_PATH : process.env.LOCAL_PATH;
   const endpoint = path + 'user/login/';
   console.log('login path: ', endpoint)
 
