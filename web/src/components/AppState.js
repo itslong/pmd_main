@@ -5,7 +5,7 @@ import MainRoutes from './MainRoutes';
 import NavBar from './NavBar';
 import { LoginForm } from './Auth';
 import { Button } from './common';
-import { IsAuthContext } from './AppContext';
+import { IsAuthContext, UserContext } from './AppContext';
 import { HOME_PATH } from './frontendBaseRoutes';
 
 
@@ -14,9 +14,11 @@ class AppState extends Component {
     super(props);
 
     const isAuth = localStorage.getItem('token') ? true : false;
+    const getUsername = localStorage.getItem('user') ? localStorage.getItem('user') : undefined;
 
     this.state = {
       isAuthenticated: isAuth,
+      username: getUsername
     };
 
     this.updateAuthState = this.updateAuthState.bind(this);
@@ -24,12 +26,17 @@ class AppState extends Component {
   }
 
   updateAuthState(authObj) {
-    const { token, isAdmin } = authObj;
+    const { token, username } = authObj;
     if (token) {
       localStorage.setItem('token', token);
+      
+      if (username) {
+        localStorage.setItem('user', username)
+      }
 
       this.setState({
         isAuthenticated: true,
+        username,
       }, () => {
         this.props.history.push(HOME_PATH);
         // return (<Redirect to={'/web/home'} />)
@@ -38,23 +45,26 @@ class AppState extends Component {
   }
 
   handleLogout() {
-    localStorage.removeItem('token');
+    // localStorage.removeItem('token');
+    localStorage.clear();
     this.setState({
       isAuthenticated: false,
+      username: '',
     });
   }
 
 
   render() {
-    const { isAuthenticated } = this.state;
-
+    const { isAuthenticated, username } = this.state;
 
     const loadRoutes = isAuthenticated ?
         <IsAuthContext.Provider value={isAuthenticated}>
-          <NavBar 
-            handleLogout={this.handleLogout}
-          />
-          <MainRoutes />
+          <UserContext.Provider value={username}>
+            <NavBar
+              handleLogout={this.handleLogout}
+            />
+            <MainRoutes />
+          </UserContext.Provider>
         </IsAuthContext.Provider>
       : <LoginForm updateAuthState={this.updateAuthState} />;
 

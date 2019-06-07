@@ -1,6 +1,7 @@
 import React, { useContext } from 'react';
 import { Link } from 'react-router-dom';
 
+import { UserContext } from './AppContext';
 import {
   HOME_PATH,
   BASE_PATH,
@@ -25,6 +26,7 @@ const ulStyle = {
 };
 
 const NavBar = ({ handleLogout }) => {
+  const username = useContext(UserContext);
 
   return (
     <div>
@@ -44,7 +46,10 @@ const NavBar = ({ handleLogout }) => {
         <li><Link to={TASKS_DISPLAY_PATH}>Tasks</Link></li>
         <li><Link to={CATEGORIES_DISPLAY_PATH}>Categories</Link></li>
         <li><Link to={JOBS_DISPLAY_PATH}>Jobs</Link></li>
-        <li><Link to={BASE_PATH} onClick={handleLogout}>Logout</Link></li>
+        <li style={{ display: 'flex', flexDirection: 'row' }}>
+          <Link to={BASE_PATH} onClick={handleLogout}>Logout</Link>
+          <p style={{ 'paddingLeft': '10px' }}>Signed in as: {username}</p>
+        </li>
       </ul>
       <ul style={ulStyle}>
         <li><Link to={CREATE_PARTS_PATH}>Add Part</Link></li>
