@@ -1,7 +1,6 @@
 import React, { Component, cloneElement, Children, useContext } from 'react';
 import { withRouter } from 'react-router-dom';
 
-import { IsAdminContext } from './AppContext';
 import { Input, Button, Table, TableRowWithButtons, TableRowWithCheckbox } from './common';
 import Modal from './Modal';
 import DialogModal from './DialogModal';
@@ -340,4 +339,3 @@ class DisplayComponent extends Component {
 }
 
 export default withRouter(DisplayComponent);
-DisplayComponent.contextType = IsAdminContext;
