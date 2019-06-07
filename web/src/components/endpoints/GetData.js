@@ -5,7 +5,7 @@ import GetCookie from './GetCookie';
 
 // Get All Parts
 const FetchAllParts = (pageNum=1, pageSize=10) => {
-  const path = process.env.BASE_PATH || process.env.LOCAL_PATH;
+  const path = process.env.API_BASE_PATH || process.env.LOCAL_PATH;
   const endpoint = path + 'api/parts/';
 
   const currentPageNum = 'page=' + pageNum;
@@ -35,7 +35,7 @@ const FetchAllParts = (pageNum=1, pageSize=10) => {
 
 
 const FetchAllPartsAdmin = (pageNum=1, pageSize=10) => {
-  const path = process.env.BASE_PATH || process.env.LOCAL_PATH;
+  const path = process.env.API_BASE_PATH || process.env.LOCAL_PATH;
   const endpoint = path + 'api/parts/admin/';
 
   const currentPageNum = 'page=' + pageNum;
@@ -65,7 +65,7 @@ const FetchAllPartsAdmin = (pageNum=1, pageSize=10) => {
 
 // Get a single Part
 const FetchPart = (partId) => {
-  const path = process.env.BASE_PATH || process.env.LOCAL_PATH;
+  const path = process.env.API_BASE_PATH || process.env.LOCAL_PATH;
   const endpoint = path + 'api/part/' + partId + '/';
 
   const token = localStorage.getItem('token');
@@ -86,7 +86,7 @@ const FetchPart = (partId) => {
 
 // PostParts
 const CreatePart = (formData) => {
-  const path = process.env.BASE_PATH || process.env.LOCAL_PATH;
+  const path = process.env.API_BASE_PATH || process.env.LOCAL_PATH;
   const endpoint = path + 'api/part/create/';
   const csrfToken = GetCookie('csrftoken');
 
@@ -131,7 +131,7 @@ const CreatePart = (formData) => {
 
 // UpdateParts
 const UpdatePart = (partId, formData) => {
-  const path = process.env.BASE_PATH || process.env.LOCAL_PATH;
+  const path = process.env.API_BASE_PATH || process.env.LOCAL_PATH;
   const url = path + 'api/part/';
   const action = '/edit-or-delete/';
   const endpoint = url + partId + action
@@ -161,7 +161,7 @@ const UpdatePart = (partId, formData) => {
 }
 
 const UpdatePartTagTypes = (partId, formData) => {
-  const path = process.env.BASE_PATH || process.env.LOCAL_PATH;
+  const path = process.env.API_BASE_PATH || process.env.LOCAL_PATH;
   const url = path + 'api/part/';
   const action = '/edit-or-delete/';
   const endpoint = url + partId + action
@@ -194,7 +194,7 @@ const UpdatePartTagTypes = (partId, formData) => {
 // DeleteParts by setting is_active: false
 // same as UpdatePart but keeping the naming convention separate
 const DeletePart = (partId, formData) => {
-  const path = process.env.BASE_PATH || process.env.LOCAL_PATH;
+  const path = process.env.API_BASE_PATH || process.env.LOCAL_PATH;
   const url = path + 'api/part/';
   const action = '/edit-or-delete/';
   const endpoint = url + partId + action
@@ -225,7 +225,7 @@ const DeletePart = (partId, formData) => {
 
 
 const AdminDeletePart = (partId) => {
-  const path = process.env.BASE_PATH || process.env.LOCAL_PATH;
+  const path = process.env.API_BASE_PATH || process.env.LOCAL_PATH;
   const url = path + 'api/part/';
   const action = '/edit-or-delete/';
   const endpoint = url + partId + action;
@@ -244,7 +244,7 @@ const AdminDeletePart = (partId) => {
 
 
 const SearchForParts = (searchString) => {
-  const path = process.env.BASE_PATH || process.env.LOCAL_PATH;
+  const path = process.env.API_BASE_PATH || process.env.LOCAL_PATH;
   const url = path + 'api/parts-searchable';
   const query = '/?search=';
   const endpoint = url + query + searchString;
@@ -273,7 +273,7 @@ const SearchForParts = (searchString) => {
 
 // searchType: 'parts', 'tasks', etc
 const SearchForItems = (searchString, searchType, pageNum=1, pageSize=10) => {
-  const path = process.env.BASE_PATH || process.env.LOCAL_PATH;
+  const path = process.env.API_BASE_PATH || process.env.LOCAL_PATH;
   const url = path + 'api/';
   const type = searchType + '-searchable/';
   const endpoint = url + type
@@ -308,7 +308,7 @@ const SearchForItems = (searchString, searchType, pageNum=1, pageSize=10) => {
 
 
 const FetchAllTasks = (pageNum=1, pageSize=10) => {
-  const path = process.env.BASE_PATH || process.env.LOCAL_PATH;
+  const path = process.env.API_BASE_PATH || process.env.LOCAL_PATH;
   const endpoint = path + 'api/tasks/';
   
   const currentPageNum = 'page=' + pageNum;
@@ -338,7 +338,7 @@ const FetchAllTasks = (pageNum=1, pageSize=10) => {
 
 
 const FetchTask = (taskId) => {
-  const path = process.env.BASE_PATH || process.env.LOCAL_PATH;
+  const path = process.env.API_BASE_PATH || process.env.LOCAL_PATH;
   const endpoint = path + 'api/task/' + taskId + '/';
 
   const token = localStorage.getItem('token');
@@ -357,7 +357,7 @@ const FetchTask = (taskId) => {
 }
 
 const CreateTask = (formData) => {
-  const path = process.env.BASE_PATH || process.env.LOCAL_PATH;
+  const path = process.env.API_BASE_PATH || process.env.LOCAL_PATH;
   const endpoint = path + 'api/task/create/';
   const csrfToken = GetCookie('csrftoken');
 
@@ -403,7 +403,7 @@ const CreateTask = (formData) => {
 
 
 const UpdateTaskOnly = (taskId, formData) => {
-  const path = process.env.BASE_PATH || process.env.LOCAL_PATH;
+  const path = process.env.API_BASE_PATH || process.env.LOCAL_PATH;
   const url = path + 'api/task/';
   const action = '/edit-only';
   const endpoint = url + taskId + action;
@@ -459,7 +459,7 @@ const UpdateTaskRelatedPartsSubmit = (taskId, partsArr) => {
 }
 
 const CreateTaskParts = (taskPartsObj) => {
-  const path = process.env.BASE_PATH || process.env.LOCAL_PATH;
+  const path = process.env.API_BASE_PATH || process.env.LOCAL_PATH;
   const endpoint = path + 'api/tasks-parts/';
   const csrfToken = GetCookie('csrftoken');
 
@@ -487,7 +487,7 @@ const CreateTaskParts = (taskPartsObj) => {
 };
 
 const FetchAllTasksRelatedToParts = (partId) => {
-  const path = process.env.BASE_PATH || process.env.LOCAL_PATH;
+  const path = process.env.API_BASE_PATH || process.env.LOCAL_PATH;
   const endpoint = path + 'api/tasks-parts/part-filter/';
   const filterQuery = '?part=';
   const endpointWithFilterQuery = endpoint + filterQuery + partId;
@@ -510,7 +510,7 @@ const FetchAllTasksRelatedToParts = (partId) => {
 };
 
 const RemoveRelatedTaskParts = (taskId) => {
-  const path = process.env.BASE_PATH || process.env.LOCAL_PATH;
+  const path = process.env.API_BASE_PATH || process.env.LOCAL_PATH;
   const url = path + 'api/tasks-parts/filter-then-delete/?task=';
   const endpoint = url + taskId;
   const csrfToken = GetCookie('csrftoken');
@@ -539,7 +539,7 @@ const RemoveRelatedTaskParts = (taskId) => {
 
 
 const FetchAllCategories = (pageNum=1, pageSize=10) => {
-  const path = process.env.BASE_PATH || process.env.LOCAL_PATH;
+  const path = process.env.API_BASE_PATH || process.env.LOCAL_PATH;
   const endpoint = path + 'api/categories/';
   
   const currentPageNum = 'page=' + pageNum;
@@ -569,7 +569,7 @@ const FetchAllCategories = (pageNum=1, pageSize=10) => {
 
 
 const FetchCategory = (categoryId) => {
-  const path = process.env.BASE_PATH || process.env.LOCAL_PATH;
+  const path = process.env.API_BASE_PATH || process.env.LOCAL_PATH;
   const endpoint = path + 'api/category/' + categoryId + '/';
 
   const token = localStorage.getItem('token');
@@ -588,7 +588,7 @@ const FetchCategory = (categoryId) => {
 }
 
 const CreateCategory = (formData) => {
-  const path = process.env.BASE_PATH || process.env.LOCAL_PATH;
+  const path = process.env.API_BASE_PATH || process.env.LOCAL_PATH;
   const endpoint = path + 'api/category/create/';
   const csrfToken = GetCookie('csrftoken');
 
@@ -625,7 +625,7 @@ const CreateCategory = (formData) => {
 };
 
 const UpdateCategoryAndRelatedTasks = (categoryId, formData) => {
-  const path = process.env.BASE_PATH || process.env.LOCAL_PATH;
+  const path = process.env.API_BASE_PATH || process.env.LOCAL_PATH;
   const url = path + 'api/category/';
   const action = '/edit-only';
   const endpoint = url + categoryId + action;
@@ -661,7 +661,7 @@ const UpdateCategoryAndRelatedTasks = (categoryId, formData) => {
 
 
 const FetchAllJobs = (pageNum=1, pageSize=10) => {
-  const path = process.env.BASE_PATH || process.env.LOCAL_PATH;
+  const path = process.env.API_BASE_PATH || process.env.LOCAL_PATH;
   const endpoint = path + 'api/jobs/';
 
   const currentPageNum = 'page=' + pageNum;
@@ -691,7 +691,7 @@ const FetchAllJobs = (pageNum=1, pageSize=10) => {
 
 
 const FetchJob = (jobId) => {
-  const path = process.env.BASE_PATH || process.env.LOCAL_PATH;
+  const path = process.env.API_BASE_PATH || process.env.LOCAL_PATH;
   const endpoint = path + 'api/job/' + jobId + '/';
 
   const token = localStorage.getItem('token');
@@ -715,7 +715,7 @@ const FetchJob = (jobId) => {
 }
 
 const CreateJob = (formData) => {
-  const path = process.env.BASE_PATH || process.env.LOCAL_PATH;
+  const path = process.env.API_BASE_PATH || process.env.LOCAL_PATH;
   const endpoint = path + 'api/job/create/';
   const csrfToken = GetCookie('csrftoken');
 
@@ -753,7 +753,7 @@ const CreateJob = (formData) => {
 
 
 const UpdateJobAndRelatedCategories = (jobId, formData) => {
-  const path = process.env.BASE_PATH || process.env.LOCAL_PATH;
+  const path = process.env.API_BASE_PATH || process.env.LOCAL_PATH;
   const url = path + 'api/job/';
   const action = '/edit-only';
   const endpoint = url + jobId + action;
@@ -789,7 +789,7 @@ const UpdateJobAndRelatedCategories = (jobId, formData) => {
 
 
 const GetPartsMarkupPercents = () => {
-  const path = process.env.BASE_PATH || process.env.LOCAL_PATH;
+  const path = process.env.API_BASE_PATH || process.env.LOCAL_PATH;
   const endpoint = path + 'api/parts-markup/list/';
 
   const token = localStorage.getItem('token');
@@ -811,7 +811,7 @@ const GetPartsMarkupPercents = () => {
 }
 
 const FetchTagTypesChoices = () => {
-  const path = process.env.BASE_PATH || process.env.LOCAL_PATH;
+  const path = process.env.API_BASE_PATH || process.env.LOCAL_PATH;
   const endpoint = path + 'api/tags/';
 
   const token = localStorage.getItem('token');
@@ -833,7 +833,7 @@ const FetchTagTypesChoices = () => {
 }
 
 const FetchGlobalMarkup = () => {
-  const path = process.env.BASE_PATH || process.env.LOCAL_PATH;
+  const path = process.env.API_BASE_PATH || process.env.LOCAL_PATH;
   const endpoint = path + 'api/global-markup/';
 
   const token = localStorage.getItem('token');
