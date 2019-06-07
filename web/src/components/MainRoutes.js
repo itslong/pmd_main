@@ -31,7 +31,7 @@ import {
   JobDetail,
   JobEdit
 } from './Jobs';
-import { LoginForm, SignupForm } from './Auth';
+import { LoginForm } from './Auth';
 import { PrivateRoute } from './helpers';
 import HomeComponent from './HomeComponent';
 // import SearchByRoute from './SearchByRoute';
@@ -67,7 +67,6 @@ const MainRoutes = () => {
       <Switch>
         <PrivateRoute path={HOME_PATH} component={HomeComponent} />
         <Route exact path={LOGIN_PATH} component={LoginForm} />
-        <PrivateRoute exact path={SIGNUP_PATH} component={SignupForm} />
 
         <PrivateRoute path={PARTS_DISPLAY_ADMIN_PATH} component={PartsAdminDisplay} />
         <PrivateRoute exact path={PARTS_DISPLAY_PATH} component={PartsDisplay} />
