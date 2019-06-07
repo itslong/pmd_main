@@ -3,9 +3,11 @@ const LoginUser = (formData) => {
   // const path =  process.env.NODE_ENV === 'production' ? 'pmd-dev.herokuapp.com/' : process.env.LOCAL_PATH;
   const path =  process.env.NODE_ENV === 'production' ? process.env.API_LOGIN_PATH : process.env.LOCAL_PATH;
   const endpoint = path + 'user/login/';
-  console.log('login path: ', endpoint)
+  const newEndpoint = new URL(endpoint)
+  console.log('the login path: ', endpoint)
+  console.log('the new path: ', newEndpoint)
 
-  return fetch(endpoint, {
+  return fetch(newEndpoint, {
     method: 'POST',
     mode: 'same-origin',
     body: JSON.stringify(formData),
