@@ -64,8 +64,9 @@ const allRelatedPartsBaseSubtotalCost = (partsArr) => {
 };
 
 const allRelatedPartsRetailSubtotalCost = (partsArr, materialMarkupPercent) => {
+  const materialPercent = parseFloat(materialMarkupPercent / 100);
   const sum = partsArr.length > 0 ? partsArr.reduce((acc, { part_retail_part_cost }) => {
-    return acc + (Number(part_retail_part_cost) * (1 + materialMarkupPercent));
+    return acc + (Number(part_retail_part_cost) * (parseInt(1) + materialPercent));
   }, 0) : 0;
 
   return sum;
@@ -101,9 +102,10 @@ const taskOnlyStandardRate = (calcObj) => {
 
   const partsSubtotalRetail = allRelatedPartsRetailSubtotalCost(partsArr, standard_material_markup_percent);
   const taskLaborRetail = taskOnlyLaborRetail(taskRetailObj, markup);
+  const markupPercent = parseFloat(standard_material_markup_percent / 100);
 
-  const materialMarkup = partsSubtotalRetail * (1 + parseFloat(standard_material_markup_percent));
-  const laborMarkup = taskLaborRetail * (1 + parseFloat(standard_labor_markup_percent));
+  const materialMarkup = partsSubtotalRetail * (parseInt(1) + markupPercent);
+  const laborMarkup = taskLaborRetail * (parseInt(1) + markupPercent);
   const total = preciseRound((materialMarkup + laborMarkup) + Number(misc_tos_retail_hourly_rate), 2);
 
   return total;
@@ -115,9 +117,10 @@ const addonOnlyStandardRate = (calcObj) => {
 
   const partsSubtotalRetail = allRelatedPartsRetailSubtotalCost(partsArr, standard_material_markup_percent);
   const addonLaborRetail = addonOnlyLaborRetail(addonRetailObj, markup);
+  const markupPercent = parseFloat(standard_material_markup_percent / 100);
 
-  const materialMarkup = partsSubtotalRetail * (1 + parseFloat(standard_material_markup_percent));
-  const laborMarkup = addonLaborRetail * (1 + parseFloat(standard_labor_markup_percent));
+  const materialMarkup = partsSubtotalRetail * (parseInt(1) + markupPercent);
+  const laborMarkup = addonLaborRetail * (parseInt(1) + markupPercent);
   const total = preciseRound((materialMarkup + laborMarkup), 2);
 
   return total;
@@ -177,7 +180,7 @@ const calculateTasksMainDisplayFields = (taskArr, markupData, displayFields, cal
 const calculatePartRetailWithMarkup = (partRetailCost, markupObj) => {
   const { standard_material_markup_percent } = markupObj;
 
-  const newMarkup = 1 + parseFloat(standard_material_markup_percent);
+  const newMarkup = parseInt(1) + parseFloat(standard_material_markup_percent / 100);
   const total = preciseRound(Number(partRetailCost) * newMarkup, 2);
   return total;
 };
