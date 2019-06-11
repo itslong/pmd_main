@@ -85,7 +85,7 @@ class DisplayComponent extends Component {
   }
 
   componentDidUpdate(prevProps, prevState) {
-    const { itemEditing, isLoaded } = this.state;
+    const { itemEditing, isLoaded, currentPageNum, currentPageSize } = this.state;
  
     if (itemEditing !== prevState.itemEditing || prevState.isLoaded === true && isLoaded == false) {
       const { initFetch, initDataKeyToParse} = this.props;
