@@ -85,9 +85,9 @@ class DisplayComponent extends Component {
   }
 
   componentDidUpdate(prevProps, prevState) {
-    const { currentPageSize, currentPageNum, itemEditing, displaySearchResults } = this.state;
+    const { itemEditing, isLoaded } = this.state;
  
-    if (itemEditing !== prevState.itemEditing || currentPageSize !== prevState.currentPageSize || currentPageNum !== prevState.currentPageNum) {
+    if (itemEditing !== prevState.itemEditing || prevState.isLoaded === true && isLoaded == false) {
       const { initFetch, initDataKeyToParse} = this.props;
 
       const endpoint = initFetch(currentPageNum, currentPageSize);
@@ -98,13 +98,17 @@ class DisplayComponent extends Component {
           items: data[initDataKeyToParse],
           nextPage: data.next,
           previousPage: data.previous,
-          isLoaded: true,
           itemEditing: false,
           actionType: '',
           totalItemsCount: data.count,
           totalPages: data.total_pages,
           currentPageSize: currentPageSize,
           currentPageNum: currentPageNum,
+        });
+      })
+      .then(() => {
+        this.setState({
+          isLoaded: true,
         });
       })
     }
@@ -186,7 +190,8 @@ class DisplayComponent extends Component {
 
     if (currentPageNum > 1) {
       this.setState({ 
-      currentPageNum: currentPageNum - 1
+        currentPageNum: currentPageNum - 1,
+        isLoaded: false,
       })
     }
   }
@@ -196,21 +201,33 @@ class DisplayComponent extends Component {
 
     this.setState({ 
       currentPageNum: currentPageNum + 1,
+      isLoaded: false,
     })
   }
 
   handlePageNav(selectedPage) {
+    const { currentPageNum } = this.state;
+    const page = parseInt(selectedPage);
+    if (currentPageNum == page) {
+      return;
+    }
+
     this.setState({
-      currentPageNum: parseInt(selectedPage)
+      currentPageNum: parseInt(selectedPage),
+      isLoaded: false
     });
   }
 
   handlePageSizeLimitClick(e) {
     const { currentPageSize } = this.state;
     const newPageSizeVal = parseInt(e.target.textContent);
+    if (currentPageSize === newPageSizeVal) {
+      return;
+    }
 
     this.setState({ 
       currentPageSize: newPageSizeVal,
+      isLoaded: false,
     });
   }
 
@@ -278,7 +295,7 @@ class DisplayComponent extends Component {
         extraRowProps={[editButton, deleteButton]}
         extraPropsLayout={this.props.extraPropsLayout}
         numberOfLinks={tableNumLinks}
-      /> : '';
+      /> : 'Fetching data...';
     
     const modalHeaderText = (actionType === 'edit') ? 'Editing' : 'Deleting'
     const editFormModal = showEditModal ? 
