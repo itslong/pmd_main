@@ -223,7 +223,7 @@ class SearchComponent extends Component {
       : '';
 
     const tableHeaderText = (searchText && searchResults.length > 0) ?
-      `Found ${searchResults.length} ${searchType}.` : '';
+      `Displaying ${searchResults.length} ${searchType}.` : '';
 
     const tableExtraColHeaders = shouldUpdateParent && tableConfigProps ? tableConfigProps.extraColHeaders : ['Action'];
     const tableExtraRowProps = shouldUpdateParent && tableConfigProps ? tableConfigProps.extraRowProps : [addItemButton];
