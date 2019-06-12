@@ -281,7 +281,7 @@ const SearchForItems = (searchString, searchType, pageNum=1, pageSize=10) => {
 
   const currentPageNum = 'page=' + pageNum;
   const currentPageSize = 'page_size=' + pageSize;
-  const query = searchString !== '' ? '&search=' + searchString : '';
+  const query = searchString !== '' ? '&search=' + encodeURIComponent(searchString) : '';
 
   const pageQuery = '?' + currentPageNum + '&' + currentPageSize + query;
   const endpointWithPageQuery = new URL(endpoint + pageQuery);
