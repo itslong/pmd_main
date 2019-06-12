@@ -51,34 +51,8 @@ const Table = ({
     numberOfLinks={numLinks}
   />;
 
-  // const filteredData = data.map(({quantity, ...item}) => {
-  //   return item;
-  // })
-
-  // const qtyData = data.map(({quantity}) => {
-  //   return quantity
-  // })
-
-  // console.log('filtered: ' + JSON.stringify(filteredData))
-  // console.log('qty: ' + JSON.stringify(filteredData))
-  // check for the table row type. Default to a normal row
-  // if (rowType !== 'none') {
-  //   tableRow = (rowType === 'buttons') ?
-  //     <TableRowWithButtons 
-  //       onClickEdit={onClickEdit}
-  //       onClickDelete={onClickDelete}
-  //       fetchType={fetchType}
-  //     /> : 
-  //     <TableRowWithCheckbox 
-  //       fetchType={fetchType}
-  //       handleCheckbox={handleCheckbox}
-  //     />;
-  // }
-
-
-
   return (
-    !data.length ? <p>Nothing to show.</p> :
+    !data.length ? <p>No data is available.</p> :
     <div className="column">
       <h3 className="subtitle">
         { headerText }

@@ -295,7 +295,7 @@ class DisplayComponent extends Component {
         extraRowProps={[editButton, deleteButton]}
         extraPropsLayout={this.props.extraPropsLayout}
         numberOfLinks={tableNumLinks}
-      /> : 'Fetching data...';
+      /> : '';
     
     const modalHeaderText = (actionType === 'edit') ? 'Editing' : 'Deleting'
     const editFormModal = showEditModal ? 
