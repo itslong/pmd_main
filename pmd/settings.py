@@ -33,7 +33,7 @@ except ImportError:
 SECRET_KEY = KEY_VALUE
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = DEBUG_SETTINGS
+DEBUG = True
 
 ALLOWED_HOSTS = ['localhost', 'pmd-dev.herokuapp.com']
 
