@@ -31,9 +31,7 @@ except ImportError:
 SECRET_KEY = KEY_VALUE
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
-
-COMPRESS_ENABLED = os.environ.get('COMPRESS_ENABLED', False)
+DEBUG = True
 
 ALLOWED_HOSTS = ['localhost', 'pmd-dev.herokuapp.com']
 
@@ -156,8 +154,8 @@ if USE_HEROKU_CONFIG:
   STATICFILES_DIRS = [
     os.path.join(BASE_DIR + '/web/bundles'),
   ]
-  # STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
-  STATICFILES_STORAGE = 'django.contrib.staticfiles.storage.StaticFilesStorage'
+  STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+  # STATICFILES_STORAGE = 'django.contrib.staticfiles.storage.StaticFilesStorage'
 else:
   STATIC_URL = '/static/'
   STATIC_ROOT = os.path.join(BASE_DIR, 'static')
