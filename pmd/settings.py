@@ -21,11 +21,9 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # See https://docs.djangoproject.com/en/2.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-DEBUG_SETTINGS = False
 try:
   from pmd import local_settings as init_settings
   KEY_VALUE = init_settings.SECRET_KEY
-  DEBUG_SETTINGS = init_settings.DEBUG
 except ImportError:
   # in prod: use elasticbeanstalk's environement vars
   KEY_VALUE = os.getenv('DJANGO_SECRET_KEY')
@@ -33,7 +31,7 @@ except ImportError:
 SECRET_KEY = KEY_VALUE
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = DEBUG_SETTINGS
+DEBUG = False
 
 ALLOWED_HOSTS = ['localhost', 'pmd-dev.herokuapp.com']
 
