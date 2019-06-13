@@ -24,14 +24,16 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 try:
   from pmd import local_settings as init_settings
   KEY_VALUE = init_settings.SECRET_KEY
+  DEBUG_SETTINGS = init_settings.DEBUG
 except ImportError:
   # in prod: use elasticbeanstalk's environement vars
   KEY_VALUE = os.getenv('DJANGO_SECRET_KEY')
+  DEBUG_SETTINGS = False
 
 SECRET_KEY = KEY_VALUE
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = DEBUG_SETTINGS
 
 ALLOWED_HOSTS = ['localhost', 'pmd-dev.herokuapp.com']
 
@@ -73,7 +75,10 @@ ROOT_URLCONF = 'pmd.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [os.path.join(BASE_DIR, 'templates'), ],
+        'DIRS': [
+          os.path.join(BASE_DIR, 'templates'),
+          os.path.join(BASE_DIR, 'pmd', 'templates'),
+        ],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
