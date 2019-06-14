@@ -1,4 +1,9 @@
-import { calculatePartRetailWithMarkup, calculatePartRetailWithQuantity } from '../Parts';
+import { 
+  calculatePartRetailWithMarkup, 
+  calculatePartRetailWithQuantity,
+  allRelatedPartsBaseSubtotalCost,
+  allRelatedPartsRetailSubtotalCost,
+} from '../Parts';
 
 
 const preciseRound = (x, decimalPlaces) => {
@@ -56,23 +61,6 @@ const addonOnlyLaborRetail = (addonObj, markupObj) => {
 
   return laborTotal;
 }
-
-const allRelatedPartsBaseSubtotalCost = (partsArr) => {
-  const sum = partsArr.length > 0 ? partsArr.reduce((acc, { total_cost }) => {
-    return acc + Number(total_cost);
-  }, 0) : 0;
-
-  return sum;
-};
-
-const allRelatedPartsRetailSubtotalCost = (partsArr, materialMarkupPercent) => {
-  const materialPercent = parseFloat(materialMarkupPercent / 100);
-  const sum = partsArr.length > 0 ? partsArr.reduce((acc, { part_retail_part_cost }) => {
-    return acc + (Number(part_retail_part_cost) * (parseInt(1) + materialPercent));
-  }, 0) : 0;
-
-  return sum;
-};
 
 const taskOnlyTotalCost = (calcObj) => {
   const { related: partsArr, markup, ...taskCostObj } = calcObj;

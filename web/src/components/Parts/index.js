@@ -13,4 +13,6 @@ export {
   calculatePartsMainDisplayFields,
   calculatePartRetailWithMarkup,
   calculatePartRetailWithQuantity,
+  allRelatedPartsBaseSubtotalCost,
+  allRelatedPartsRetailSubtotalCost,
 } from './PartsCalculateRates';
