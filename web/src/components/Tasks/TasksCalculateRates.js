@@ -1,3 +1,5 @@
+import { calculatePartRetailWithMarkup, calculatePartRetailWithQuantity } from '../Parts';
+
 
 const preciseRound = (x, decimalPlaces) => {
   return parseFloat(Math.round(x *  Math.pow(10, decimalPlaces)) / Math.pow(10, decimalPlaces)).toFixed(decimalPlaces);
@@ -177,19 +179,7 @@ const calculateTasksMainDisplayFields = (taskArr, markupData, displayFields, cal
   return filteredData;
 };
 
-const calculatePartRetailWithMarkup = (partRetailCost, markupObj) => {
-  const { standard_material_markup_percent } = markupObj;
 
-  const newMarkup = parseInt(1) + parseFloat(standard_material_markup_percent / 100);
-  const total = preciseRound(Number(partRetailCost) * newMarkup, 2);
-  return total;
-};
-
-const calculatePartRetailWithQuantity = (retailPriceObj) => {
-  const { part_retail_part_cost: partRetail, quantity } = retailPriceObj;
-
-  return preciseRound(parseFloat(partRetail) * quantity, 2);
-};
 
 const calculateTaskDetailRelatedPartsTableFields = (partsArr, tagTypeId, markupData, displayFields) => {
   const markup = markupData.find(markupObj => {
@@ -241,5 +231,6 @@ const calculateTaskDetailRelatedPartsTableFields = (partsArr, tagTypeId, markupD
 export { 
   calculateTasksMainDisplayFields,
   calculateTaskDetailRelatedPartsTableFields,
-  calculatePartRetailWithMarkup
+  calculatePartRetailWithMarkup,
+  preciseRound,
 };

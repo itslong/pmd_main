@@ -1,4 +1,4 @@
-import { calculatePartRetailWithMarkup } from '../Tasks';
+import { preciseRound } from '../Tasks';
 
 
 const calculatePartsMainDisplayFields = (partsArr, markupData, displayFields) => {
@@ -29,4 +29,22 @@ const calculatePartsMainDisplayFields = (partsArr, markupData, displayFields) =>
   return filteredData;
 };
 
-export default calculatePartsMainDisplayFields;
+const calculatePartRetailWithMarkup = (partRetailCost, markupObj) => {
+  const { standard_material_markup_percent } = markupObj;
+
+  const newMarkup = parseInt(1) + parseFloat(standard_material_markup_percent / 100);
+  const total = preciseRound(Number(partRetailCost) * newMarkup, 2);
+  return total;
+};
+
+const calculatePartRetailWithQuantity = (retailPriceObj) => {
+  const { part_retail_part_cost: partRetail, quantity } = retailPriceObj;
+
+  return preciseRound(parseFloat(partRetail) * quantity, 2);
+};
+
+export { 
+  calculatePartsMainDisplayFields,
+  calculatePartRetailWithMarkup,
+  calculatePartRetailWithQuantity,
+};

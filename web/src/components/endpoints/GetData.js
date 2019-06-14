@@ -248,7 +248,7 @@ const SearchForParts = (searchString) => {
   const path = process.env.NODE_ENV === 'development' ? process.env.LOCAL_PATH : PROD_BASE_PATH;
   const url = path + 'api/parts-searchable';
   const query = '/?search=';
-  const endpoint = new URL(url + query + searchString);
+  const endpoint = new URL(url + query + encodeURIComponent(searchString));
 
   const token = localStorage.getItem('token');
   const headers = {
