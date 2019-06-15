@@ -5,10 +5,10 @@ import { DetailsTable, Button } from './common';
 import { editPathWithId } from './frontendBaseRoutes';
 import NotFound from './NotFound';
 import { FetchGlobalMarkup } from './endpoints';
-import { renameAndRebuildRelatedPartsDisplayFields } from './CalculationsWithGlobalMarkup';
+import { renameAndRebuildRelatedPartsDisplayFields, TaxTotalWithPartRetailAndTaskOnlyLabor } from './CalculationsWithGlobalMarkup';
 import { renameStaticTableFields, handlePluralNames } from './fieldNameAliases';
 
-import { allRelatedPartsRetailWithTax } from './Parts';
+// import { TaxTotalForTaskAddonLaborWithPartsRetailMarkup } from './Tasks';
 
 /*
 Only applies to Tasks, Categories, Jobs. Reference PartDetailWithState for Parts Detail.
@@ -91,9 +91,10 @@ class DetailView extends Component {
   }
 
   handleTaskAttributeCalculations() {
-    const { relatedChildData, globalMarkup, tagTypes } = this.state;
+    const { itemData, relatedChildData, globalMarkup, tagTypes } = this.state;
+    
 
-    // const stuff = allRelatedPartsRetailWithTax(relatedChildData, tagTypes.id, globalMarkup)
+    // const stuff = TaxTotalForTaskAddonLaborWithPartsRetailMarkup(itemData, relatedChildData, tagTypes.id, globalMarkup, 'addon')
     // console.log('stuff: ', stuff)
   }
 

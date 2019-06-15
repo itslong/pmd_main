@@ -14,7 +14,10 @@ const renameAndRebuildRelatedPartsDisplayFields = (dataArr, tagTypeId, markupDat
   return calculateTaskDetailRelatedPartsTableFields(dataArr, tagTypeId, markupData, displayFields);
 };
 
+// tax calculations using wrapper. Test for task_attribute
+
+
 export {
   renameAndRebuildMainDisplayFields,
-  renameAndRebuildRelatedPartsDisplayFields
+  renameAndRebuildRelatedPartsDisplayFields,
 }
