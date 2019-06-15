@@ -112,5 +112,7 @@ export {
   calculatePartRetailWithQuantity,
   allRelatedPartsBaseSubtotalCost,
   allRelatedPartsRetailSubtotalCostWithMarkup,
+  allRelatedPartsRetailWithQuantitySubtotal,
   allRelatedPartsRetailWithTax,
+  calculateTaxForAllRelatedPartsRetailSubtotal
 };
