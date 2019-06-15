@@ -6,5 +6,6 @@ export { default as TasksDisplay } from './TasksDisplay';
 export {
   calculateTasksMainDisplayFields,
   calculateTaskDetailRelatedPartsTableFields,
-  calculatePartRetailWithMarkup 
+  calculatePartRetailWithMarkup,
+  preciseRound,
 } from './TasksCalculateRates';

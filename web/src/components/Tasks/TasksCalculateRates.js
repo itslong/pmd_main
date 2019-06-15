@@ -1,3 +1,10 @@
+import { 
+  calculatePartRetailWithMarkup, 
+  calculatePartRetailWithQuantity,
+  allRelatedPartsBaseSubtotalCost,
+  allRelatedPartsRetailSubtotalCostWithMarkup,
+} from '../Parts';
+
 
 const preciseRound = (x, decimalPlaces) => {
   return parseFloat(Math.round(x *  Math.pow(10, decimalPlaces)) / Math.pow(10, decimalPlaces)).toFixed(decimalPlaces);
@@ -55,23 +62,6 @@ const addonOnlyLaborRetail = (addonObj, markupObj) => {
   return laborTotal;
 }
 
-const allRelatedPartsBaseSubtotalCost = (partsArr) => {
-  const sum = partsArr.length > 0 ? partsArr.reduce((acc, { total_cost }) => {
-    return acc + Number(total_cost);
-  }, 0) : 0;
-
-  return sum;
-};
-
-const allRelatedPartsRetailSubtotalCost = (partsArr, materialMarkupPercent) => {
-  const materialPercent = parseFloat(materialMarkupPercent / 100);
-  const sum = partsArr.length > 0 ? partsArr.reduce((acc, { part_retail_part_cost }) => {
-    return acc + (Number(part_retail_part_cost) * (parseInt(1) + materialPercent));
-  }, 0) : 0;
-
-  return sum;
-};
-
 const taskOnlyTotalCost = (calcObj) => {
   const { related: partsArr, markup, ...taskCostObj } = calcObj;
   const { misc_tos_cost_hourly_rate } = markup;
@@ -100,7 +90,7 @@ const taskOnlyStandardRate = (calcObj) => {
   const { related: partsArr, markup, ...taskRetailObj } = calcObj;
   const { standard_material_markup_percent, standard_labor_markup_percent, misc_tos_retail_hourly_rate } = markup;
 
-  const partsSubtotalRetail = allRelatedPartsRetailSubtotalCost(partsArr, standard_material_markup_percent);
+  const partsSubtotalRetail = allRelatedPartsRetailSubtotalCostWithMarkup(partsArr, standard_material_markup_percent);
   const taskLaborRetail = taskOnlyLaborRetail(taskRetailObj, markup);
   const markupPercent = parseFloat(standard_material_markup_percent / 100);
 
@@ -115,7 +105,7 @@ const addonOnlyStandardRate = (calcObj) => {
   const { related: partsArr, markup, ...addonRetailObj } = calcObj;
   const { standard_material_markup_percent, standard_labor_markup_percent } = markup;
 
-  const partsSubtotalRetail = allRelatedPartsRetailSubtotalCost(partsArr, standard_material_markup_percent);
+  const partsSubtotalRetail = allRelatedPartsRetailSubtotalCostWithMarkup(partsArr, standard_material_markup_percent);
   const addonLaborRetail = addonOnlyLaborRetail(addonRetailObj, markup);
   const markupPercent = parseFloat(standard_material_markup_percent / 100);
 
@@ -177,19 +167,7 @@ const calculateTasksMainDisplayFields = (taskArr, markupData, displayFields, cal
   return filteredData;
 };
 
-const calculatePartRetailWithMarkup = (partRetailCost, markupObj) => {
-  const { standard_material_markup_percent } = markupObj;
 
-  const newMarkup = parseInt(1) + parseFloat(standard_material_markup_percent / 100);
-  const total = preciseRound(Number(partRetailCost) * newMarkup, 2);
-  return total;
-};
-
-const calculatePartRetailWithQuantity = (retailPriceObj) => {
-  const { part_retail_part_cost: partRetail, quantity } = retailPriceObj;
-
-  return preciseRound(parseFloat(partRetail) * quantity, 2);
-};
 
 const calculateTaskDetailRelatedPartsTableFields = (partsArr, tagTypeId, markupData, displayFields) => {
   const markup = markupData.find(markupObj => {
@@ -241,5 +219,6 @@ const calculateTaskDetailRelatedPartsTableFields = (partsArr, tagTypeId, markupD
 export { 
   calculateTasksMainDisplayFields,
   calculateTaskDetailRelatedPartsTableFields,
-  calculatePartRetailWithMarkup
+  calculatePartRetailWithMarkup,
+  preciseRound,
 };

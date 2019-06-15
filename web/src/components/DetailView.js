@@ -8,6 +8,7 @@ import { FetchGlobalMarkup } from './endpoints';
 import { renameAndRebuildRelatedPartsDisplayFields } from './CalculationsWithGlobalMarkup';
 import { renameStaticTableFields, handlePluralNames } from './fieldNameAliases';
 
+import { allRelatedPartsRetailWithTax } from './Parts';
 
 /*
 Only applies to Tasks, Categories, Jobs. Reference PartDetailWithState for Parts Detail.
@@ -22,9 +23,11 @@ class DetailView extends Component {
       tagTypes: {},
       isLoaded: false,
       globalMarkup: [],
+      taskAndAddonTotalsData: [], //array of objects
     }
 
     this.handleClickEditByRoute = this.handleClickEditByRoute.bind(this);
+    this.handleTaskAttributeCalculations = this.handleTaskAttributeCalculations.bind(this);
   }
 
   componentDidMount() {
@@ -59,6 +62,8 @@ class DetailView extends Component {
         globalMarkup: markupData
       });
 
+      // console.log('detail state: ', this.state);
+      // console.log('related child (parts) arr: ', this.state.relatedChildData)
     });
   }
 
@@ -83,6 +88,13 @@ class DetailView extends Component {
     this.props.history.push(nextPath, {
       itemId: id
     })
+  }
+
+  handleTaskAttributeCalculations() {
+    const { relatedChildData, globalMarkup, tagTypes } = this.state;
+
+    // const stuff = allRelatedPartsRetailWithTax(relatedChildData, tagTypes.id, globalMarkup)
+    // console.log('stuff: ', stuff)
   }
 
   render() {
@@ -110,9 +122,19 @@ class DetailView extends Component {
       </div>
       : <NotFound message={'This item does not exist.'} />
 
-    return (
-      {...showItemDetail}
+    const taskAttributeButton = itemData.task_attribute ? 
+      <Button
+        type={'primary'}
+        title={`Display ${itemData.task_attribute} table.`}
+        action={this.handleTaskAttributeCalculations}
+      /> : '';
 
+
+    return (
+      <div>
+        {showItemDetail}
+        {taskAttributeButton}
+      </div>
     )
   }
 }
