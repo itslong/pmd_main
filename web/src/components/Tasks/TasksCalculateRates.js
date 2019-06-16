@@ -118,10 +118,8 @@ const addonOnlyStandardRate = (calcObj) => {
   return total;
 };
 
-const TaskAddonLaborWithPartsRetail = (taskObj, partsArr, tagTypeId, markupData, taskAttrType) => {
-  const markup = markupData.find(markupObj => {
-    return markupObj.id == tagTypeId
-  });
+const taskOrAddonLaborWithPartsRetail = (taskObj, partsArr, tagTypeId, markupData, taskAttrType) => {
+  const markup = createSingleMarkupObj(tagTypeId, markupData);
 
   const partRetailSubtotal = allRelatedPartsRetailWithQuantitySubtotal(partsArr);
 
@@ -138,10 +136,8 @@ const TaskAddonLaborWithPartsRetail = (taskObj, partsArr, tagTypeId, markupData,
   return total;
 };
 
-const TaskAddonLaborPartsRetailWithMarkup = (taskObj, partsArr, tagTypeId, markupData, taskAttrType) => {
-  const markup = markupData.find(markupObj => {
-    return markupObj.id == tagTypeId
-  });
+const taskAddonLaborPartsRetailWithMarkup = (taskObj, partsArr, tagTypeId, markupData, taskAttrType) => {
+  const markup = createSingleMarkupObj(tagTypeId, markupData);
 
   const { 
     estimated_asst_hours, estimated_asst_minutes, estimated_contractor_hours,
@@ -164,10 +160,10 @@ const TaskAddonLaborPartsRetailWithMarkup = (taskObj, partsArr, tagTypeId, marku
   return preciseRound(laborStandardRate, 2);
 }
 
-const TaxTotalForTaskAddonLaborWithPartsRetail = (taskObj, partsArr, tagTypeId, markupData, taskAttrType) => {
+const taxTotalForTaskAddonLaborWithPartsRetail = (taskObj, partsArr, tagTypeId, markupData, taskAttrType) => {
   const laborRetail = taskAttrType == 'task' ?
-    TaskAddonLaborWithPartsRetail(taskObj, partsArr, tagTypeId, markupData, 'task')
-    : TaskAddonLaborWithPartsRetail(taskObj, partsArr, tagTypeId, markupData, 'addon');
+    taskOrAddonLaborWithPartsRetail(taskObj, partsArr, tagTypeId, markupData, 'task')
+    : taskOrAddonLaborWithPartsRetail(taskObj, partsArr, tagTypeId, markupData, 'addon');
 
   const tax = calculateTaxForAllRelatedPartsRetailSubtotal(partsArr, tagTypeId, markupData);
   const total = preciseRound(parseFloat(laborRetail) + parseFloat(tax), 2);
@@ -175,7 +171,7 @@ const TaxTotalForTaskAddonLaborWithPartsRetail = (taskObj, partsArr, tagTypeId, 
   return total;
 };
 
-const TaxTotalForTaskAddonLaborWithPartsRetailMarkup = (taskObj, partsArr, tagTypeId, markupData, taskAttrType) => {
+const taxTotalForTaskAddonLaborWithPartsRetailMarkup = (taskObj, partsArr, tagTypeId, markupData, taskAttrType) => {
   const laborRetailMarkup = taskAttrType == 'task' ?
     TaskAddonLaborPartsRetailWithMarkup(taskObj, partsArr, tagTypeId, markupData, 'task')
     : TaskAddonLaborPartsRetailWithMarkup(taskObj, partsArr, tagTypeId, markupData, 'addon');
@@ -186,14 +182,101 @@ const TaxTotalForTaskAddonLaborWithPartsRetailMarkup = (taskObj, partsArr, tagTy
   return total;
 };
 
+const profitTaskOrAddonLabor = (taskObj, tagTypeId, markupData, taskAttrType) => {
+  const markup = createSingleMarkupObj(tagTypeId, markupData);
+
+  const retail = taskAttrType == 'task' ?
+    taskOnlyLaborRetail(taskObj, markup)
+    : addonOnlyLaborRetail(taskObj, markup);
+
+  const cost = taskAttrType == 'task' ?
+    taskOnlyLaborCost(taskObj, markup)
+    : addonOnlyLaborCost(taskObj, markup);
+
+  const profit = preciseRound(parseFloat(retail) - parseFloat(cost), 2);
+
+  return profit;
+};
+
+const profitTaskOrAddonRetail = (taskObj, partsArr, tagTypeId, markupData, taskAttrType) => {
+  const calcObj = createCalcObj(taskObj, partsArr, tagTypeId, markupData);
+
+  const retail = taskAttrType == 'task' ?
+    taskOrAddonLaborWithPartsRetail(taskObj, partsArr, tagTypeId, markupData, 'task')
+    : taskOrAddonLaborWithPartsRetail(taskObj, partsArr, tagTypeId, markupData, 'addon');
+
+  const cost = taskAttrType == 'task' ?
+    taskOnlyTotalCost(calcObj)
+    : addonOnlyTotalCost(calcObj);
+
+  const total = preciseRound(parseFloat(retail - cost), 2);
+
+  return total;
+};
+
+const profitTaskOrAddonRetailWithMarkup = (taskObj, partsArr, tagTypeId, markupData, taskAttrType) => {
+  const calcObj = createCalcObj(taskObj, partsArr, tagTypeId, markupData);
+
+  const retail = taskAttrType == 'task' ?
+    taskOnlyStandardRate(calcObj)
+    : addonOnlyStandardRate(calcObj);
+
+  const cost = taskAttrType == 'task' ?
+    taskOnlyTotalCost(calcObj)
+    : addonOnlyTotalCost(calcObj);
+
+  const total = preciseRound(parseFloat(retail - cost), 2);
+
+  return total;
+}
+
+const profitMiscTos = (tagTypeId, markupData) => {
+  const markup = createSingleMarkupObj(tagTypeId, markupData);
+
+  const { misc_tos_retail_hourly_rate, misc_tos_cost_hourly_rate } = markup;
+  const miscTosRate = preciseRound(parseFloat(misc_tos_retail_hourly_rate - misc_tos_cost_hourly_rate), 2);
+
+  return miscTosRate;
+};
+
+
+const createSingleMarkupObj = (tagTypeId, markupData) => {
+  const markup = markupData.find(markupObj => {
+    return markupObj.id == tagTypeId
+  });
+
+  return markup;
+};
+
+const createCalcObj = (taskObj, partsArr, tagTypeId, markupData) => {
+  const markup = createSingleMarkupObj(tagTypeId, markupData);
+
+  const { 
+    estimated_asst_hours, estimated_asst_minutes, estimated_contractor_hours,
+    estimated_contractor_minutes, fixed_labor_rate, use_fixed_labor_rate 
+  } = taskObj;
+
+  const calcObj = Object.assign({}, {
+    estimated_asst_hours,
+    estimated_asst_minutes,
+    estimated_contractor_hours,
+    estimated_contractor_minutes,
+    use_fixed_labor_rate,
+    fixed_labor_rate,
+    markup,
+    related: partsArr
+  });
+
+  return calcObj;
+};
+
+
 const calculateTasksMainDisplayFields = (taskArr, markupData, displayFields, calcFields) => {
   const filteredData = taskArr.map(item => {
     let filteredObj = {};
     let calculationObj = {};
 
-    const markup = markupData.find(markupObj => {
-      return markupObj.id === item.tag_types.id
-    });
+    const markup = createSingleMarkupObj(item.tag_types.id, markupData);
 
 
     let displayNames = Object.values(displayFields)
@@ -238,11 +321,8 @@ const calculateTasksMainDisplayFields = (taskArr, markupData, displayFields, cal
 };
 
 
-
 const calculateTaskDetailRelatedPartsTableFields = (partsArr, tagTypeId, markupData, displayFields) => {
-  const markup = markupData.find(markupObj => {
-    return markupObj.id == tagTypeId
-  });
+  const markup = createSingleMarkupObj(tagTypeId, markupData);
 
   const filteredParts = partsArr.map(item => {
     let filteredObj = {};
@@ -291,6 +371,4 @@ export {
   calculateTaskDetailRelatedPartsTableFields,
   calculatePartRetailWithMarkup,
   preciseRound,
-  TaxTotalForTaskAddonLaborWithPartsRetail,
-  TaxTotalForTaskAddonLaborWithPartsRetailMarkup,
 };

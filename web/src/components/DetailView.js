@@ -8,7 +8,7 @@ import { FetchGlobalMarkup } from './endpoints';
 import { renameAndRebuildRelatedPartsDisplayFields, TaxTotalWithPartRetailAndTaskOnlyLabor } from './CalculationsWithGlobalMarkup';
 import { renameStaticTableFields, handlePluralNames } from './fieldNameAliases';
 
-// import { TaxTotalForTaskAddonLaborWithPartsRetailMarkup } from './Tasks';
+// import { profitTaskOrAddonRetailWithMarkup } from './Tasks';
 
 /*
 Only applies to Tasks, Categories, Jobs. Reference PartDetailWithState for Parts Detail.
@@ -62,7 +62,7 @@ class DetailView extends Component {
         globalMarkup: markupData
       });
 
-      // console.log('detail state: ', this.state);
+      console.log('detail state: ', this.state);
       // console.log('related child (parts) arr: ', this.state.relatedChildData)
     });
   }
@@ -94,7 +94,7 @@ class DetailView extends Component {
     const { itemData, relatedChildData, globalMarkup, tagTypes } = this.state;
     
 
-    // const stuff = TaxTotalForTaskAddonLaborWithPartsRetailMarkup(itemData, relatedChildData, tagTypes.id, globalMarkup, 'addon')
+    // const stuff = profitTaskOrAddonRetailWithMarkup(itemData, relatedChildData, tagTypes.id, globalMarkup, 'task')
     // console.log('stuff: ', stuff)
   }
 
