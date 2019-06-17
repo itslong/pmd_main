@@ -98,7 +98,7 @@ const calculateTaxForAllRelatedPartsRetailSubtotal = (partsArr, tagTypeId, marku
   return total;
 };
 
-const allRelatedPartsRetailWithTax = (partsArr, tagTypeId, markupData) => {
+const allRelatedPartsRetailIncludingTax = (partsArr, tagTypeId, markupData) => {
   const retailSubtotal = allRelatedPartsRetailWithQuantitySubtotal(partsArr);
   const tax = calculateTaxForAllRelatedPartsRetailSubtotal(partsArr, tagTypeId, markupData);
   const total = preciseRound(parseFloat(retailSubtotal) + parseFloat(tax), 2);
@@ -113,6 +113,7 @@ export {
   allRelatedPartsBaseSubtotalCost,
   allRelatedPartsRetailSubtotalCostWithMarkup,
   allRelatedPartsRetailWithQuantitySubtotal,
-  allRelatedPartsRetailWithTax,
-  calculateTaxForAllRelatedPartsRetailSubtotal
+  allRelatedPartsRetailIncludingTax,
+  calculateTaxForAllRelatedPartsRetailSubtotal,
+  calculateProfitAllParts,
 };

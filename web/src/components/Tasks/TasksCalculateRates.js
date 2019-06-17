@@ -173,8 +173,8 @@ const taxTotalForTaskAddonLaborWithPartsRetail = (taskObj, partsArr, tagTypeId, 
 
 const taxTotalForTaskAddonLaborWithPartsRetailMarkup = (taskObj, partsArr, tagTypeId, markupData, taskAttrType) => {
   const laborRetailMarkup = taskAttrType == 'task' ?
-    TaskAddonLaborPartsRetailWithMarkup(taskObj, partsArr, tagTypeId, markupData, 'task')
-    : TaskAddonLaborPartsRetailWithMarkup(taskObj, partsArr, tagTypeId, markupData, 'addon');
+    taskAddonLaborPartsRetailWithMarkup(taskObj, partsArr, tagTypeId, markupData, 'task')
+    : taskAddonLaborPartsRetailWithMarkup(taskObj, partsArr, tagTypeId, markupData, 'addon');
 
   const tax = calculateTaxForAllRelatedPartsRetailSubtotal(partsArr, tagTypeId, markupData);
   const total = preciseRound(parseFloat(laborRetailMarkup) + parseFloat(tax), 2);
@@ -371,4 +371,19 @@ export {
   calculateTaskDetailRelatedPartsTableFields,
   calculatePartRetailWithMarkup,
   preciseRound,
+  createSingleMarkupObj,
+  createCalcObj,
+  taskOnlyLaborCost,
+  addonOnlyLaborCost,
+  taskOnlyLaborRetail,
+  taskOrAddonLaborWithPartsRetail,
+  taskOnlyStandardRate,
+  addonOnlyStandardRate,
+  profitTaskOrAddonLabor,
+  profitMiscTos,
+  taxTotalForTaskAddonLaborWithPartsRetail,
+  profitTaskOrAddonRetail,
+  taxTotalForTaskAddonLaborWithPartsRetailMarkup,
+  profitTaskOrAddonRetailWithMarkup
+
 };

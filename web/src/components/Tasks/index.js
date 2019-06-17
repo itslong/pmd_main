@@ -8,4 +8,18 @@ export {
   calculateTaskDetailRelatedPartsTableFields,
   calculatePartRetailWithMarkup,
   preciseRound,
+  createSingleMarkupObj,
+  createCalcObj,
+  taskOnlyLaborCost,
+  addonOnlyLaborCost,
+  taskOnlyLaborRetail,
+  taskOrAddonLaborWithPartsRetail,
+  taskOnlyStandardRate,
+  addonOnlyStandardRate,
+  profitTaskOrAddonLabor,
+  profitMiscTos,
+  taxTotalForTaskAddonLaborWithPartsRetail,
+  profitTaskOrAddonRetail,
+  taxTotalForTaskAddonLaborWithPartsRetailMarkup,
+  profitTaskOrAddonRetailWithMarkup
 } from './TasksCalculateRates';
