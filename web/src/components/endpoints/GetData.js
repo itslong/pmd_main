@@ -579,7 +579,7 @@ const FetchCategory = (categoryId) => {
     'Authorization': `Token ${token}`,
   };
 
-  return fetch(endpoint)
+  return fetch(endpoint, {headers, })
   .then(response => {
     return response.json();
   })
