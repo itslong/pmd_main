@@ -20,7 +20,7 @@ class DetailView extends Component {
     super(props);
     // only display the totalsTable when it's task detail.
     const { currentItem } = this.props;
-    const allowTotalsTable = currentItem == 'task' ? true : false;
+    const totalsTable = currentItem == 'task' ? true : false;
 
     this.state = {
       itemData: {},
@@ -29,7 +29,7 @@ class DetailView extends Component {
       tagTypes: {},
       isLoaded: false,
       globalMarkup: [],
-      allowTotalsTable: allowTotalsTable,
+      allowTotalsTable: totalsTable,
     }
 
     this.handleClickEditByRoute = this.handleClickEditByRoute.bind(this);

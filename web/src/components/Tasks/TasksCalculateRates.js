@@ -18,7 +18,7 @@ const taskOnlyLaborCost = (taskObj, markupObj) => {
 
   const contractor = labor_cost_hourly_rate * estimated_contractor_hours;
   const asst = asst_labor_cost_hourly_rate * estimated_asst_hours;
-  const laborTotal = Number(contractor + asst);
+  const laborTotal = preciseRound(parseFloat(contractor) + parseFloat(asst), 2);
 
   return laborTotal;
 };
@@ -31,9 +31,9 @@ const taskOnlyLaborRetail = (taskObj, markupObj) => {
     return fixed_labor_rate;
   }
 
-  const contractor = Number(labor_retail_hourly_rate) * estimated_contractor_hours;
-  const asst = Number(asst_labor_retail_hourly_rate) * estimated_asst_hours;
-  const laborTotal = Number(contractor + asst);
+  const contractor = labor_retail_hourly_rate * estimated_contractor_hours;
+  const asst = asst_labor_retail_hourly_rate * estimated_asst_hours;
+  const laborTotal = preciseRound(parseFloat(contractor + parseFloat(asst)), 2);
 
   return laborTotal;
 };
@@ -44,7 +44,7 @@ const addonOnlyLaborCost = (addonObj, markupObj) => {
 
   const contractor = (labor_cost_hourly_rate / 60) * estimated_contractor_minutes;
   const asst = (asst_labor_cost_hourly_rate / 60) * estimated_asst_minutes;
-  const laborTotal = Number(contractor + asst);
+  const laborTotal = preciseRound(parseFloat(contractor) + parseFloat(asst), 2);
 
   return laborTotal;
 };
@@ -57,9 +57,9 @@ const addonOnlyLaborRetail = (addonObj, markupObj) => {
     return fixed_labor_rate;
   } 
 
-  const contractor = (Number(labor_retail_hourly_rate) / 60) * estimated_contractor_minutes;
-  const asst = (Number(asst_labor_retail_hourly_rate) / 60) * estimated_asst_minutes;
-  const laborTotal = Number(contractor + asst);
+  const contractor = (parseFloat(labor_retail_hourly_rate) / 60) * estimated_contractor_minutes;
+  const asst = (parseFloat(asst_labor_retail_hourly_rate) / 60) * estimated_asst_minutes;
+  const laborTotal = preciseRound(parseFloat(contractor) + parseFloat(asst), 2);
 
   return laborTotal;
 }
@@ -71,7 +71,7 @@ const taskOnlyTotalCost = (calcObj) => {
   const partsSubtotalCost = allRelatedPartsBaseSubtotalCost(partsArr);
   const taskLaborCost = taskOnlyLaborCost(taskCostObj, markup);
 
-  const total = preciseRound((partsSubtotalCost + taskLaborCost) + Number(misc_tos_cost_hourly_rate), 2);
+  const total = preciseRound(parseFloat(partsSubtotalCost) + parseFloat(taskLaborCost) + parseFloat(misc_tos_cost_hourly_rate), 2);
 
   return total;
 };
@@ -83,7 +83,7 @@ const addonOnlyTotalCost = (calcObj) => {
   const partsSubtotalCost = allRelatedPartsBaseSubtotalCost(partsArr);
   const addonLaborCost = addonOnlyLaborCost(addonCostObj, markup);
 
-  const total = preciseRound((partsSubtotalCost + addonLaborCost), 2);
+  const total = preciseRound(parseFloat(partsSubtotalCost) + parseFloat(addonLaborCost), 2);
 
   return total;
 };
@@ -98,7 +98,7 @@ const taskOnlyStandardRate = (calcObj) => {
 
   const materialMarkup = partsSubtotalRetail * (parseInt(1) + markupPercent);
   const laborMarkup = taskLaborRetail * (parseInt(1) + markupPercent);
-  const total = preciseRound((materialMarkup + laborMarkup) + Number(misc_tos_retail_hourly_rate), 2);
+  const total = preciseRound(parseFloat(materialMarkup) + parseFloat(laborMarkup) + parseFloat(misc_tos_retail_hourly_rate), 2);
 
   return total;
 };
@@ -113,7 +113,7 @@ const addonOnlyStandardRate = (calcObj) => {
 
   const materialMarkup = partsSubtotalRetail * (parseInt(1) + markupPercent);
   const laborMarkup = addonLaborRetail * (parseInt(1) + markupPercent);
-  const total = preciseRound((materialMarkup + laborMarkup), 2);
+  const total = preciseRound(parseFloat(materialMarkup) + parseFloat(laborMarkup), 2);
 
   return total;
 };
@@ -209,7 +209,7 @@ const profitTaskOrAddonRetail = (taskObj, partsArr, tagTypeId, markupData, taskA
     taskOnlyTotalCost(calcObj)
     : addonOnlyTotalCost(calcObj);
 
-  const total = preciseRound(parseFloat(retail - cost), 2);
+  const total = preciseRound(parseFloat(retail) - parseFloat(cost), 2);
 
   return total;
 };
@@ -225,7 +225,7 @@ const profitTaskOrAddonRetailWithMarkup = (taskObj, partsArr, tagTypeId, markupD
     taskOnlyTotalCost(calcObj)
     : addonOnlyTotalCost(calcObj);
 
-  const total = preciseRound(parseFloat(retail - cost), 2);
+  const total = preciseRound(parseFloat(retail) - parseFloat(cost), 2);
 
   return total;
 }
@@ -376,6 +376,7 @@ export {
   taskOnlyLaborCost,
   addonOnlyLaborCost,
   taskOnlyLaborRetail,
+  addonOnlyLaborRetail,
   taskOrAddonLaborWithPartsRetail,
   taskOnlyStandardRate,
   addonOnlyStandardRate,

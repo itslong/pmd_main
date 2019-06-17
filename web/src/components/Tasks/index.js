@@ -14,6 +14,7 @@ export {
   taskOnlyLaborCost,
   addonOnlyLaborCost,
   taskOnlyLaborRetail,
+  addonOnlyLaborRetail,
   taskOrAddonLaborWithPartsRetail,
   taskOnlyStandardRate,
   addonOnlyStandardRate,
