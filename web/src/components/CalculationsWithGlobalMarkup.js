@@ -6,6 +6,7 @@ import {
   taskOnlyLaborCost,
   addonOnlyLaborCost,
   taskOnlyLaborRetail,
+  addonOnlyLaborRetail,
   taskOrAddonLaborWithPartsRetail,
   taskOnlyStandardRate,
   addonOnlyStandardRate,
@@ -38,15 +39,9 @@ const renameAndRebuildRelatedPartsDisplayFields = (dataArr, tagTypeId, markupDat
   return calculateTaskDetailRelatedPartsTableFields(dataArr, tagTypeId, markupData, displayFields);
 };
 
-const createTaskDetailTotalsTableData = (taskObj, partsArr, tagTypeId, markupData) => {
+const createTaskDetailTotalsTableData = (taskObj, partsArr, tagTypeId, markupData, taskType) => {
   const markupObj = createSingleMarkupObj(tagTypeId, markupData);
   const calcObj = createCalcObj(taskObj, partsArr, tagTypeId, markupData);
-
-  //check taskData.task_attribute
-  const { task_attribute } = taskObj;
-
-  // let taskType = task_attribute == 'Task Only' ? 'task' : 'addon';
-  let taskType = 'task'
 
   const customerTotal = createTotalsTableCustomerTotal(taskObj, partsArr, tagTypeId, markupData, taskType);
   const costs = createTotalsTableCosts(taskObj, partsArr, tagTypeId, markupData, taskType);
@@ -68,13 +63,14 @@ const createTotalsTableCustomerTotal = (taskObj, partsArr, tagTypeId, markupData
   const totalMisc = taskType == 'task' ? misc_tos_retail_hourly_rate : 'N/A';
   const totalValue = taxTotalForTaskAddonLaborWithPartsRetail(taskObj, partsArr, tagTypeId, markupData, taskType);
   const totalStandard = taxTotalForTaskAddonLaborWithPartsRetailMarkup(taskObj, partsArr, tagTypeId, markupData, taskType);
-  
   const totalObj = {
-    totalParts,
-    totalLabor,
-    totalMisc,
-    totalValue,
-    totalStandard
+    'idName': 'customer total placeholder',
+    '': 'Customer Total',
+    'Parts': totalParts,
+    'Labor': totalLabor,
+    'Misc/Tos': totalMisc,
+    'Value $': totalValue,
+    'Standard $': totalStandard
   };
 
   return totalObj
@@ -89,13 +85,14 @@ const createTotalsTableCosts = (taskObj, partsArr, tagTypeId, markupData, taskTy
   const costMisc = taskType == 'task' ? misc_tos_cost_hourly_rate : 'N/A';
   const costValue = 'N/A';
   const costStandard = 'N/A';
-  
   const costObj = {
-    costParts,
-    costLabor,
-    costMisc,
-    costValue,
-    costStandard,
+    'idName': 'cost placeholder',
+    '': 'Costs',
+    'Parts': costParts,
+    'Labor': costLabor,
+    'Misc/Tos': costMisc,
+    'Value $': costValue,
+    'Standard $': costStandard,
   };
 
   return costObj;
@@ -112,11 +109,13 @@ const createTotalsTableRetail = (taskObj, partsArr, tagTypeId, markupData, taskT
   const retailValue = taskOrAddonLaborWithPartsRetail(taskObj, partsArr, tagTypeId, markupData, taskType);
   const retailStandard = taskType == 'task' ? taskOnlyStandardRate(calcObj) : addonOnlyStandardRate(calcObj);
   const retailObj = {
-    retailParts,
-    retailLabor,
-    retailMisc,
-    retailValue,
-    retailStandard
+    'idName': 'retail placeholder',
+    '': 'Retail',
+    'Parts': retailParts,
+    'Labor': retailLabor,
+    'Misc/Tos': retailMisc,
+    'Value $': retailValue,
+    'Standard $': retailStandard
   };
 
   return retailObj;
@@ -129,11 +128,13 @@ const createTotalsTableSalesTax = (partsArr, tagTypeId, markupData) => {
   const taxValue = 'N/A';
   const taxStandard = 'N/A';
   const taxObj = {
-    taxParts,
-    taxLabor,
-    taxMisc,
-    taxValue,
-    taxStandard
+    'idName': 'tax placeholder',
+    '': 'Sales Tax',
+    'Parts': taxParts,
+    'Labor': taxLabor,
+    'Misc/Tos': taxMisc,
+    'Value $': taxValue,
+    'Standard $': taxStandard
   };
 
   return taxObj;
@@ -146,11 +147,13 @@ const createTotalsTableProfit = (taskObj, partsArr, tagTypeId, markupData, taskT
   const profitValue = profitTaskOrAddonRetail(taskObj, partsArr, tagTypeId, markupData, taskType)
   const profitStandard = profitTaskOrAddonRetailWithMarkup(taskObj, partsArr, tagTypeId, markupData, taskType)
   const profitObj = {
-    profitParts,
-    profitLabor,
-    profitMisc,
-    profitValue,
-    profitStandard
+    'idName': 'profit placeholder',
+    '': 'Profit',
+    'Parts': profitParts,
+    'Labor': profitLabor,
+    'Misc/Tos': profitMisc,
+    'Value $': profitValue,
+    'Standard $': profitStandard
   };
 
   return profitObj;

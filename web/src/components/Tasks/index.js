@@ -3,6 +3,7 @@ export { default as TaskDetail } from './TaskDetail';
 export { default as TaskEdit } from './TaskEdit';
 export { default as TaskFormFields } from './TaskFormFields';
 export { default as TasksDisplay } from './TasksDisplay';
+export { default as TaskDetailTotalsTable } from './TaskDetailTotalsTable';
 export {
   calculateTasksMainDisplayFields,
   calculateTaskDetailRelatedPartsTableFields,
@@ -13,6 +14,7 @@ export {
   taskOnlyLaborCost,
   addonOnlyLaborCost,
   taskOnlyLaborRetail,
+  addonOnlyLaborRetail,
   taskOrAddonLaborWithPartsRetail,
   taskOnlyStandardRate,
   addonOnlyStandardRate,

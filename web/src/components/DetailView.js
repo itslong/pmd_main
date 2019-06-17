@@ -10,6 +10,7 @@ import {
   createTaskDetailTotalsTableData
 } from './CalculationsWithGlobalMarkup';
 import { renameStaticTableFields, handlePluralNames } from './fieldNameAliases';
+import { TaskDetailTotalsTable } from './Tasks';
 
 /*
 Only applies to Tasks, Categories, Jobs. Reference PartDetailWithState for Parts Detail.
@@ -17,6 +18,10 @@ Only applies to Tasks, Categories, Jobs. Reference PartDetailWithState for Parts
 class DetailView extends Component {
   constructor(props) {
     super(props);
+    // only display the totalsTable when it's task detail.
+    const { currentItem } = this.props;
+    const totalsTable = currentItem == 'task' ? true : false;
+
     this.state = {
       itemData: {},
       relatedChildData: [], // array
@@ -24,11 +29,10 @@ class DetailView extends Component {
       tagTypes: {},
       isLoaded: false,
       globalMarkup: [],
-      taskAndAddonTotalsData: {},
+      allowTotalsTable: totalsTable,
     }
 
     this.handleClickEditByRoute = this.handleClickEditByRoute.bind(this);
-    this.handleTaskAttributeCalculations = this.handleTaskAttributeCalculations.bind(this);
   }
 
   componentDidMount() {
@@ -62,9 +66,6 @@ class DetailView extends Component {
         isLoaded:true,
         globalMarkup: markupData
       });
-
-      // console.log('detail state: ', this.state);
-      // console.log('related child (parts) arr: ', this.state.relatedChildData)
     });
   }
 
@@ -91,18 +92,12 @@ class DetailView extends Component {
     })
   }
 
-  handleTaskAttributeCalculations() {
-    const { itemData, relatedChildData, globalMarkup, tagTypes } = this.state;
-    
-    // const totalsTableData = (itemData, relatedChildData, tagTypes.id, globalMarkup)
-    // this.setState({
-    //   taskAndAddonTotalsData: totalsTableData
-    // })
-    const stuff = createTaskDetailTotalsTableData(itemData, relatedChildData, tagTypes.id, globalMarkup)
-  }
 
   render() {
-    const { itemData, relatedChildData, relatedParent, tagTypes, isLoaded } = this.state;
+    const { 
+      itemData, relatedChildData, relatedParent, tagTypes,
+      isLoaded, allowTotalsTable, globalMarkup
+    } = this.state;
     const { currentItem, fetchType, tableNumLinks } = this.props;
 
     const renamedRelatedChildData = this.filterOutputData();
@@ -126,18 +121,23 @@ class DetailView extends Component {
       </div>
       : <NotFound message={'This item does not exist.'} />
 
-    const taskAttributeButton = itemData.task_attribute ? 
-      <Button
-        type={'primary'}
-        title={`Display ${itemData.task_attribute} table.`}
-        action={this.handleTaskAttributeCalculations}
-      /> : '';
+    const tableData = allowTotalsTable && isLoaded ? 
+      {
+        task: itemData,
+        tagType: tagTypes,
+        parts: relatedChildData,
+        markup: globalMarkup
+      } : '';
 
+    const displayTotalsTable = allowTotalsTable && isLoaded ?
+      <TaskDetailTotalsTable
+        data={tableData}
+      /> : '';
 
     return (
       <div>
         {showItemDetail}
-        {taskAttributeButton}
+        {displayTotalsTable}
       </div>
     )
   }
