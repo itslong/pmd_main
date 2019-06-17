@@ -16,6 +16,7 @@ export {
   allRelatedPartsBaseSubtotalCost,
   allRelatedPartsRetailWithQuantitySubtotal,
   allRelatedPartsRetailSubtotalCostWithMarkup,
-  allRelatedPartsRetailWithTax,
+  allRelatedPartsRetailIncludingTax,
   calculateTaxForAllRelatedPartsRetailSubtotal,
+  calculateProfitAllParts,
 } from './PartsCalculateRates';

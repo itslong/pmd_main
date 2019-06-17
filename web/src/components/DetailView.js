@@ -5,10 +5,11 @@ import { DetailsTable, Button } from './common';
 import { editPathWithId } from './frontendBaseRoutes';
 import NotFound from './NotFound';
 import { FetchGlobalMarkup } from './endpoints';
-import { renameAndRebuildRelatedPartsDisplayFields, TaxTotalWithPartRetailAndTaskOnlyLabor } from './CalculationsWithGlobalMarkup';
+import { 
+  renameAndRebuildRelatedPartsDisplayFields,
+  createTaskDetailTotalsTableData
+} from './CalculationsWithGlobalMarkup';
 import { renameStaticTableFields, handlePluralNames } from './fieldNameAliases';
-
-// import { profitTaskOrAddonRetailWithMarkup } from './Tasks';
 
 /*
 Only applies to Tasks, Categories, Jobs. Reference PartDetailWithState for Parts Detail.
@@ -23,7 +24,7 @@ class DetailView extends Component {
       tagTypes: {},
       isLoaded: false,
       globalMarkup: [],
-      taskAndAddonTotalsData: [], //array of objects
+      taskAndAddonTotalsData: {},
     }
 
     this.handleClickEditByRoute = this.handleClickEditByRoute.bind(this);
@@ -62,7 +63,7 @@ class DetailView extends Component {
         globalMarkup: markupData
       });
 
-      console.log('detail state: ', this.state);
+      // console.log('detail state: ', this.state);
       // console.log('related child (parts) arr: ', this.state.relatedChildData)
     });
   }
@@ -93,9 +94,11 @@ class DetailView extends Component {
   handleTaskAttributeCalculations() {
     const { itemData, relatedChildData, globalMarkup, tagTypes } = this.state;
     
-
-    // const stuff = profitTaskOrAddonRetailWithMarkup(itemData, relatedChildData, tagTypes.id, globalMarkup, 'task')
-    // console.log('stuff: ', stuff)
+    // const totalsTableData = (itemData, relatedChildData, tagTypes.id, globalMarkup)
+    // this.setState({
+    //   taskAndAddonTotalsData: totalsTableData
+    // })
+    const stuff = createTaskDetailTotalsTableData(itemData, relatedChildData, tagTypes.id, globalMarkup)
   }
 
   render() {
