@@ -1,0 +1,12 @@
+{% extends "admin/change_list.html" %}
+
+{% block object-tools %}
+  <div>
+    <form action="update_part_retail_with_new_markup/" method="POST">
+      {% csrf_token %}
+        <button type="submit">Update All Parts Retail With New Markup Percent</button>
+    </form>
+  </div>
+  <br />
+  {{ block.super }}
+{% endblock %}
