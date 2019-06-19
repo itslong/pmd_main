@@ -159,6 +159,8 @@ class CreatePartsForm extends Component {
 
   handleBasePartCost(e) {
     let partCost = e.target.value;
+
+    // validate the value, then execute the function
     const costObj = calculateRetailCost(partCost, this.state.partsMarkupData)
     this.handleRetailPartCost(costObj)
     this.setState({ base_part_cost: partCost });

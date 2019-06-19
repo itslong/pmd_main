@@ -406,7 +406,7 @@ const CreateTask = (formData) => {
 const UpdateTaskOnly = (taskId, formData) => {
   const path = process.env.NODE_ENV === 'development' ? process.env.LOCAL_PATH : PROD_BASE_PATH;
   const url = path + 'api/task/';
-  const action = '/edit-only/';
+  const action = '/edit-only';
   const endpoint = new URL(url + taskId + action);
   const csrfToken = GetCookie('csrftoken');
 
@@ -628,7 +628,7 @@ const CreateCategory = (formData) => {
 const UpdateCategoryAndRelatedTasks = (categoryId, formData) => {
   const path = process.env.NODE_ENV === 'development' ? process.env.LOCAL_PATH : PROD_BASE_PATH;
   const url = path + 'api/category/';
-  const action = '/edit-only/';
+  const action = '/edit-only';
   const endpoint = new URL(url + categoryId + action);
   const csrfToken = GetCookie('csrftoken');
 

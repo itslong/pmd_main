@@ -33,7 +33,7 @@ class TaskFormFields extends Component {
       task_attribute: data.task_attribute,
       tag_types: data.tag_types.id,
       categories: data.categories.category_name || 'No category selected.',
-      tag_types_as_values: data.tag_types,
+      tag_types_as_values: data.tag_types.tag_name,
       tag_types_choices: tagTypesChoices,
       category: data.categories.category_name, // read only
       estimated_contractor_hours: data.estimated_contractor_hours,
@@ -119,8 +119,8 @@ class TaskFormFields extends Component {
           task_desc: newData.task_desc,
           task_comments: newData.task_comments,
           task_attribute: newData.task_attribute,
-          tag_types: newData.tag_types.id,
-          tag_types_as_values: newData.tag_types,
+          tag_types: newData.tag_types.id, //id only for submission
+          tag_types_as_values: newData.tag_types.tag_name, //string: tag type's tag_name
           tag_types_choices: tagTypesChoices,
           estimated_contractor_hours: newData.estimated_contractor_hours,
           estimated_contractor_minutes: newData.estimated_contractor_minutes,
@@ -156,7 +156,8 @@ class TaskFormFields extends Component {
 
   handleSubmitChanges(e) {
     e.preventDefault();
-    const { id: task_id, submitPartsValuesForDisplay, toggleLoadNewData, tag_types } = this.state;
+    const { id: task_id, submitPartsValuesForDisplay } = this.state;
+
     const filteredPartsData = submitPartsValuesForDisplay.map(({ id: part_id, quantity }) => {
       return {
         task: task_id,
@@ -165,7 +166,7 @@ class TaskFormFields extends Component {
       }
     });
 
-    const submitted = UpdateTaskRelatedPartsSubmit(task_id, filteredPartsData)
+    const submitted = UpdateTaskRelatedPartsSubmit(task_id, filteredPartsData);
     submitted.then((results) => {
       if (results === 'Success') {
         const formData = this.getFormDataFromState();
@@ -174,7 +175,7 @@ class TaskFormFields extends Component {
         update.then(() => {
           this.setState({
             relatedPartsTableIsLoaded: false,
-            toggleLoadNewData: !toggleLoadNewData
+            toggleLoadNewData: !this.state.toggleLoadNewData
           });
         })
       }
@@ -233,8 +234,6 @@ class TaskFormFields extends Component {
     const selected = e.target.selectedOptions[0];
     const tagTypeId = selected.id;
     const tagTypeValue = selected.value;
-
-    console.log('changed tags: ', e.target.value, tagTypeId)
 
     this.setState({
       tag_types: tagTypeId,
@@ -389,8 +388,6 @@ class TaskFormFields extends Component {
 
     const { tableNumLinks } = this.props;
 
-    const tagTypeOptionValue = this.state.tag_types_as_values.tag_name || '';
-
     const searchTableConfigProps = {
       extraColHeaders: '',
       extraRowProps: undefined,
@@ -520,7 +517,7 @@ class TaskFormFields extends Component {
 
           <Select
             title={'Task Tag Types'}
-            value={tagTypeOptionValue}
+            value={this.state.tag_types_as_values}
             options={this.state.tag_types_choices}
             handleChange={this.handleTagTypesChange}
           />
