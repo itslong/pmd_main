@@ -121,6 +121,9 @@ class PartsMarkup(models.Model):
   range_high = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)
   markup_percent = models.DecimalField(max_digits=8, decimal_places=2, default=0.00)
 
+  def __str__(self):
+    return ('id: %i, low: %.2f, high: %.2f, markup_percent: %.2f') % (self.id, self.range_low, self.range_high, self.markup_percent)
+
 
 class GlobalMarkup(models.Model):
   tag_types = models.ForeignKey(TagTypesChoices, on_delete=models.SET_NULL, null=True)
