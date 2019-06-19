@@ -22,8 +22,8 @@ class CreateTasksForm extends Component {
       task_desc: '',
       task_comments: '',
       task_attribute: '',
-      tag_types:'', //pk of tag types
-      tagTypesAsValues: '', // single value
+      tag_types:'', //pk
+      tagTypeAsValue: '', // single string
       tagTypesChoices: [],
       estimated_contractor_hours: 0,
       estimated_contractor_minutes: 0,
@@ -74,7 +74,8 @@ class CreateTasksForm extends Component {
 
   }
 
-  handleClearForm() {
+  handleClearForm(e) {
+    e.preventDefault();
     this.setState({
       task_id: '',
       task_name: '',
@@ -82,7 +83,7 @@ class CreateTasksForm extends Component {
       task_comments: '',
       task_attribute: '',
       tag_types:'', //pk of tag types
-      tagTypesAsValues: '',
+      tagTypeAsValue: '',
       estimated_contractor_hours: 0,
       estimated_contractor_minutes: 0,
       estimated_asst_hours: 0,
@@ -94,7 +95,7 @@ class CreateTasksForm extends Component {
 
   getFormDataFromState() {
     const {
-      tagTypesAsValues,
+      tagTypeAsValue,
       tagTypesChoices,
       redirectAfterSubmit,
       ...formData
@@ -162,13 +163,13 @@ class CreateTasksForm extends Component {
 
     this.setState({
       tag_types: tagTypeId,
-      tagTypesAsValues: tagTypeValue
+      tagTypeAsValue: tagTypeValue
     });
 
   }
 
   render() {
-    const { use_fixed_labor_rate, redirectAfterSubmit } = this.state;
+    const { use_fixed_labor_rate, redirectAfterSubmit, tagTypesChoices, tagTypeAsValue } = this.state;
     if (redirectAfterSubmit) {
       return <Redirect to={TASKS_DISPLAY_PATH} />
     } 
@@ -269,9 +270,10 @@ class CreateTasksForm extends Component {
           {displayFixedLaborRate}
           
           <Select
-            title={'Task Tag Types'}
-            value={this.state.tagTypesAsValues.tag_name}
-            options={this.state.tagTypesChoices}
+            title={'Task Tag Type'}
+            placeholder={'Select a tag type'}
+            value={this.state.tagTypeAsValue}
+            options={tagTypesChoices}
             handleChange={this.handleTagTypesChange}
           />
 
