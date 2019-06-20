@@ -4,7 +4,7 @@ import { withRouter } from 'react-router-dom';
 import { Input, Button, Table, TableRowWithButtons, TableRowWithCheckbox } from './common';
 import Modal from './Modal';
 import DialogModal from './DialogModal';
-import { editPathWithId } from './frontendBaseRoutes';
+import { editPathWithId, itemPathWithId } from './frontendBaseRoutes';
 import Pager from './Pager';
 import SearchComponent from './SearchComponent';
 import { FetchGlobalMarkup } from './endpoints';
@@ -132,12 +132,12 @@ class DisplayComponent extends Component {
   handleClickEditByRoute(e) {
     const id = e.target.id;
 
-    const nextPath = editPathWithId(id, this.state.displayType)
-    console.log('next path: ' + nextPath)
+    const nextPath = editPathWithId(id, this.state.displayType);
+    const detailPath = itemPathWithId(id, this.state.displayType);
     this.props.history.push(nextPath, {
-      itemId: id
-    })
-
+      itemId: id,
+      detailPath
+    });
   }
 
   handleClickEditInModal(e) {

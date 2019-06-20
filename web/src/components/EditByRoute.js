@@ -21,7 +21,6 @@ class EditByRoute extends Component {
   }
 
   componentDidMount() {
-    // console.log('editroute : ' + JSON.stringify(this.props.match))
     const { fetchRoute } = this.props;
     // fetch by id
     const id = this.props.match.params.id;
@@ -58,7 +57,7 @@ class EditByRoute extends Component {
 
   render() {
     const { itemData, itemId, tagTypesChoices, isEditing } = this.state;
-    const { children, searchTypeForChild, history } = this.props;
+    const { children, searchTypeForChild, history, mainPath, mainPathName } = this.props;
 
     // cloning TaskFormFields
     const childrenWithProps = Children.map(children, child => 
@@ -82,8 +81,8 @@ class EditByRoute extends Component {
     return (
       <div>
         { formFields }
-        <Link to={this.props.mainPath}>Back to {this.props.mainPathName}</Link>
-
+        <Link to={mainPath}>Back to {mainPathName}</Link>
+        <Link style={{paddingLeft: '40px'}} to={history.location.state.detailPath}>Go to {mainPathName} detail</Link>
       </div>
     )
   }
