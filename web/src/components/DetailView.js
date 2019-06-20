@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { withRouter } from 'react-router-dom';
 
 import { DetailsTable, Button } from './common';
-import { editPathWithId } from './frontendBaseRoutes';
+import { editPathWithId, itemPathWithId } from './frontendBaseRoutes';
 import NotFound from './NotFound';
 import { FetchGlobalMarkup } from './endpoints';
 import { 
@@ -85,11 +85,12 @@ class DetailView extends Component {
     const { itemId, currentItem } = this.props;
     const id = this.props.itemId;
 
-    const nextPath = editPathWithId(id, currentItem)
-    console.log('next path: ' + nextPath)
+    const nextPath = editPathWithId(id, currentItem);
+    const detailPath = itemPathWithId(id, currentItem);
     this.props.history.push(nextPath, {
-      itemId: id
-    })
+      itemId: id,
+      detailPath
+    });
   }
 
 

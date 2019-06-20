@@ -30,7 +30,6 @@ class PartsMarkupAdmin(admin.ModelAdmin):
 
     for part in parts:
       markup_percent_by_part_id = (markups_obj[int(part.markup_percent_id)].markup_percent) / 100
-      markup_percent_by_part_id = (markups_obj[int(part.markup_percent_id)].markup_percent) / 100
       new_part_retail = part.base_part_cost + (part.base_part_cost * markup_percent_by_part_id) 
       part.retail_part_cost = f'{new_part_retail:.2f}'
       part.save()
