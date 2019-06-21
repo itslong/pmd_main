@@ -13,6 +13,16 @@ import { Input, Button, TextArea, Checkbox, Select } from '../common';
 import { calculateRetailCost } from './CalculatePartsCustomMarkupField';
 import { PARTS_DISPLAY_PATH } from '../frontendBaseRoutes';
 import { moneyLimitSixRegEx, lettersNumbersHyphenRegEx } from '../helpers';
+import {   
+  partNameErrorMsg,
+  partNumLengthErrorMsg,
+  partNumHyphensErrorMsg,
+  partCostErrorMsg,
+  tagTypesErrorMsg,
+  fieldRequiredErrorMsg,
+  fieldErrorStyle,
+  fieldErrorInlineMsgStyle
+} from './PartsValidators';
 
 
 class CreatePartsForm extends Component {
@@ -342,19 +352,19 @@ class CreatePartsForm extends Component {
       /> : '';
 
     const partNameErrorMsg = partName ?
-      <p style={errorMsgStyle}>{partNameMsg}</p>
+      <p style={fieldErrorInlineMsgStyle}>{partNameMsg}</p>
       : ''; 
 
     const partNumErrorMsg = masterPartNum ?
-      <p style={errorMsgStyle}>{partNumMsg}</p>
+      <p style={fieldErrorInlineMsgStyle}>{partNumMsg}</p>
       : ''; 
 
     const tagTypesErrorMsg = tagTypes ?
-      <p style={errorMsgStyle}>{tagTypesMsg}</p>
+      <p style={fieldErrorInlineMsgStyle}>{tagTypesMsg}</p>
       : ''; 
 
     const basePartErrorMsg = basePartCost ?
-      <p style={errorMsgStyle}>{basePartMsg}</p>
+      <p style={fieldErrorInlineMsgStyle}>{basePartMsg}</p>
       : '';
 
 
@@ -368,7 +378,7 @@ class CreatePartsForm extends Component {
               placeholder={'Enter the new part name.'}
               value={this.state.part_name}
               handleChange={this.handlePartName}
-              style={partName ? errorStyle : null}
+              style={partName ? fieldErrorStyle : null}
             />
             {partNameErrorMsg}
           </div>
@@ -380,7 +390,7 @@ class CreatePartsForm extends Component {
               placeholder={'Enter the master part number.'}
               value={this.state.master_part_num}
               handleChange={this.handleMasterPartNum}
-              style={masterPartNum ? errorStyle : null}
+              style={masterPartNum ? fieldErrorStyle : null}
             />
             {partNumErrorMsg}
           </div>
@@ -423,7 +433,7 @@ class CreatePartsForm extends Component {
               type={'edit'}
               title={'Select Tag Types'}
               action={this.displayTagTypes}
-              style={tagTypes ? errorStyle : null}
+              style={tagTypes ? fieldErrorStyle : null}
             />
             {tagTypesChoicesSelect}
             {tagTypesErrorMsg}
@@ -438,7 +448,7 @@ class CreatePartsForm extends Component {
               placeholder={'Enter the base part cost.'}
               value={this.state.base_part_cost}
               handleChange={this.handleBasePartCost}
-              style={basePartCost ? errorStyle : null}
+              style={basePartCost ? fieldErrorStyle : null}
             />
             {basePartErrorMsg}
           </div>
@@ -471,39 +481,9 @@ class CreatePartsForm extends Component {
 }
 
 // remove when css is added
-const errorStyle = {
-  border: '1px solid red',
-};
-
-const errorMsgStyle = {
-  color: 'red',
-  paddingLeft: '20px',
-};
-
 const horizontalLayoutStyle = {
   display: 'flex',
   flexDirection: 'row',
 };
-
-const disabledButtonStyle = {
-  cursor: 'not-allowed',
-  pointerEvents: 'none',
-  color: '#c0c0c0',
-  backgroundColor: '#ffffff'
-};
-
-const activeButtonStyle = {
-  backgroundColor: '#2284BA',
-  color: 'white',
-  cursor: 'pointer'
-};
-
-
-const partNameErrorMsg = 'Part Name must be 3 or more characters.';
-const partNumLengthErrorMsg = 'The Part Number must be at least 3 or more characters and less than 11 characters.';
-const partNumHyphensErrorMsg = 'The Part Number cannot begin or end with a hyphen (-). Only 1 hypen allowed.';
-const partCostErrorMsg = 'Must be a positive number with (2) decimal places, greater than 0 or less than 99999.99. Must be in this format: 0.00';
-const tagTypesErrorMsg = 'Must select at least one or more tag types.';
-const fieldRequiredErrorMsg = 'This field is required.';
 
 export default CreatePartsForm;
