@@ -6,7 +6,7 @@ const Input = (props) => {
       <label htmlFor={props.name} className='form-label'>{props.title}</label>
       <input
         readOnly={props.readOnly}
-        className='form-input'
+        className={props.className || 'form-input'}
         id={props.name}
         name={props.name}
         type={props.type}

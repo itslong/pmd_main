@@ -1,6 +1,7 @@
 import React from 'react';
 
-// hit the api to get ranges
+import { preciseRound } from '../Tasks'
+
 
 // return '9999' as id. Change function to set custom retail price. No markup
 const calculateRetailCostWithCustomMarkup = (basePartCost, customMarkupPercent) => {
@@ -18,24 +19,24 @@ const calculateRetailCostWithCustomMarkup = (basePartCost, customMarkupPercent) 
 
 
 const calculateRetailCost = (basePartCost, markupPercentsData) => {
-  let cost = parseInt(basePartCost);
+  let cost = parseFloat(basePartCost);
   let markupId = 0;
   let retailCost = 0;
 
-  let markupObj = markupPercentsData.filter(data => {
+  const markupObj = markupPercentsData.filter(data => {
     const low = parseInt(data.range_low);
     const high = parseInt(data.range_high);
 
     if (cost <= high && cost >= low) {
       return data;
     }
-  })
+  });
 
   if (markupObj.length > 0) {
     markupId = markupObj[0].id;
 
-    let percent = parseInt(markupObj[0].markup_percent);
-    retailCost = cost + (cost * (percent / 100));
+    const percent = parseFloat(markupObj[0].markup_percent);
+    retailCost = preciseRound(parseFloat(cost + (cost * (percent / 100))), 2);
   }
 
   return {
