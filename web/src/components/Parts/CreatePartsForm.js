@@ -12,6 +12,17 @@ import {
 import { Input, Button, TextArea, Checkbox, Select } from '../common';
 import { calculateRetailCost } from './CalculatePartsCustomMarkupField';
 import { PARTS_DISPLAY_PATH } from '../frontendBaseRoutes';
+import { moneyLimitSixRegEx, lettersNumbersHyphenRegEx } from '../helpers';
+import {   
+  partNameErrorMsg,
+  partNumLengthErrorMsg,
+  partNumHyphensErrorMsg,
+  partCostErrorMsg,
+  tagTypesErrorMsg,
+  fieldRequiredErrorMsg,
+  fieldErrorStyle,
+  fieldErrorInlineMsgStyle
+} from './PartsValidators';
 
 
 class CreatePartsForm extends Component {
@@ -32,7 +43,20 @@ class CreatePartsForm extends Component {
       retail_part_cost: '',
       is_active: true,
       redirectAfterSubmit: false,
-      partsMarkupData: []
+      partsMarkupData: [],
+      formFieldErrors: {
+        part_name: false,
+        masterPartNum: false,
+        basePartCost: false,
+        tagTypes: false,
+      },
+      formFieldErrorMsgs: {
+        part_name: '',
+        masterPartNum: '',
+        basePartCost: '',
+        tagTypes: '',
+      },
+      formValid: false,
     }
     this.handleSubmit = this.handleSubmit.bind(this);
     this.handleClearForm = this.handleClearForm.bind(this);
@@ -76,31 +100,106 @@ class CreatePartsForm extends Component {
       markup_percent_id: '',
       retail_part_cost: '',
       is_active: true,
-      redirectAfterSubmit: false
+      redirectAfterSubmit: false,
+      formFieldErrors: {
+        ...this.state.formFieldErrors, 
+        partName: false,
+        masterPartNum: false,
+        basePartCost: false,
+        tagTypes: false,
+      },
+      formFieldErrorMsgs: {
+        ...this.state.formFieldErrorMsgs,
+        partName: '',
+        masterPartNum: '',
+        basePartCost: '',
+        tagTypes: '',
+      },
+      formValid: false,
     });
   }
 
   handleSubmit(e) {
     e.preventDefault();
+    const formValid = this.validateFormState();
+
+    if (!formValid) {
+      return
+    }
+
     const formData = this.getFormDataFromState();
-    // console.log('the formdata: ', JSON.stringify(formData))
 
     let create = CreatePart(formData);
     create.then(data => {
       console.log('created: ' + JSON.stringify(data))
       this.handleRedirectAfterSubmit();
-    })
+    });
+  }
 
+  validateFormState() {
+    const { formFieldErrors, part_name, master_part_num, base_part_cost, tag_types } = this.state;
+    const { partName, masterPartNum, basePartCost, tagTypes } = formFieldErrors;
+
+    // field must not be empy and no errors
+    const partNameValid = part_name !== '' && !partName ? true : false;
+    const partNumValid = master_part_num !== '' && !masterPartNum ? true : false;
+    const partCostValid = base_part_cost !== '' && !basePartCost ? true : false;
+    const tagTypesValid = tag_types.length !== 0 && !tagTypes ? true : false;
+
+    const formValid = partNameValid && partNumValid && partCostValid && tagTypesValid ? true : false;
+
+    if (!formValid) {
+      this.setState({
+        formValid: false,
+        formFieldErrors: {
+          ...this.state.formFieldErrors, 
+          partName: !partNameValid,
+          masterPartNum: !partNumValid,
+          basePartCost: !partCostValid,
+          tagTypes: !tagTypesValid,
+        },
+        formFieldErrorMsgs: {
+          ...this.state.formFieldErrorMsgs,
+          partName: fieldRequiredErrorMsg,
+          masterPartNum: fieldRequiredErrorMsg,
+          basePartCost: fieldRequiredErrorMsg,
+          tagTypes: fieldRequiredErrorMsg,
+        },
+      });
+      return false;
+    }
+
+    this.setState({ 
+      formValid,
+      formFieldErrors: {
+        ...this.state.formFieldErrors, 
+        partName: false,
+        masterPartNum: false,
+        basePartCost: false,
+        tagTypes: false,
+      },
+      formFieldErrorMsgs: {
+        ...this.state.formFieldErrorMsgs,
+        partName: '',
+        masterPartNum: '',
+        basePartCost: '',
+        tagTypes: '',
+      },
+    });
+    return formValid;
   }
 
   getFormDataFromState() {
-    const { 
+    const {
       tagTypesAsValues,
       tagTypesChoices,
       tagTypesDisplay,
       is_active,
       redirectAfterSubmit,
       partsMarkupData,
+      formFieldErrors,
+      formFieldErrorMsgs,
+      formValid,
       ...formData
     } = this.state;
 
@@ -113,11 +212,46 @@ class CreatePartsForm extends Component {
   }
 
   handlePartName(e) {
-    this.setState({ part_name: e.target.value });
+    const part_name = e.target.value;
+
+    if (part_name.length < 3) {
+      return this.setState({
+        part_name: part_name,
+        formFieldErrors: { ...this.state.formFieldErrors, partName: true },
+        formFieldErrorMsgs: { ...this.state.formFieldErrorMsgs, partName: partNameErrorMsg }
+      });
+    }
+
+    this.setState({ 
+      part_name: part_name,
+      formFieldErrors: { ...this.state.formFieldErrors, partName: false },
+      formFieldErrorMsgs: { ...this.state.formFieldErrorMsgs, partName: '' }
+    });
   }
 
   handleMasterPartNum(e) {
-    this.setState({ master_part_num: e.target.value });
+    const partNum = e.target.value;
+
+    const partNumValidated = lettersNumbersHyphenRegEx.test(partNum);
+    const lengthValid = partNum.length < 3 || partNum.length > 10 ? false : true;
+
+
+    if (!lengthValid || !partNumValidated) {
+      // check if length is satisfied.
+      const errorMsg = !lengthValid ? partNumLengthErrorMsg : partNumHyphensErrorMsg;
+
+      return this.setState({
+        master_part_num: partNum,
+        formFieldErrors: { ...this.state.formFieldErrors, masterPartNum: true },
+        formFieldErrorMsgs: { ...this.state.formFieldErrorMsgs, masterPartNum: errorMsg }
+      });
+    }
+
+    this.setState({ 
+      master_part_num: partNum,
+      formFieldErrors: { ...this.state.formFieldErrors, masterPartNum: false },
+      formFieldErrorMsgs: { ...this.state.formFieldErrorMsgs, masterPartNum: '' },
+    });
   }
 
   handleMfgPartNum(e) {
@@ -148,7 +282,9 @@ class CreatePartsForm extends Component {
 
     this.setState({
       tag_types: tags,
-      tagTypesAsValues: choicesAsValues
+      tagTypesAsValues: choicesAsValues,
+      formFieldErrors: { ...this.state.formFieldErrors, tagTypes: false },
+      formFieldErrorMsgs: { ...this.state.formFieldErrorMsgs, tagTypes: '' },
     });
   }
 
@@ -158,30 +294,52 @@ class CreatePartsForm extends Component {
   }
 
   handleBasePartCost(e) {
-    let partCost = e.target.value;
+    const { partsMarkupData } = this.state;
 
-    // validate the value, then execute the function
-    const costObj = calculateRetailCost(partCost, this.state.partsMarkupData)
-    this.handleRetailPartCost(costObj)
-    this.setState({ base_part_cost: partCost });
+    let partCost = e.target.value;
+    const costObjValidated = moneyLimitSixRegEx.test(partCost);
+
+    if (!costObjValidated) {
+      return this.setState({
+        base_part_cost: partCost,
+        formFieldErrors: { ...this.state.formFieldErrors, basePartCost: true },
+        formFieldErrorMsgs: { ...this.state.formFieldErrorMsgs, basePartCost: partCostErrorMsg },
+      });
+    }
+
+
+    const costObj = calculateRetailCost(partCost, this.state.partsMarkupData);
+    this.handleRetailPartCost(costObj);
+
+    this.setState({ 
+      base_part_cost: partCost,
+      formFieldErrors: { ...this.state.formFieldErrors, basePartCost: false },
+      formFieldErrorMsgs: { ...this.state.formFieldErrorMsgs, basePartCost: ''}
+    });
   }
 
 
   handleRetailPartCost(costObj) {
-    let markupId = costObj.markupId ? costObj.markupId : '';
-    let retailCost = costObj.retailCost ? costObj.retailCost : 'Base Part Cost Exceeded.';
+    const { formFieldErrors } = this.state;
+    const { markupId, retailCost } = costObj;
 
     this.setState({ 
-      markup_percent_id: markupId, 
+      markup_percent_id: markupId,
       retail_part_cost: retailCost
     });
   }
 
   render() {
-    const { redirectAfterSubmit, tag_types, tagTypesChoices, tagTypesAsValues, tagTypesDisplay } = this.state;
+    const { 
+      redirectAfterSubmit, tag_types, tagTypesChoices, tagTypesAsValues, 
+      tagTypesDisplay, formFieldErrors, formFieldErrorMsgs, formValid
+    } = this.state;
     if (redirectAfterSubmit) {
       return <Redirect to={PARTS_DISPLAY_PATH} />
-    } 
+    }
+
+    const { basePartCost, partName, masterPartNum, tagTypes } = formFieldErrors;
+    const { basePartCost: basePartMsg, partName: partNameMsg, masterPartNum: partNumMsg, tagTypes: tagTypesMsg } = formFieldErrorMsgs;
 
     const tagTypesValues = tagTypesAsValues.map(({ tag_name }) => tag_name).join(', ').toString();
 
@@ -193,24 +351,49 @@ class CreatePartsForm extends Component {
         handleChange={this.handleMultiTagTypesChange}
       /> : '';
 
+    const partNameErrorMsg = partName ?
+      <p style={fieldErrorInlineMsgStyle}>{partNameMsg}</p>
+      : ''; 
+
+    const partNumErrorMsg = masterPartNum ?
+      <p style={fieldErrorInlineMsgStyle}>{partNumMsg}</p>
+      : ''; 
+
+    const tagTypesErrorMsg = tagTypes ?
+      <p style={fieldErrorInlineMsgStyle}>{tagTypesMsg}</p>
+      : ''; 
+
+    const basePartErrorMsg = basePartCost ?
+      <p style={fieldErrorInlineMsgStyle}>{basePartMsg}</p>
+      : '';
+
+
     return (
       <div>
         <form onSubmit={this.handleSubmit}>
-          <Input 
-            type={'text'}
-            title={'Part Name'}
-            placeholder={'Enter the new part name.'}
-            value={this.state.part_name}
-            handleChange={this.handlePartName}
-          />
+          <div style={horizontalLayoutStyle}>
+            <Input 
+              type={'text'}
+              title={'Part Name'}
+              placeholder={'Enter the new part name.'}
+              value={this.state.part_name}
+              handleChange={this.handlePartName}
+              style={partName ? fieldErrorStyle : null}
+            />
+            {partNameErrorMsg}
+          </div>
 
-          <Input 
-            type={'text'}
-            title={'Master Part Number'}
-            placeholder={'Enter the master part number.'}
-            value={this.state.master_part_num}
-            handleChange={this.handleMasterPartNum}
-          />
+          <div style={horizontalLayoutStyle}>
+            <Input 
+              type={'text'}
+              title={'Master Part Number'}
+              placeholder={'Enter the master part number.'}
+              value={this.state.master_part_num}
+              handleChange={this.handleMasterPartNum}
+              style={masterPartNum ? fieldErrorStyle : null}
+            />
+            {partNumErrorMsg}
+          </div>
 
           <Input 
             type={'text'}
@@ -245,22 +428,30 @@ class CreatePartsForm extends Component {
             style={{ width: '250px'}}
           />
           
-          <div style={{ display: 'flex', flexDirection: 'row' }}>
+          <div style={horizontalLayoutStyle}>
             <Button           
               type={'edit'}
               title={'Select Tag Types'}
               action={this.displayTagTypes}
+              style={tagTypes ? fieldErrorStyle : null}
             />
             {tagTypesChoicesSelect}
+            {tagTypesErrorMsg}
           </div>
           
-          <Input 
-            type={'text'}
-            title={'Base Part Cost'}
-            placeholder={'Enter the base part cost.'}
-            value={this.state.base_part_cost}
-            handleChange={this.handleBasePartCost}
-          />
+          <div style={horizontalLayoutStyle}>
+            <Input 
+              type={'text'}
+              name={'basePartCost'}
+              className={formFieldErrors.basePartCost ? 'error' : ''}
+              title={'Base Part Cost'}
+              placeholder={'Enter the base part cost.'}
+              value={this.state.base_part_cost}
+              handleChange={this.handleBasePartCost}
+              style={basePartCost ? fieldErrorStyle : null}
+            />
+            {basePartErrorMsg}
+          </div>
 
           <Input 
             readOnly
@@ -288,5 +479,11 @@ class CreatePartsForm extends Component {
     );
   }
 }
+
+// remove when css is added
+const horizontalLayoutStyle = {
+  display: 'flex',
+  flexDirection: 'row',
+};
 
 export default CreatePartsForm;
