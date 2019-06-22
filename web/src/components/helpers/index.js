@@ -16,4 +16,5 @@ export {
   fieldRequiredErrorMsg,
   fieldErrorStyle,
   fieldErrorInlineMsgStyle,
+  horizontalLayoutStyle
 } from './GeneralFieldsErrorHandling';

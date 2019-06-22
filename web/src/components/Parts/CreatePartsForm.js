@@ -21,7 +21,8 @@ import {
   tagTypesErrorMsg,
   fieldRequiredErrorMsg,
   fieldErrorStyle,
-  fieldErrorInlineMsgStyle
+  fieldErrorInlineMsgStyle,
+  horizontalLayoutStyle
 } from '../helpers';
 
 
@@ -479,11 +480,5 @@ class CreatePartsForm extends Component {
     );
   }
 }
-
-// remove when css is added
-const horizontalLayoutStyle = {
-  display: 'flex',
-  flexDirection: 'row',
-};
 
 export default CreatePartsForm;

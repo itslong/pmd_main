@@ -18,7 +18,8 @@ import {
   customRetailErrorMsg,
   fieldRequiredErrorMsg,
   fieldErrorStyle,
-  fieldErrorInlineMsgStyle
+  fieldErrorInlineMsgStyle,
+  horizontalLayoutStyle
 } from '../helpers';
 
 
@@ -562,11 +563,5 @@ class EditPartsForm extends Component {
     );
   }
 }
-
-// remove when css is added
-const horizontalLayoutStyle = {
-  display: 'flex',
-  flexDirection: 'row',
-};
 
 export default EditPartsForm;
