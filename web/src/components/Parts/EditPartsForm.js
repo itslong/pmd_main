@@ -16,7 +16,6 @@ import {
   partNumHyphensErrorMsg,
   partCostErrorMsg,
   customRetailErrorMsg,
-  tagTypesErrorMsg,
   fieldRequiredErrorMsg,
   fieldErrorStyle,
   fieldErrorInlineMsgStyle
@@ -124,7 +123,7 @@ class EditPartsForm extends Component {
     const formValid = this.validateFormState();
 
     if (!formValid) {
-      return
+      return;
     }
 
     const formData = this.getFormDataFromState();
@@ -137,12 +136,14 @@ class EditPartsForm extends Component {
       this.props.itemEdit(true);
       this.props.handleCloseModal();
       this.props.handleShowDialog();
-      console.log('updated')
     })
   }
 
   validateFormState() {
-    const { formFieldErrors, part_name, master_part_num, base_part_cost, set_custom_part_cost, custom_retail_part_cost } = this.state;
+    const { 
+      formFieldErrors, part_name, master_part_num, base_part_cost,
+      set_custom_part_cost, custom_retail_part_cost
+    } = this.state;
     const { partName, masterPartNum, basePartCost, customRetail } = formFieldErrors;
 
     // field must not be empy and no errors
