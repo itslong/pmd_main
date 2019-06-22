@@ -6,19 +6,6 @@ const partCostErrorMsg = 'Must be a positive number with (2) decimal places, gre
 const tagTypesErrorMsg = 'Must select at least one or more tag types.';
 const customRetailErrorMsg = partCostErrorMsg;
 
-const fieldRequiredErrorMsg = 'This field is required.';
-
-// remove when css is added.
-const fieldErrorStyle = {
-  border: '1px solid red',
-};
-
-const fieldErrorInlineMsgStyle = {
-  color: 'red',
-  paddingLeft: '20px',
-  fontSize: 'small',
-  width: '40%',
-};
 
 export {
   partNameErrorMsg,
@@ -27,7 +14,4 @@ export {
   partCostErrorMsg,
   customRetailErrorMsg,
   tagTypesErrorMsg,
-  fieldRequiredErrorMsg,
-  fieldErrorStyle,
-  fieldErrorInlineMsgStyle,
 };
