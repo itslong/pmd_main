@@ -133,7 +133,7 @@ class EditPartsForm extends Component {
 
     let update = UpdatePart(this.state.id, formData);
     update.then(() => {
-      this.props.itemEdit(true);
+      this.props.itemEdit();
       this.props.handleCloseModal();
       this.props.handleShowDialog();
     })
