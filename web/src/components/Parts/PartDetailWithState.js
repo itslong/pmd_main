@@ -20,7 +20,7 @@ class PartDetailWithState extends Component {
       partFound: false,
       showEditModal: false,
       showDialog: false,
-      partEditing: false,
+      togglePartEditing: false,
       displayAndLoadRelatedTasks: false,
       relatedTasksData: []
     }
@@ -61,9 +61,9 @@ class PartDetailWithState extends Component {
   }
 
   componentDidUpdate(prevProps, prevState) {
-    const { partEditing, displayAndLoadRelatedTasks, partId, relatedTasksData } = this.state;
+    const { togglePartEditing, displayAndLoadRelatedTasks, partId, relatedTasksData } = this.state;
 
-    if (partEditing !== prevState.partEditing) {
+    if (togglePartEditing !== prevState.togglePartEditing) {
       const partId = this.props.match.params.id;
       let getPart = FetchPart(partId)
 
@@ -105,23 +105,18 @@ class PartDetailWithState extends Component {
   }
 
   handleClickEditPartInModal() {
-    console.log('edit clicked')
     this.setState({
       showEditModal: !this.state.showEditModal
-    }, () => {
-      console.log('part detail state: ', JSON.stringify(this.state))
-    })
+    });
   }
 
-  handlePartEdit(bool) {
-    console.log('part edit state fired')
+  handlePartEdit() {
     this.setState({
-      partEditing: bool
+      togglePartEditing: !this.state.togglePartEditing
     })
   }
 
   handleCloseEditModal() {
-    console.log('closed modal fired')
     this.setState({
       showEditModal: !this.state.showEditModal,
     });
@@ -132,7 +127,6 @@ class PartDetailWithState extends Component {
   }
 
   handleCloseDialog() {
-    console.log('close dialog fired: ');
     this.setState({ showDialog: !this.state.showDialog })
   }
 
