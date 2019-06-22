@@ -9,6 +9,18 @@ import {
   FetchTagTypesChoices,
   CSRFToken
 } from '../endpoints';
+import { moneyLimitSixRegEx, lettersNumbersHyphenRegEx } from '../helpers';
+import {   
+  partNameErrorMsg,
+  partNumLengthErrorMsg,
+  partNumHyphensErrorMsg,
+  partCostErrorMsg,
+  customRetailErrorMsg,
+  tagTypesErrorMsg,
+  fieldRequiredErrorMsg,
+  fieldErrorStyle,
+  fieldErrorInlineMsgStyle
+} from './PartsValidators';
 
 
 class EditPartsForm extends Component {
@@ -28,11 +40,24 @@ class EditPartsForm extends Component {
       base_part_cost: '',
       markup_percent_id: '',
       set_custom_part_cost: false,
-      custom_retail_part_cost: '',
+      custom_retail_part_cost: '0.00',
       retail_part_cost: '',
       is_active: true,
       actionType: this.props.actionType,
-      parts_markup_data: []
+      partsMarkupData: [],
+      formFieldErrors: {
+        part_name: false,
+        masterPartNum: false,
+        basePartCost: false,
+        customRetail: false,
+      },
+      formFieldErrorMsgs: {
+        part_name: '',
+        masterPartNum: '',
+        basePartCost: '',
+        customRetail: '',
+      },
+      formValid: false,
     }
 
     this.handlePartName = this.handlePartName.bind(this);
@@ -85,7 +110,7 @@ class EditPartsForm extends Component {
         custom_retail_part_cost: part.custom_retail_part_cost,
         retail_part_cost: part.retail_part_cost,
         is_active: part.is_active,
-        parts_markup_data: markups,
+        partsMarkupData: markups,
         tag_types_choices: tagsChoices
       })
     })
@@ -96,11 +121,13 @@ class EditPartsForm extends Component {
 
   handleSubmit(e) {
     e.preventDefault();
+    const formValid = this.validateFormState();
 
-    // clean state
-    const { tag_types_as_values, tag_types_choices, tag_types_display, parts_markup_data, actionType,...formData }  = this.state;
+    if (!formValid) {
+      return
+    }
 
-
+    const formData = this.getFormDataFromState();
     if (this.state.actionType === 'delete') {
       formData.is_active = false;
     }
@@ -114,13 +141,121 @@ class EditPartsForm extends Component {
     })
   }
 
+  validateFormState() {
+    const { formFieldErrors, part_name, master_part_num, base_part_cost, set_custom_part_cost, custom_retail_part_cost } = this.state;
+    const { partName, masterPartNum, basePartCost, customRetail } = formFieldErrors;
 
- handlePartName(e) {
-    this.setState({ part_name: e.target.value });
+    // field must not be empy and no errors
+    const partNameValid = part_name !== '' && !partName ? true : false;
+    const partNumValid = master_part_num !== '' && !masterPartNum ? true : false;
+    const partCostValid = base_part_cost !== '' && !basePartCost ? true : false;
+
+    let customRetailValid = true;
+
+    if (set_custom_part_cost) {
+      customRetailValid = custom_retail_part_cost !== '' && !customRetail ? true : false;
+    }
+
+    const formValid = partNameValid && partNumValid && partCostValid && customRetailValid ? true : false;
+
+    if (!formValid) {
+      this.setState({
+        formValid: false,
+        formFieldErrors: {
+          ...this.state.formFieldErrors, 
+          partName: !partNameValid,
+          masterPartNum: !partNumValid,
+          basePartCost: !partCostValid,
+          customRetail: !customRetailValid,
+        },
+        formFieldErrorMsgs: {
+          ...this.state.formFieldErrorMsgs,
+          partName: fieldRequiredErrorMsg,
+          masterPartNum: fieldRequiredErrorMsg,
+          basePartCost: fieldRequiredErrorMsg,
+          customRetail: fieldRequiredErrorMsg,
+        },
+      });
+      return false;
+    }
+
+    this.setState({ 
+      formValid,
+      formFieldErrors: {
+        ...this.state.formFieldErrors, 
+        partName: false,
+        masterPartNum: false,
+        basePartCost: false,
+        customRetail: false,
+      },
+      formFieldErrorMsgs: {
+        ...this.state.formFieldErrorMsgs,
+        partName: '',
+        masterPartNum: '',
+        basePartCost: '',
+        customRetail: '',
+      },
+    });
+    return formValid;
+  }
+
+  getFormDataFromState() {
+    const {
+      tag_types_as_values,
+      tag_types_choices,
+      tag_types_display,
+      partsMarkupData,
+      actionType,
+      formFieldErrors,
+      formFieldErrorMsgs,
+      formValid,
+      ...formData
+    } = this.state;
+
+    return formData;
+  }
+
+  handlePartName(e) {
+    const partName = e.target.value;
+
+    if (partName.length < 3) {
+      return this.setState({
+        part_name: partName,
+        formFieldErrors: { ...this.state.formFieldErrors, partName: true },
+        formFieldErrorMsgs: { ...this.state.formFieldErrorMsgs, partName: partNameErrorMsg }
+      });
+    }
+
+    this.setState({ 
+      part_name: partName,
+      formFieldErrors: { ...this.state.formFieldErrors, partName: false },
+      formFieldErrorMsgs: { ...this.state.formFieldErrorMsgs, partName: '' }
+    });
   }
 
   handleMasterPartNum(e) {
-    this.setState({ master_part_num: e.target.value });
+    const partNum = e.target.value;
+
+    const partNumValidated = lettersNumbersHyphenRegEx.test(partNum);
+    const lengthValid = partNum.length < 3 || partNum.length > 10 ? false : true;
+
+
+    if (!lengthValid || !partNumValidated) {
+      // check if length is satisfied.
+      const errorMsg = !lengthValid ? partNumLengthErrorMsg : partNumHyphensErrorMsg;
+
+      return this.setState({
+        master_part_num: partNum,
+        formFieldErrors: { ...this.state.formFieldErrors, masterPartNum: true },
+        formFieldErrorMsgs: { ...this.state.formFieldErrorMsgs, masterPartNum: errorMsg }
+      });
+    }
+
+    this.setState({ 
+      master_part_num: partNum,
+      formFieldErrors: { ...this.state.formFieldErrors, masterPartNum: false },
+      formFieldErrorMsgs: { ...this.state.formFieldErrorMsgs, masterPartNum: '' },
+    });
   }
 
   handleMfgPartNum(e) {
@@ -136,31 +271,69 @@ class EditPartsForm extends Component {
   }
 
   handleBasePartCost(e) {
-    const { set_custom_part_cost, parts_markup_data } = this.state;
+    const { set_custom_part_cost, partsMarkupData } = this.state;
 
-    this.setState({ base_part_cost: e.target.value }, () => {
+    const partCost = e.target.value;
+    const costObjValidated = moneyLimitSixRegEx.test(partCost);
+
+    if (!costObjValidated) {
+      return this.setState({
+        base_part_cost: partCost,
+        formFieldErrors: { ...this.state.formFieldErrors, basePartCost: true },
+        formFieldErrorMsgs: { ...this.state.formFieldErrorMsgs, basePartCost: partCostErrorMsg },
+      });
+    }
+
+    this.setState({ 
+      base_part_cost: partCost,
+      formFieldErrors: { ...this.state.formFieldErrors, basePartCost: false },
+      formFieldErrorMsgs: { ...this.state.formFieldErrorMsgs, basePartCost: ''}
+    }, () => {
       if (!set_custom_part_cost) {
         // must reference 'this.state.base_part_cost' to get the value AFTER setState.
-        const costObj = calculateRetailCost(this.state.base_part_cost, parts_markup_data);
+        const costObj = calculateRetailCost(this.state.base_part_cost, partsMarkupData);
         this.handleRetailPartCost(costObj);
       }
     });
-
   }
 
   handleSetCustomPartCostChecked(e) {
+    //when checked, forces an error to the user to set the custom retail.
+    const initialCustomRetailCost = e.target.checked ? '' : '0.00';
+
     this.setState({ 
       set_custom_part_cost: e.target.checked,
-      custom_retail_part_cost: 0
+      custom_retail_part_cost: initialCustomRetailCost,
+    }, () => {
+      if (!this.state.set_custom_part_cost) {
+        // must reference state directly to get the value AFTER setState.
+        const costObj = calculateRetailCost(this.state.base_part_cost, this.state.partsMarkupData);
+        this.handleRetailPartCost(costObj);
+      }
     });
   }
 
   handleCustomRetailPartCost(e) {
+    const customRetailCost = e.target.value;
+
+    const costObjValidated = moneyLimitSixRegEx.test(customRetailCost);
+
+    if (!costObjValidated) {
+      return this.setState({
+        retail_part_cost: customRetailCost,
+        custom_retail_part_cost: customRetailCost,
+        formFieldErrors: { ...this.state.formFieldErrors, customRetail: true },
+        formFieldErrorMsgs: { ...this.state.formFieldErrorMsgs, customRetail: partCostErrorMsg },
+      });
+    }
+
     this.setState({
-    markup_percent_id: 9999, 
-      custom_retail_part_cost: e.target.value,
-      retail_part_cost: e.target.value
-    })
+      markup_percent_id: 9999, 
+      custom_retail_part_cost: customRetailCost,
+      retail_part_cost: customRetailCost,
+      formFieldErrors: { ...this.state.formFieldErrors, customRetail: false },
+      formFieldErrorMsgs: { ...this.state.formFieldErrorMsgs, customRetail: ''}
+    });
   }
 
   handleMultiTagTypesChange(e) {
@@ -192,10 +365,8 @@ class EditPartsForm extends Component {
     this.setState({ is_active: e.target.checked })
   }
 
-  handleRetailPartCost(cost) {
-    // TODO: Add error handling when markup data does not exist.
-    let markupId = cost.markupId ? cost.markupId : '';
-    let retailCost = cost.retailCost ? cost.retailCost : 'Base Part Cost Exceeded.';
+  handleRetailPartCost(costObj) {
+    const { markupId, retailCost } = costObj;
 
     this.setState({ 
       markup_percent_id: markupId, 
@@ -204,15 +375,14 @@ class EditPartsForm extends Component {
   }
 
   render() {
-    const {actionType, part_name, tag_types, tag_types_display, tag_types_choices, tag_types_as_values} = this.state;
-    let showCustomRetailPartCostField = this.state.set_custom_part_cost ?
-      <Input 
-        type={'text'}
-        title={'Enter Custom Retail Part Cost'}
-        placeholder={'Enter a custom retail part cost.'}
-        value={this.state.custom_retail_part_cost}
-        handleChange={this.handleCustomRetailPartCost}
-      /> : '';
+    const {
+      actionType, part_name, tag_types, tag_types_display, tag_types_choices,
+      tag_types_as_values, formFieldErrors, formFieldErrorMsgs
+    } = this.state;
+
+    const { basePartCost, partName, masterPartNum, customRetail } = formFieldErrors;
+    const { basePartCost: basePartMsg, partName: partNameMsg, masterPartNum: partNumMsg, customRetail: customRetailMsg } = formFieldErrorMsgs;
+
 
     const tagTypesValues = tag_types_as_values.map(({ tag_name }) => tag_name).join(', ').toString();
 
@@ -224,6 +394,35 @@ class EditPartsForm extends Component {
         handleChange={this.handleMultiTagTypesChange}
       /> : '';
 
+    const partNameErrorMsg = partName ?
+      <p style={fieldErrorInlineMsgStyle}>{partNameMsg}</p>
+      : '';
+
+    const partNumErrorMsg = masterPartNum ?
+      <p style={fieldErrorInlineMsgStyle}>{partNumMsg}</p>
+      : '';
+
+    const basePartErrorMsg = basePartCost ?
+      <p style={fieldErrorInlineMsgStyle}>{basePartMsg}</p>
+      : '';
+
+    const customRetailErrorMsg = customRetail ?
+      <p style={fieldErrorInlineMsgStyle}>{customRetailMsg}</p>
+      : '';
+
+    const showCustomRetailPartCostField = this.state.set_custom_part_cost ?
+      <div style={horizontalLayoutStyle}>
+        <Input 
+          type={'text'}
+          className={formFieldErrors.customRetail ? 'error' : ''}
+          title={'Enter Custom Retail Part Cost'}
+          placeholder={'Enter a custom retail part cost.'}
+          value={this.state.custom_retail_part_cost}
+          handleChange={this.handleCustomRetailPartCost}
+          style={customRetail ? fieldErrorStyle : null}
+        />
+        {customRetailErrorMsg}
+      </div> : '';
 
     const partsFields = (actionType === 'delete') ?
       <div>
@@ -236,21 +435,31 @@ class EditPartsForm extends Component {
           value={this.state.id}
         />
 
-        <Input 
-          type={'text'}
-          title={'Part Name'}
-          placeholder={'Enter the new part name.'}
-          value={this.state.part_name}
-          handleChange={this.handlePartName}
-        />
+        <div style={horizontalLayoutStyle}>
+          <Input
+            type={'text'}
+            className={formFieldErrors.basePartCost ? 'error' : ''}
+            title={'Part Name'}
+            placeholder={'Enter the new part name.'}
+            value={this.state.part_name}
+            handleChange={this.handlePartName}
+            style={partName ? fieldErrorStyle : null}
+          />
+          {partNameErrorMsg}
+        </div>
 
-        <Input 
-          type={'text'}
-          title={'Master Part Number'}
-          placeholder={'Enter the master part number.'}
-          value={this.state.master_part_num}
-          handleChange={this.handleMasterPartNum}
-        />
+        <div style={horizontalLayoutStyle}>
+          <Input 
+            type={'text'}
+            className={formFieldErrors.masterPartNum ? 'error': ''}
+            title={'Master Part Number'}
+            placeholder={'Enter the master part number.'}
+            value={this.state.master_part_num}
+            handleChange={this.handleMasterPartNum}
+            style={masterPartNum ? fieldErrorStyle : null}
+          />
+          {partNumErrorMsg}
+        </div>
 
         <Input 
           type={'text'}
@@ -294,14 +503,18 @@ class EditPartsForm extends Component {
           handleChange={this.handlePartDesc}
         />
 
-
-        <Input 
-          type={'text'}
-          title={'Base Part Cost'}
-          placeholder={'Enter the base part cost.'}
-          value={this.state.base_part_cost}
-          handleChange={this.handleBasePartCost}
-        />
+        <div style={horizontalLayoutStyle}>
+          <Input
+            type={'text'}
+            className={formFieldErrors.basePartCost ? 'error' : ''}
+            title={'Base Part Cost'}
+            placeholder={'Enter the base part cost.'}
+            value={this.state.base_part_cost}
+            handleChange={this.handleBasePartCost}
+            style={basePartCost ? fieldErrorStyle : null}
+          />
+          {basePartErrorMsg}
+        </div>
 
         <Checkbox 
           title={'Set Custom Retail Part Cost?'}
@@ -326,6 +539,7 @@ class EditPartsForm extends Component {
         />
         </div>
 
+
     return (
       <form>
         { partsFields }
@@ -347,5 +561,11 @@ class EditPartsForm extends Component {
     );
   }
 }
+
+// remove when css is added
+const horizontalLayoutStyle = {
+  display: 'flex',
+  flexDirection: 'row',
+};
 
 export default EditPartsForm;

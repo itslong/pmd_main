@@ -212,18 +212,18 @@ class CreatePartsForm extends Component {
   }
 
   handlePartName(e) {
-    const part_name = e.target.value;
+    const partName = e.target.value;
 
-    if (part_name.length < 3) {
+    if (partName.length < 3) {
       return this.setState({
-        part_name: part_name,
+        part_name: partName,
         formFieldErrors: { ...this.state.formFieldErrors, partName: true },
         formFieldErrorMsgs: { ...this.state.formFieldErrorMsgs, partName: partNameErrorMsg }
       });
     }
 
     this.setState({ 
-      part_name: part_name,
+      part_name: partName,
       formFieldErrors: { ...this.state.formFieldErrors, partName: false },
       formFieldErrorMsgs: { ...this.state.formFieldErrorMsgs, partName: '' }
     });
@@ -296,7 +296,7 @@ class CreatePartsForm extends Component {
   handleBasePartCost(e) {
     const { partsMarkupData } = this.state;
 
-    let partCost = e.target.value;
+    const partCost = e.target.value;
     const costObjValidated = moneyLimitSixRegEx.test(partCost);
 
     if (!costObjValidated) {
@@ -332,7 +332,7 @@ class CreatePartsForm extends Component {
   render() {
     const { 
       redirectAfterSubmit, tag_types, tagTypesChoices, tagTypesAsValues, 
-      tagTypesDisplay, formFieldErrors, formFieldErrorMsgs, formValid
+      tagTypesDisplay, formFieldErrors, formFieldErrorMsgs
     } = this.state;
     if (redirectAfterSubmit) {
       return <Redirect to={PARTS_DISPLAY_PATH} />

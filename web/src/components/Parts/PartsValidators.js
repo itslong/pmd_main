@@ -4,6 +4,8 @@ const partNumLengthErrorMsg = 'The Part Number must be at least 3 or more charac
 const partNumHyphensErrorMsg = 'The Part Number cannot begin or end with a hyphen (-). Only 1 hypen allowed.';
 const partCostErrorMsg = 'Must be a positive number with (2) decimal places, greater than 0 or less than 99999.99. Must be in this format: 0.00';
 const tagTypesErrorMsg = 'Must select at least one or more tag types.';
+const customRetailErrorMsg = partCostErrorMsg;
+
 const fieldRequiredErrorMsg = 'This field is required.';
 
 // remove when css is added.
@@ -14,6 +16,8 @@ const fieldErrorStyle = {
 const fieldErrorInlineMsgStyle = {
   color: 'red',
   paddingLeft: '20px',
+  fontSize: 'small',
+  width: '40%',
 };
 
 export {
@@ -21,6 +25,7 @@ export {
   partNumLengthErrorMsg,
   partNumHyphensErrorMsg,
   partCostErrorMsg,
+  customRetailErrorMsg,
   tagTypesErrorMsg,
   fieldRequiredErrorMsg,
   fieldErrorStyle,
