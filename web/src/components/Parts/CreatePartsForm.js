@@ -46,13 +46,13 @@ class CreatePartsForm extends Component {
       redirectAfterSubmit: false,
       partsMarkupData: [],
       formFieldErrors: {
-        part_name: false,
+        partName: false,
         masterPartNum: false,
         basePartCost: false,
         tagTypes: false,
       },
       formFieldErrorMsgs: {
-        part_name: '',
+        partName: '',
         masterPartNum: '',
         basePartCost: '',
         tagTypes: '',

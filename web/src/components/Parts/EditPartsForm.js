@@ -46,13 +46,13 @@ class EditPartsForm extends Component {
       actionType: this.props.actionType,
       partsMarkupData: [],
       formFieldErrors: {
-        part_name: false,
+        partName: false,
         masterPartNum: false,
         basePartCost: false,
         customRetail: false,
       },
       formFieldErrorMsgs: {
-        part_name: '',
+        partName: '',
         masterPartNum: '',
         basePartCost: '',
         customRetail: '',

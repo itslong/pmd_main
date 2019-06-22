@@ -4,6 +4,12 @@ import { Link, Redirect } from 'react-router-dom';
 import { FetchTagTypesChoices, CreateTask, CSRFToken } from '../endpoints';
 import { Input, Button, TextArea, Checkbox, Select } from '../common';
 import { TASKS_DISPLAY_PATH } from '../frontendBaseRoutes';
+import {
+  fieldRequiredErrorMsg,
+  fieldErrorStyle,
+  fieldErrorInlineMsgStyle,
+  horizontalLayoutStyle
+} from '../helpers';
 
 // if this becomes an api call, delete below
 const taskAttributeOptions = [
@@ -109,11 +115,13 @@ class CreateTasksForm extends Component {
   }
 
   handleTaskId(e) {
+    // required
     // if this is auto generated from backend, remove
     this.setState({ task_id: e.target.value });
   }
 
   handleTaskName(e) {
+    //required
     this.setState({ task_name: e.target.value });
   }
 
@@ -187,21 +195,27 @@ class CreateTasksForm extends Component {
     return (
       <div>
         <form onSubmit={this.handleSubmit}>
-          <Input 
-            type={'text'}
-            title={'Task ID'}
-            placeholder={'Enter the task id.'}
-            value={this.state.task_id}
-            handleChange={this.handleTaskId}
-          />
+          <div style={horizontalLayoutStyle}>
+            <Input 
+              type={'text'}
+              title={'Task ID'}
+              placeholder={'Enter the task id.'}
+              value={this.state.task_id}
+              handleChange={this.handleTaskId}
+            />
 
-          <Input 
-            type={'text'}
-            title={'Task Name'}
-            placeholder={'Enter the task name.'}
-            value={this.state.task_name}
-            handleChange={this.handleTaskName}
-          />
+          </div>
+
+          <div style={horizontalLayoutStyle}>
+            <Input 
+              type={'text'}
+              title={'Task Name'}
+              placeholder={'Enter the task name.'}
+              value={this.state.task_name}
+              handleChange={this.handleTaskName}
+            />
+
+          </div>
 
           <TextArea
             type={'text'}
