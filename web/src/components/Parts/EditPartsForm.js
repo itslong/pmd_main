@@ -19,7 +19,7 @@ import {
   fieldRequiredErrorMsg,
   fieldErrorStyle,
   fieldErrorInlineMsgStyle
-} from './PartsValidators';
+} from '../helpers';
 
 
 class EditPartsForm extends Component {
