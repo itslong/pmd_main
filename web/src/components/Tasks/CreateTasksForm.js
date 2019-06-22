@@ -5,10 +5,17 @@ import { FetchTagTypesChoices, CreateTask, CSRFToken } from '../endpoints';
 import { Input, Button, TextArea, Checkbox, Select } from '../common';
 import { TASKS_DISPLAY_PATH } from '../frontendBaseRoutes';
 import {
+  moneyLimitSixRegEx,
+  lettersNumbersHyphenRegEx,
   fieldRequiredErrorMsg,
+  singleTagTypeErrorMsg,
   fieldErrorStyle,
   fieldErrorInlineMsgStyle,
-  horizontalLayoutStyle
+  horizontalLayoutStyle,
+  taskNameErrorMsg,
+  taskIdLengthErrorMsg,
+  taskIdHyphensErrorMsg,
+  taskFixedLaborRateErrorMsg,
 } from '../helpers';
 
 // if this becomes an api call, delete below
@@ -38,6 +45,21 @@ class CreateTasksForm extends Component {
       use_fixed_labor_rate: false,
       fixed_labor_rate: 0,
       redirectAfterSubmit: false,
+      formFieldErrors: {
+        taskName: false,
+        taskId: false,
+        tagType: false,
+        taskAttr: false,
+        fixedLabor: false,
+      },
+      formFieldErrorMsgs: {
+        taskName: '',
+        taskId: '',
+        tagType: '',
+        taskAttr: '',
+        fixedLabor: ''
+      },
+      formValid: false,
     };
     this.handleSubmit = this.handleSubmit.bind(this);
     this.handleClearForm = this.handleClearForm.bind(this);
@@ -63,21 +85,25 @@ class CreateTasksForm extends Component {
     let tags = FetchTagTypesChoices();
     tags.then(tagsChoices => {
       this.setState({ tagTypesChoices: tagsChoices })
-    })
+    });
   }
 
   handleSubmit(e) {
     e.preventDefault(e);
+    const formValid = this.validateFormState();
+
+    if (!formValid) {
+      return
+    }
+
     const formData = this.getFormDataFromState();
 
-    console.log('clean form data: ', JSON.stringify(formData))
     let created = CreateTask(formData);
     created.then(data => {
-      console.log('created: ' + JSON.stringify(data))
+      console.log('created task: ' + JSON.stringify(data))
       this.handleRedirectAfterSubmit();
       // this.handleClearForm(e);
     });
-
   }
 
   handleClearForm(e) {
@@ -96,7 +122,95 @@ class CreateTasksForm extends Component {
       estimated_asst_minutes: 0,
       use_fixed_labor_rate: false,
       fixed_labor_rate: 0,
+      formFieldErrors: {
+        ...this.state.formFieldErrors,
+        taskId: false,
+        taskName: false,
+        tagType: false,
+        taskAttr: false,
+        fixedLabor: false,
+      },
+      formFieldErrorMsgs: {
+        ...this.state.formFieldErrorMsgs,
+        taskId: '',
+        taskName: '',
+        tagType: '',
+        taskAttr: '',
+        fixedLabor: '',
+      },
+      formValid: false,
     })
+  }
+
+  validateFormState() {
+    const {
+      formFieldErrors, task_id, task_name, task_attribute,
+      tag_types, use_fixed_labor_rate, fixed_labor_rate 
+    } = this.state;
+    const {
+      taskId: taskIdErr,
+      taskName: taskNameErr,
+      taskAttr: taskAttrErr,
+      tagType: tagTypeErr,
+      fixedLabor: fixedLaborErr
+    } = formFieldErrors;
+
+    const taskIdValid = task_id !== '' && !taskIdErr ? true : false;
+    const taskNameValid = task_name !== '' && !taskNameErr ? true : false;
+    const taskAttrValid = task_attribute !== '' && !taskAttrErr ? true : false;
+    const tagTypeValid = tag_types !== '' && !tagTypeErr ? true : false;
+
+    let fixedLaborValid = true;
+
+    if (use_fixed_labor_rate) {
+      fixedLaborValid = fixed_labor_rate !== '' && !fixedLaborErr ? true : false;
+    }
+
+    const formValid = taskIdValid && taskNameValid && taskAttrValid && tagTypeValid && fixedLaborValid ? true : false;
+
+    if (!formValid) {
+      this.setState({
+        formValid: false,
+        formFieldErrors: {
+          ...this.state.formFieldErrors,
+          taskId: !taskIdValid,
+          taskName: !taskNameValid,
+          tagType: !tagTypeValid,
+          taskAttr: !taskAttrValid,
+          fixedLabor: !fixedLaborValid,
+        },
+        formFieldErrorMsgs: {
+          ...this.state.formFieldErrorMsgs,
+          taskId: fieldRequiredErrorMsg,
+          taskName: fieldRequiredErrorMsg,
+          tagType: fieldRequiredErrorMsg,
+          taskAttr: fieldRequiredErrorMsg,
+          fixedLabor: fieldRequiredErrorMsg,
+        },
+      });
+      return false;
+    }
+
+    this.setState({
+      formValid,
+      formFieldErrors: {
+        ...this.state.formFieldErrors,
+        taskId: false,
+        taskName: false,
+        tagType: false,
+        taskAttr: false,
+        fixedLabor: false,
+      },
+      formFieldErrorMsgs: {
+        ...this.state.formFieldErrorMsgs,
+        taskId: '',
+        taskName: '',
+        tagType: '',
+        taskAttr: '',
+        fixedLabor: '',
+      },
+    });
+    return formValid;
   }
 
   getFormDataFromState() {
@@ -117,12 +231,45 @@ class CreateTasksForm extends Component {
   handleTaskId(e) {
     // required
     // if this is auto generated from backend, remove
-    this.setState({ task_id: e.target.value });
+    const taskId = e.target.value;
+
+    const lengthValid = taskId.length < 3 || taskId.length > 10 ? false : true;
+    const taskIdValidated = lettersNumbersHyphenRegEx.test(taskId);
+
+    if (!lengthValid || !taskIdValidated) {
+      const errorMsg = !lengthValid ? taskIdLengthErrorMsg : taskIdHyphensErrorMsg;
+
+      return this.setState({
+        task_id: taskId,
+        formFieldErrors: { ...this.state.formFieldErrors, taskId: true },
+        formFieldErrorMsgs: { ...this.state.formFieldErrorMsgs, taskId: errorMsg }
+      });
+    }
+
+    this.setState({ 
+      task_id: taskId,
+      formFieldErrors: { ...this.state.formFieldErrors, taskId: false },
+      formFieldErrorMsgs: { ...this.state.formFieldErrorMsgs, taskId: '' }
+    });
   }
 
   handleTaskName(e) {
     //required
-    this.setState({ task_name: e.target.value });
+    const taskName = e.target.value;
+
+    if (taskName.length < 3) {
+      return this.setState({
+        task_name: taskName,
+        formFieldErrors: { ...this.state.formFieldErrors, taskName: true },
+        formFieldErrorMsgs: { ...this.state.formFieldErrorMsgs, taskName: taskNameErrorMsg }
+      });
+    }
+
+    this.setState({ 
+      task_name: taskName,
+      formFieldErrors: { ...this.state.formFieldErrors, taskName: false },
+      formFieldErrorMsgs: { ...this.state.formFieldErrorMsgs, taskName: '' }
+    });
   }
 
   handleTaskDesc(e) {
@@ -134,7 +281,11 @@ class CreateTasksForm extends Component {
   }
 
   handleTaskAttribute(e) {
-    this.setState({ task_attribute: e.target.selectedOptions[0].value });
+    this.setState({ 
+      task_attribute: e.target.selectedOptions[0].value,
+      formFieldErrors: { ...this.state.formFieldErrors, taskAttr: false },
+      formFieldErrorMsgs: { ...this.state.formFieldErrorMsgs, taskAttr: '' },
+    });
   }
 
   handleEstContractorHours(e) {
@@ -154,14 +305,32 @@ class CreateTasksForm extends Component {
   }
 
   handleUseFixedLaborRate(e) {
+    const initialFixedLaborRate = e.target.checked ? '' : '0.00';
+
     this.setState({ 
       use_fixed_labor_rate: e.target.checked,
-      fixed_labor_rate: 0
+      fixed_labor_rate: initialFixedLaborRate,
     });
   }
 
   handleFixedLaborRate(e) {
-    this.setState({ fixed_labor_rate: e.target.value });
+    const laborRate = e.target.value;
+
+    const laborRateValidated = moneyLimitSixRegEx.test(laborRate);
+
+    if (!laborRateValidated) {
+      return this.setState({
+        fixed_labor_rate: laborRate,
+        formFieldErrors: { ...this.state.formFieldErrors, fixedLabor: true },
+        formFieldErrorMsgs: { ...this.state.formFieldErrorMsgs, fixedLabor: taskFixedLaborRateErrorMsg },
+      });
+    }
+
+    this.setState({ 
+      fixed_labor_rate: laborRate,
+      formFieldErrors: { ...this.state.formFieldErrors, fixedLabor: false },
+      formFieldErrorMsgs: { ...this.state.formFieldErrorMsgs, fixedLabor: '' },
+    });
   }
 
   handleTagTypesChange(e) {
@@ -171,26 +340,69 @@ class CreateTasksForm extends Component {
 
     this.setState({
       tag_types: tagTypeId,
-      tagTypeAsValue: tagTypeValue
+      tagTypeAsValue: tagTypeValue,
+      formFieldErrors: { ...this.state.formFieldErrors, tagType: false },
+      formFieldErrorMsgs: { ...this.state.formFieldErrorMsgs, tagType: '' },
     });
-
   }
 
   render() {
-    const { use_fixed_labor_rate, redirectAfterSubmit, tagTypesChoices, tagTypeAsValue } = this.state;
+    const { 
+      use_fixed_labor_rate, redirectAfterSubmit, tagTypesChoices, tagTypeAsValue,
+      formFieldErrors, formFieldErrorMsgs
+    } = this.state;
     if (redirectAfterSubmit) {
       return <Redirect to={TASKS_DISPLAY_PATH} />
     } 
 
+    const {
+      taskId: taskIdErr,
+      taskName: taskNameErr,
+      taskAttr: taskAttrErr,
+      tagType: tagTypeErr,
+      fixedLabor: fixedLaborErr
+    } = formFieldErrors;
+    const { 
+      taskId: taskIdMsg,
+      taskName: taskNameMsg,
+      tagType: tagTypeMsg,
+      taskAttr: taskAttrMsg,
+      fixedLabor: fixedLaborMsg 
+    } = formFieldErrorMsgs;
 
-    const displayFixedLaborRate = use_fixed_labor_rate ? 
-      <Input 
-        type={'text'}
-        title={'Fixed Labor Rate'}
-        placeholder={'0.00'}
-        value={this.state.fixed_labor_rate}
-        handleChange={this.handleFixedLaborRate}
-      /> : '';
+    const taskIdErrorMsg = taskIdErr ?
+      <p style={fieldErrorInlineMsgStyle}>{taskIdMsg}</p>
+      : '';
+
+    const taskNameErrorMsg = taskNameErr ?
+      <p style={fieldErrorInlineMsgStyle}>{taskNameMsg}</p>
+      : '';
+
+    const taskAttrErrorMsg = taskAttrErr ?
+      <p style={fieldErrorInlineMsgStyle}>{taskAttrMsg}</p>
+      : '';
+
+    const tagTypeErrorMsg = tagTypeErr ?
+      <p style={fieldErrorInlineMsgStyle}>{tagTypeMsg}</p>
+      : '';
+
+    const fixedLaborErrorMsg = fixedLaborErr ?
+      <p style={fieldErrorInlineMsgStyle}>{fixedLaborMsg}</p>
+      : '';
+
+    const displayFixedLaborRate = use_fixed_labor_rate ?
+      <div style={horizontalLayoutStyle}>
+        <Input 
+          type={'text'}
+          className={fixedLaborErr ? 'error' : ''}
+          title={'Fixed Labor Rate'}
+          placeholder={'0.00'}
+          value={this.state.fixed_labor_rate}
+          handleChange={this.handleFixedLaborRate}
+          style={fixedLaborErr ? fieldErrorStyle : null}
+        />
+        {fixedLaborErrorMsg}
+      </div> : '';
 
     return (
       <div>
@@ -198,23 +410,27 @@ class CreateTasksForm extends Component {
           <div style={horizontalLayoutStyle}>
             <Input 
               type={'text'}
+              className={taskIdErr ? 'error' : ''}
               title={'Task ID'}
               placeholder={'Enter the task id.'}
               value={this.state.task_id}
               handleChange={this.handleTaskId}
+              style={taskIdErr ? fieldErrorStyle : null}
             />
-
+            {taskIdErrorMsg}
           </div>
 
           <div style={horizontalLayoutStyle}>
             <Input 
               type={'text'}
+              className={taskNameErr ? 'error' : ''}
               title={'Task Name'}
               placeholder={'Enter the task name.'}
               value={this.state.task_name}
               handleChange={this.handleTaskName}
+              style={taskNameErr ? fieldErrorStyle : null}
             />
-
+            {taskNameErrorMsg}
           </div>
 
           <TextArea
@@ -234,14 +450,19 @@ class CreateTasksForm extends Component {
             handleChange={this.handleTaskComments}
           />
 
-          <Select
-            title={'Task Attribute'}
-            placeholder={'Select a task attribute'}
-            value={this.state.task_attribute}
-            options={taskAttributeOptions}
-            handleChange={this.handleTaskAttribute}
-          />
-          
+          <div style={horizontalLayoutStyle}>
+            <Select
+              className={taskAttrErr ? 'error' : ''}
+              title={'Task Attribute'}
+              placeholder={'Select a task attribute'}
+              value={this.state.task_attribute}
+              options={taskAttributeOptions}
+              handleChange={this.handleTaskAttribute}
+              style={taskAttrErr ? fieldErrorStyle : null}
+            />
+            {taskAttrErrorMsg}
+          </div>
+
           <Input
             type={'text'}
             title={'Estimated Contractor Hours'}
@@ -283,13 +504,18 @@ class CreateTasksForm extends Component {
 
           {displayFixedLaborRate}
           
-          <Select
-            title={'Task Tag Type'}
-            placeholder={'Select a tag type'}
-            value={this.state.tagTypeAsValue}
-            options={tagTypesChoices}
-            handleChange={this.handleTagTypesChange}
-          />
+          <div style={horizontalLayoutStyle}>
+            <Select
+              className={tagTypeErr ? 'error' : ''}
+              title={'Task Tag Type'}
+              placeholder={'Select a tag type'}
+              value={this.state.tagTypeAsValue}
+              options={tagTypesChoices}
+              handleChange={this.handleTagTypesChange}
+              style={tagTypeErr ? fieldErrorStyle : null}
+            />
+            {tagTypeErrorMsg}
+          </div>
 
           <CSRFToken />
            <p>Select parts for this task by going to <b>Task -> Edit</b> after submit.</p>

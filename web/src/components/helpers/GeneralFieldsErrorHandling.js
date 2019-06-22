@@ -22,5 +22,5 @@ export {
   fieldRequiredErrorMsg,
   fieldErrorStyle,
   fieldErrorInlineMsgStyle,
-  horizontalLayoutStyle
+  horizontalLayoutStyle,
 };

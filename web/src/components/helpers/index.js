@@ -18,3 +18,9 @@ export {
   fieldErrorInlineMsgStyle,
   horizontalLayoutStyle
 } from './GeneralFieldsErrorHandling';
+export {
+  taskNameErrorMsg,
+  taskIdLengthErrorMsg,
+  taskIdHyphensErrorMsg,
+  taskFixedLaborRateErrorMsg
+} from './TaskFieldsErrorHandling';

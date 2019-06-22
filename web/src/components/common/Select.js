@@ -8,10 +8,12 @@ const Select = (props) => {
     <div>
       <label htmlFor={props.name}> {props.title} </label>
       <select
+        className={props.className || 'form-select'}
         multiple={props.multiple}
         name={props.name}
         value={props.value}
         onChange={props.handleChange}
+        style={props.style}
       >
       {placeholderOption}
       {props.options.map(({ id, ...option }) => {
