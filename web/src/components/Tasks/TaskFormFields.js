@@ -75,7 +75,6 @@ class TaskFormFields extends Component {
         taskId: '',
         fixedLabor: ''
       },
-      formValid: false,
       toggleDialog: false,
     }
 
@@ -228,46 +227,30 @@ class TaskFormFields extends Component {
     const taskIdValid = task_id !== '' && !taskIdErr ? true : false;
     const taskNameValid = task_name !== '' && !taskNameErr ? true : false;
 
+    const taskIdErrMsg = !taskNameValid ? fieldRequiredErrorMsg : '';
+    const taskNameErrMsg = !taskNameValid ? fieldRequiredErrorMsg : '';
+    let fixedLaborErrMsg = '';
     let fixedLaborValid = true;
 
     if (use_fixed_labor_rate) {
       fixedLaborValid = fixed_labor_rate !== '' && !fixedLaborErr ? true : false;
+      fixedLaborErrMsg = fieldRequiredErrorMsg;
     }
 
     const formValid = taskIdValid && taskNameValid && fixedLaborValid ? true : false;
 
-    if (!formValid) {
-      this.setState({
-        formValid: false,
-        formFieldErrors: {
-          ...this.state.formFieldErrors,
-          taskId: !taskIdValid,
-          taskName: !taskNameValid,
-          fixedLabor: !fixedLaborValid,
-        },
-        formFieldErrorMsgs: {
-          ...this.state.formFieldErrorMsgs,
-          taskId: fieldRequiredErrorMsg,
-          taskName: fieldRequiredErrorMsg,
-          fixedLabor: fieldRequiredErrorMsg,
-        },
-      });
-      return false;
-    }
-
     this.setState({
-      formValid,
       formFieldErrors: {
         ...this.state.formFieldErrors,
-        taskId: false,
-        taskName: false,
-        fixedLabor: false,
+        taskId: !taskIdValid,
+        taskName: !taskNameValid,
+        fixedLabor: !fixedLaborValid,
       },
       formFieldErrorMsgs: {
         ...this.state.formFieldErrorMsgs,
-        taskId: '',
-        taskName: '',
-        fixedLabor: '',
+        taskId: taskIdErrMsg,
+        taskName: taskNameErrMsg,
+        fixedLabor: fixedLaborErrMsg,
       },
     });
     return formValid;
@@ -289,7 +272,7 @@ class TaskFormFields extends Component {
       globalMarkup,
       formFieldErrors,
       formFieldErrorMsgs,
-      formValid,
+      toggleDialog,
       ...formData
     } = this.state;
 
@@ -304,41 +287,29 @@ class TaskFormFields extends Component {
   handleTaskId(e) {
     const taskId = e.target.value;
 
-    const lengthValid = taskId.length < 3 || taskId.length > 10 ? false : true;
+    const lengthValid = taskId.length > 2 && taskId.length < 11 ? true : false;
     const taskIdValidated = lettersNumbersHyphenRegEx.test(taskId);
 
-    if (!lengthValid || !taskIdValidated) {
-      const errorMsg = !lengthValid ? taskIdLengthErrorMsg : taskIdHyphensErrorMsg;
-
-      return this.setState({
-        task_id: taskId,
-        formFieldErrors: { ...this.state.formFieldErrors, taskId: true },
-        formFieldErrorMsgs: { ...this.state.formFieldErrorMsgs, taskId: errorMsg }
-      });
-    }
+    const taskIdErr = !lengthValid || !taskIdValidated ? true : false;
+    const errorMsg = !lengthValid ? taskIdLengthErrorMsg : !taskIdValidated ? taskIdHyphensErrorMsg : '';
 
     this.setState({ 
       task_id: taskId,
-      formFieldErrors: { ...this.state.formFieldErrors, taskId: false },
-      formFieldErrorMsgs: { ...this.state.formFieldErrorMsgs, taskId: '' }
+      formFieldErrors: { ...this.state.formFieldErrors, taskId: taskIdErr },
+      formFieldErrorMsgs: { ...this.state.formFieldErrorMsgs, taskId: errorMsg }
     });
   }
 
   handleTaskName(e) {
     const taskName = e.target.value;
 
-    if (taskName.length < 3) {
-      return this.setState({
-        task_name: taskName,
-        formFieldErrors: { ...this.state.formFieldErrors, taskName: true },
-        formFieldErrorMsgs: { ...this.state.formFieldErrorMsgs, taskName: taskNameErrorMsg }
-      });
-    }
+    const nameErr = taskName.length < 3 ? true : false;
+    const errMsg = taskName.length < 3 ? taskNameErrorMsg : '';
 
     this.setState({ 
       task_name: taskName,
-      formFieldErrors: { ...this.state.formFieldErrors, taskName: false },
-      formFieldErrorMsgs: { ...this.state.formFieldErrorMsgs, taskName: '' }
+      formFieldErrors: { ...this.state.formFieldErrors, taskName: nameErr },
+      formFieldErrorMsgs: { ...this.state.formFieldErrorMsgs, taskName: errMsg }
     });
   }
 
@@ -396,21 +367,15 @@ class TaskFormFields extends Component {
 
   handleFixedLaborRate(e) {
     const laborRate = e.target.value;
-
     const laborRateValidated = moneyLimitSixRegEx.test(laborRate);
 
-    if (!laborRateValidated) {
-      return this.setState({
-        fixed_labor_rate: laborRate,
-        formFieldErrors: { ...this.state.formFieldErrors, fixedLabor: true },
-        formFieldErrorMsgs: { ...this.state.formFieldErrorMsgs, fixedLabor: taskFixedLaborRateErrorMsg },
-      });
-    }
+    const laborRateErr = laborRateValidated ? false : true;
+    const errorMsg = laborRateValidated ? '' : taskFixedLaborRateErrorMsg;
 
     this.setState({ 
       fixed_labor_rate: laborRate,
-      formFieldErrors: { ...this.state.formFieldErrors, fixedLabor: false },
-      formFieldErrorMsgs: { ...this.state.formFieldErrorMsgs, fixedLabor: '' },
+      formFieldErrors: { ...this.state.formFieldErrors, fixedLabor: laborRateErr },
+      formFieldErrorMsgs: { ...this.state.formFieldErrorMsgs, fixedLabor: errorMsg },
     });
   }
 
