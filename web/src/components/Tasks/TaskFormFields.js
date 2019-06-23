@@ -6,6 +6,7 @@ import SearchComponent from '../SearchComponent';
 import { UpdateTaskRelatedPartsSubmit, FetchGlobalMarkup, CSRFToken } from '../endpoints';
 import { TASKS_DISPLAY_PATH } from '../frontendBaseRoutes';
 import { renameAndRebuildRelatedPartsDisplayFields } from '../CalculationsWithGlobalMarkup';
+import DialogModal from '../DialogModal';
 import { 
   taskDetailRelatedPartsTableFields,
   taskRelatedPartsSearchResultsTableFields,
@@ -75,6 +76,7 @@ class TaskFormFields extends Component {
         fixedLabor: ''
       },
       formValid: false,
+      toggleDialog: false,
     }
 
     this.handleSubmitChanges = this.handleSubmitChanges.bind(this);
@@ -106,6 +108,7 @@ class TaskFormFields extends Component {
     this.handlePartQuantityChange = this.handlePartQuantityChange.bind(this);
     this.handleQueuePartsChanges = this.handleQueuePartsChanges.bind(this);
     this.handleCancelPartsChanges = this.handleCancelPartsChanges.bind(this);
+    this.toggleDialogState = this.toggleDialogState.bind(this);
   }
 
   componentDidMount() {
@@ -206,6 +209,8 @@ class TaskFormFields extends Component {
           this.setState({
             relatedPartsTableIsLoaded: false,
             toggleLoadNewData: !this.state.toggleLoadNewData
+          }, () => {
+            this.toggleDialogState();
           });
         })
       }
@@ -518,13 +523,17 @@ class TaskFormFields extends Component {
     })
   }
 
+  toggleDialogState() {
+    this.setState({ toggleDialog: !this.state.toggleDialog })
+  }
+
   render() {
     const { 
       madeChanges, use_fixed_labor_rate, relatedPartsTableIsLoaded, 
       submitPartsAsIds, submitPartsValuesForDisplay, 
       tempPartsValuesForDisplay, categories, 
       displayModalForSearch, tempPartsAsIds,
-      globalMarkup, formFieldErrors, formFieldErrorMsgs
+      globalMarkup, formFieldErrors, formFieldErrorMsgs, toggleDialog
     } = this.state;
 
     const { tableNumLinks } = this.props;
@@ -631,6 +640,14 @@ class TaskFormFields extends Component {
           action={this.handleCancelPartsChanges}
         />
       </Modal>: '';
+
+
+    const displaySuccessDialog = toggleDialog ?
+      <DialogModal
+        dialogText={'Successfully updated'}
+        handleCloseDialog={this.toggleDialogState}
+      />
+      : '';
 
     return (
       <div>
@@ -777,7 +794,7 @@ class TaskFormFields extends Component {
             action={this.handleCancelEdit}
           />
         </div>
-
+        {displaySuccessDialog}
 
       </div>
     )
