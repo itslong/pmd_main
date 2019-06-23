@@ -24,3 +24,8 @@ export {
   taskIdHyphensErrorMsg,
   taskFixedLaborRateErrorMsg
 } from './TaskFieldsErrorHandling';
+export {
+  categoryNameErrorMsg,
+  categoryIdHyphensErrorMsg,
+  categoryIdLengthErrorMsg
+} from './CategoryFieldsErrorHandling';

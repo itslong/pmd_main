@@ -4,6 +4,16 @@ import { Link, Redirect } from 'react-router-dom';
 import { CreateCategory, CSRFToken } from '../endpoints';
 import { Input, Button, TextArea, Checkbox, Select } from '../common';
 import { CATEGORIES_DISPLAY_PATH } from '../frontendBaseRoutes';
+import {
+  lettersNumbersHyphenRegEx,
+  fieldRequiredErrorMsg,
+  fieldErrorStyle,
+  fieldErrorInlineMsgStyle,
+  horizontalLayoutStyle,
+  categoryNameErrorMsg,
+  categoryIdHyphensErrorMsg,
+  categoryIdLengthErrorMsg
+} from '../helpers';
 
 
 class CreateCategoriesForm extends Component {
@@ -14,6 +24,15 @@ class CreateCategoriesForm extends Component {
       category_name: '',
       category_desc: '',
       redirectAfterSubmit: false,
+      formFieldErrors: {
+        categoryId: false,
+        categoryName: false,
+      },
+      formFieldErrorMsgs: {
+        categoryId: '',
+        categoryName: '',
+      },
+      formValid: false,
     }
 
     this.handleCategoryId = this.handleCategoryId.bind(this);
@@ -25,29 +44,13 @@ class CreateCategoriesForm extends Component {
 
   }
 
-  getFormDataFromState() {
-    const {
-      redirectAfterSubmit,
-      ...formData
-    } = this.state;
-
-    return formData;
-  }
-
-  handleCategoryId(e) {
-    this.setState({ category_id: e.target.value });
-  }
-
-  handleCategoryName(e) {
-    this.setState({ category_name: e.target.value });
-  }
-
-  handleCategoryDesc(e) {
-    this.setState({ category_desc: e.target.value });
-  }
-
   handleSubmit(e) {
     e.preventDefault();
+    const formValid = this.validateFormState();
+
+    if (!formValid) {
+      return;
+    }
 
     const formData = this.getFormDataFromState();
 
@@ -57,6 +60,63 @@ class CreateCategoriesForm extends Component {
     })
   }
 
+  validateFormState() {
+    const { formFieldErrors, category_id, category_name } = this.state;
+    const {
+      categoryId: catIdErr,
+      categoryName: catNameErr,
+    } = formFieldErrors;
+
+    const catIdValid = category_id !== '' && !catIdErr ? true : false;
+    const catNameValid = category_name !== '' && !catNameErr ? true : false;
+
+    const formValid = catIdValid && catNameValid ? true : false;
+
+    if (!formValid) {
+      this.setState({
+        formValid: false,
+        formFieldErrors: {
+          ...this.state.formFieldErrors,
+          categoryId: !catIdValid,
+          categoryName: !catNameValid,
+        },
+        formFieldErrorMsgs: {
+          ...this.state.formFieldErrorMsgs,
+          categoryId: fieldRequiredErrorMsg,
+          categoryName: fieldRequiredErrorMsg,
+        },
+      });
+      return false;
+    }
+
+    this.setState({
+      formValid,
+      formFieldErrors: {
+        ...this.state.formFieldErrors,
+        categoryId: false,
+        categoryName: false,
+      },
+      formFieldErrorMsgs: {
+        ...this.state.formFieldErrorMsgs,
+        categoryId: '',
+        categoryName: '',
+      },
+    });
+    return formValid;
+  }
+
+  getFormDataFromState() {
+    const {
+      redirectAfterSubmit,
+      formFieldErrors,
+      formFieldErrorMsgs,
+      formValid,
+      ...formData
+    } = this.state;
+
+    return formData;
+  }
+
   handleClearForm(e) {
     e.preventDefault();
     this.setState({
@@ -64,7 +124,63 @@ class CreateCategoriesForm extends Component {
       category_name: '',
       category_desc: '',
       redirectAfterSubmit: false,
+      formFieldErrors: {
+        ...this.state.formFieldErrors,
+        categoryId: false,
+        categoryName: false,
+      },
+      formFieldErrorMsgs: {
+        ...this.state.formFieldErrorMsgs,
+        categoryId: '',
+        categoryName: '',
+      },
+      formValid: false
     });
+  }
+
+  handleCategoryId(e) {
+    const catId = e.target.value;
+
+    const lengthValid = catId.length < 3 || catId.length > 10 ? false : true;
+    const catIdValidated = lettersNumbersHyphenRegEx.test(catId);
+
+    if (!lengthValid || !catIdValidated) {
+      const errorMsg = !lengthValid ? categoryIdLengthErrorMsg : categoryIdHyphensErrorMsg;
+
+      return this.setState({
+        category_id: catId,
+        formFieldErrors: { ...this.state.formFieldErrors, categoryId: true },
+        formFieldErrorMsgs: { ...this.state.formFieldErrorMsgs, categoryId: errorMsg }
+      });
+    }
+
+    this.setState({ 
+      category_id: catId,
+      formFieldErrors: { ...this.state.formFieldErrors, categoryId: false },
+      formFieldErrorMsgs: { ...this.state.formFieldErrorMsgs, categoryId: '' }
+    });
+  }
+
+  handleCategoryName(e) {
+    const catName = e.target.value;
+
+    if (catName.length < 3) {
+      return this.setState({
+        category_name: catName,
+        formFieldErrors: { ...this.state.formFieldErrors, categoryName: true },
+        formFieldErrorMsgs: { ...this.state.formFieldErrorMsgs, categoryName: categoryNameErrorMsg }
+      });
+    }
+
+    this.setState({ 
+      category_name: catName,
+      formFieldErrors: { ...this.state.formFieldErrors, categoryName: false },
+      formFieldErrorMsgs: { ...this.state.formFieldErrorMsgs, categoryName: '' }
+    });
+  }
+
+  handleCategoryDesc(e) {
+    this.setState({ category_desc: e.target.value });
   }
 
   handleRedirectAfterSubmit() {
@@ -72,29 +188,50 @@ class CreateCategoriesForm extends Component {
   }
 
   render() {
-    const { redirectAfterSubmit } = this.state;
+    const { redirectAfterSubmit, formFieldErrors, formFieldErrorMsgs } = this.state;
     if (redirectAfterSubmit) {
       return <Redirect to={CATEGORIES_DISPLAY_PATH} />
     }
 
+    const { categoryId: catIdErr, categoryName: catNameErr } = formFieldErrors;
+    const { categoryId: catIdMsg, categoryName: catNameMsg } = formFieldErrorMsgs;
+
+    const catIdErrorMsg = catIdErr ?
+      <p style={fieldErrorInlineMsgStyle}>{catIdMsg}</p>
+      : '';
+
+    const catNameErrorMsg = catNameErr ?
+      <p style={fieldErrorInlineMsgStyle}>{catNameMsg}</p>
+      : '';
+
     return (
      <div>
         <form onSubmit={this.handleSubmit}>
-          <Input 
-            type={'text'}
-            title={'Category ID'}
-            placeholder={'Enter the category ID.'}
-            value={this.state.category_id}
-            handleChange={this.handleCategoryId}
-          />
+          <div style={horizontalLayoutStyle}>
+            <Input
+              type={'text'}
+              className={catIdErr ? 'error' : ''}
+              title={'Category ID'}
+              placeholder={'Enter the category ID.'}
+              value={this.state.category_id}
+              handleChange={this.handleCategoryId}
+              style={catIdErr ? fieldErrorStyle : null}
+            />
+            {catIdErrorMsg}
+          </div>
 
-          <Input 
-            type={'text'}
-            title={'Category Name'}
-            placeholder={'Enter the category name.'}
-            value={this.state.category_name}
-            handleChange={this.handleCategoryName}
-          />
+          <div style={horizontalLayoutStyle}>
+            <Input
+              type={'text'}
+              className={catNameErr ? 'error' : ''}
+              title={'Category Name'}
+              placeholder={'Enter the category name.'}
+              value={this.state.category_name}
+              handleChange={this.handleCategoryName}
+              style={catNameErr ? fieldErrorStyle : null}
+            />
+            {catNameErrorMsg}
+          </div>
 
           <TextArea
             type={'text'}
