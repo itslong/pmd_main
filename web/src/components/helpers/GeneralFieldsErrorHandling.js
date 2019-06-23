@@ -1,6 +1,11 @@
 
 const fieldRequiredErrorMsg = 'This field is required.';
 
+const horizontalLayoutStyle = {
+  display: 'flex',
+  flexDirection: 'row',
+};
+
 // remove when css is added.
 const fieldErrorStyle = {
   border: '1px solid red',
@@ -16,5 +21,6 @@ const fieldErrorInlineMsgStyle = {
 export {
   fieldRequiredErrorMsg,
   fieldErrorStyle,
-  fieldErrorInlineMsgStyle
+  fieldErrorInlineMsgStyle,
+  horizontalLayoutStyle,
 };

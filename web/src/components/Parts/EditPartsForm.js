@@ -18,7 +18,8 @@ import {
   customRetailErrorMsg,
   fieldRequiredErrorMsg,
   fieldErrorStyle,
-  fieldErrorInlineMsgStyle
+  fieldErrorInlineMsgStyle,
+  horizontalLayoutStyle
 } from '../helpers';
 
 
@@ -45,13 +46,13 @@ class EditPartsForm extends Component {
       actionType: this.props.actionType,
       partsMarkupData: [],
       formFieldErrors: {
-        part_name: false,
+        partName: false,
         masterPartNum: false,
         basePartCost: false,
         customRetail: false,
       },
       formFieldErrorMsgs: {
-        part_name: '',
+        partName: '',
         masterPartNum: '',
         basePartCost: '',
         customRetail: '',
@@ -562,11 +563,5 @@ class EditPartsForm extends Component {
     );
   }
 }
-
-// remove when css is added
-const horizontalLayoutStyle = {
-  display: 'flex',
-  flexDirection: 'row',
-};
 
 export default EditPartsForm;

@@ -6,10 +6,24 @@ import SearchComponent from '../SearchComponent';
 import { UpdateTaskRelatedPartsSubmit, FetchGlobalMarkup, CSRFToken } from '../endpoints';
 import { TASKS_DISPLAY_PATH } from '../frontendBaseRoutes';
 import { renameAndRebuildRelatedPartsDisplayFields } from '../CalculationsWithGlobalMarkup';
+import DialogModal from '../DialogModal';
 import { 
   taskDetailRelatedPartsTableFields,
   taskRelatedPartsSearchResultsTableFields,
 } from '../fieldNameAliases';
+import {
+  moneyLimitSixRegEx,
+  lettersNumbersHyphenRegEx,
+  fieldRequiredErrorMsg,
+  fieldErrorStyle,
+  fieldErrorInlineMsgStyle,
+  horizontalLayoutStyle,
+  taskNameErrorMsg,
+  taskIdLengthErrorMsg,
+  taskIdHyphensErrorMsg,
+  taskFixedLaborRateErrorMsg,
+} from '../helpers';
+
 
 // if this becomes an api call, delete below
 const taskAttributeOptions = [
@@ -32,8 +46,8 @@ class TaskFormFields extends Component {
       task_comments: data.task_comments,
       task_attribute: data.task_attribute,
       tag_types: data.tag_types.id,
-      categories: data.categories.category_name || 'No category selected.',
-      tag_types_as_values: data.tag_types.tag_name,
+      categories: data.categories.category_name || 'No category attached to this task.',
+      tag_types_as_values: data.tag_types.tag_name, //string
       tag_types_choices: tagTypesChoices,
       category: data.categories.category_name, // read only
       estimated_contractor_hours: data.estimated_contractor_hours,
@@ -51,6 +65,18 @@ class TaskFormFields extends Component {
       toggleLoadNewData: false,
       madeChanges: false,
       globalMarkup: [],
+      formFieldErrors: {
+        taskName: false,
+        taskId: false,
+        fixedLabor: false,
+      },
+      formFieldErrorMsgs: {
+        taskName: '',
+        taskId: '',
+        fixedLabor: ''
+      },
+      formValid: false,
+      toggleDialog: false,
     }
 
     this.handleSubmitChanges = this.handleSubmitChanges.bind(this);
@@ -82,6 +108,7 @@ class TaskFormFields extends Component {
     this.handlePartQuantityChange = this.handlePartQuantityChange.bind(this);
     this.handleQueuePartsChanges = this.handleQueuePartsChanges.bind(this);
     this.handleCancelPartsChanges = this.handleCancelPartsChanges.bind(this);
+    this.toggleDialogState = this.toggleDialogState.bind(this);
   }
 
   componentDidMount() {
@@ -129,7 +156,7 @@ class TaskFormFields extends Component {
           use_fixed_labor_rate: newData.use_fixed_labor_rate,
           fixed_labor_rate: newData.fixed_labor_rate,
           is_active: newData.is_active,
-          categories: newData.categories.category_name || 'No category selected.',
+          categories: newData.categories.category_name || 'No category attached to this task.',
           submitPartsAsIds: cleanPartIds, // array of pks
           tempPartsAsIds: cleanPartIds,
           submitPartsValuesForDisplay: newData.parts, // array of objects
@@ -156,6 +183,12 @@ class TaskFormFields extends Component {
 
   handleSubmitChanges(e) {
     e.preventDefault();
+    const formValid = this.validateFormState();
+
+    if (!formValid) {
+      return;
+    }
+
     const { id: task_id, submitPartsValuesForDisplay } = this.state;
 
     const filteredPartsData = submitPartsValuesForDisplay.map(({ id: part_id, quantity }) => {
@@ -176,16 +209,74 @@ class TaskFormFields extends Component {
           this.setState({
             relatedPartsTableIsLoaded: false,
             toggleLoadNewData: !this.state.toggleLoadNewData
+          }, () => {
+            this.toggleDialogState();
           });
         })
       }
     })
   }
 
+  validateFormState() {
+    const { formFieldErrors, task_id, task_name, use_fixed_labor_rate, fixed_labor_rate } = this.state;
+    const {
+      taskId: taskIdErr,
+      taskName: taskNameErr,
+      fixedLabor: fixedLaborErr
+    } = formFieldErrors;
+
+    const taskIdValid = task_id !== '' && !taskIdErr ? true : false;
+    const taskNameValid = task_name !== '' && !taskNameErr ? true : false;
+
+    let fixedLaborValid = true;
+
+    if (use_fixed_labor_rate) {
+      fixedLaborValid = fixed_labor_rate !== '' && !fixedLaborErr ? true : false;
+    }
+
+    const formValid = taskIdValid && taskNameValid && fixedLaborValid ? true : false;
+
+    if (!formValid) {
+      this.setState({
+        formValid: false,
+        formFieldErrors: {
+          ...this.state.formFieldErrors,
+          taskId: !taskIdValid,
+          taskName: !taskNameValid,
+          fixedLabor: !fixedLaborValid,
+        },
+        formFieldErrorMsgs: {
+          ...this.state.formFieldErrorMsgs,
+          taskId: fieldRequiredErrorMsg,
+          taskName: fieldRequiredErrorMsg,
+          fixedLabor: fieldRequiredErrorMsg,
+        },
+      });
+      return false;
+    }
+
+    this.setState({
+      formValid,
+      formFieldErrors: {
+        ...this.state.formFieldErrors,
+        taskId: false,
+        taskName: false,
+        fixedLabor: false,
+      },
+      formFieldErrorMsgs: {
+        ...this.state.formFieldErrorMsgs,
+        taskId: '',
+        taskName: '',
+        fixedLabor: '',
+      },
+    });
+    return formValid;
+  }
+
   getFormDataFromState() {
     const { 
       id,
-      category,
+      categories,
       tag_types_as_values,
       tag_types_choices,
       submitPartsAsIds,
@@ -196,6 +287,9 @@ class TaskFormFields extends Component {
       toggleLoadNewData,
       madeChanges,
       globalMarkup,
+      formFieldErrors,
+      formFieldErrorMsgs,
+      formValid,
       ...formData
     } = this.state;
 
@@ -208,11 +302,44 @@ class TaskFormFields extends Component {
   }
 
   handleTaskId(e) {
-    this.setState({ task_id: e.target.value });
+    const taskId = e.target.value;
+
+    const lengthValid = taskId.length < 3 || taskId.length > 10 ? false : true;
+    const taskIdValidated = lettersNumbersHyphenRegEx.test(taskId);
+
+    if (!lengthValid || !taskIdValidated) {
+      const errorMsg = !lengthValid ? taskIdLengthErrorMsg : taskIdHyphensErrorMsg;
+
+      return this.setState({
+        task_id: taskId,
+        formFieldErrors: { ...this.state.formFieldErrors, taskId: true },
+        formFieldErrorMsgs: { ...this.state.formFieldErrorMsgs, taskId: errorMsg }
+      });
+    }
+
+    this.setState({ 
+      task_id: taskId,
+      formFieldErrors: { ...this.state.formFieldErrors, taskId: false },
+      formFieldErrorMsgs: { ...this.state.formFieldErrorMsgs, taskId: '' }
+    });
   }
 
   handleTaskName(e) {
-    this.setState({ task_name: e.target.value });
+    const taskName = e.target.value;
+
+    if (taskName.length < 3) {
+      return this.setState({
+        task_name: taskName,
+        formFieldErrors: { ...this.state.formFieldErrors, taskName: true },
+        formFieldErrorMsgs: { ...this.state.formFieldErrorMsgs, taskName: taskNameErrorMsg }
+      });
+    }
+
+    this.setState({ 
+      task_name: taskName,
+      formFieldErrors: { ...this.state.formFieldErrors, taskName: false },
+      formFieldErrorMsgs: { ...this.state.formFieldErrorMsgs, taskName: '' }
+    });
   }
 
   handleTaskDesc(e) {
@@ -258,14 +385,33 @@ class TaskFormFields extends Component {
   }
 
   handleUseFixedLaborRate(e) {
+    // force user to change the value if this is checked.
+    const initialFixedLaborRate = e.target.checked ? '' : '0.00';
+
     this.setState({
       use_fixed_labor_rate: e.target.checked,
-      fixed_labor_rate: 0
+      fixed_labor_rate: initialFixedLaborRate,
     });
   }
 
   handleFixedLaborRate(e) {
-    this.setState({ fixed_labor_rate: e.target.value });
+    const laborRate = e.target.value;
+
+    const laborRateValidated = moneyLimitSixRegEx.test(laborRate);
+
+    if (!laborRateValidated) {
+      return this.setState({
+        fixed_labor_rate: laborRate,
+        formFieldErrors: { ...this.state.formFieldErrors, fixedLabor: true },
+        formFieldErrorMsgs: { ...this.state.formFieldErrorMsgs, fixedLabor: taskFixedLaborRateErrorMsg },
+      });
+    }
+
+    this.setState({ 
+      fixed_labor_rate: laborRate,
+      formFieldErrors: { ...this.state.formFieldErrors, fixedLabor: false },
+      formFieldErrorMsgs: { ...this.state.formFieldErrorMsgs, fixedLabor: '' },
+    });
   }
 
   handleIsActiveChecked(e) {
@@ -377,16 +523,43 @@ class TaskFormFields extends Component {
     })
   }
 
+  toggleDialogState() {
+    this.setState({ toggleDialog: !this.state.toggleDialog })
+  }
+
   render() {
     const { 
       madeChanges, use_fixed_labor_rate, relatedPartsTableIsLoaded, 
       submitPartsAsIds, submitPartsValuesForDisplay, 
       tempPartsValuesForDisplay, categories, 
       displayModalForSearch, tempPartsAsIds,
-      globalMarkup
+      globalMarkup, formFieldErrors, formFieldErrorMsgs, toggleDialog
     } = this.state;
 
     const { tableNumLinks } = this.props;
+    
+    const {
+      taskId: taskIdErr,
+      taskName: taskNameErr,
+      fixedLabor: fixedLaborErr
+    } = formFieldErrors;
+    const { 
+      taskId: taskIdMsg,
+      taskName: taskNameMsg,
+      fixedLabor: fixedLaborMsg 
+    } = formFieldErrorMsgs;
+
+    const taskIdErrorMsg = taskIdErr ?
+      <p style={fieldErrorInlineMsgStyle}>{taskIdMsg}</p>
+      : '';
+
+    const taskNameErrorMsg = taskNameErr ?
+      <p style={fieldErrorInlineMsgStyle}>{taskNameMsg}</p>
+      : '';
+
+    const fixedLaborErrorMsg = fixedLaborErr ?
+      <p style={fieldErrorInlineMsgStyle}>{fixedLaborMsg}</p>
+      : '';
 
     const searchTableConfigProps = {
       extraColHeaders: '',
@@ -394,13 +567,18 @@ class TaskFormFields extends Component {
       extraPropsLayout: null
     }
 
-    const displayFixedLaborRate = use_fixed_labor_rate ? 
-      <Input 
-        type={'text'}
-        title={'Fixed Labor Rate'}
-        value={this.state.fixed_labor_rate}
-        handleChange={this.handleFixedLaborRate}
-      /> : '';
+    const displayFixedLaborRate = use_fixed_labor_rate ?
+      <div style={horizontalLayoutStyle}>
+        <Input
+          type={'text'}
+          className={fixedLaborErr ? 'error' : ''}
+          title={'Fixed Labor Rate'}
+          value={this.state.fixed_labor_rate}
+          handleChange={this.handleFixedLaborRate}
+          style={fixedLaborErr ? fieldErrorStyle : null}
+        />
+        {fixedLaborErrorMsg} 
+      </div> : '';
 
     const relatedPartsTableChangesText = madeChanges ? <b>Parts have been changed. Submit changes to save.</b> : '';
     const filteredSubmitPartsValues = (globalMarkup.length > 0 && submitPartsValuesForDisplay.length > 0) ? this.filterRelatedPartsTableData(submitPartsValuesForDisplay) : '';
@@ -463,6 +641,14 @@ class TaskFormFields extends Component {
         />
       </Modal>: '';
 
+
+    const displaySuccessDialog = toggleDialog ?
+      <DialogModal
+        dialogText={'Successfully updated'}
+        handleCloseDialog={this.toggleDialogState}
+      />
+      : '';
+
     return (
       <div>
         <form>
@@ -473,19 +659,29 @@ class TaskFormFields extends Component {
             value={this.state.id}
           />
 
-          <Input 
-            type={'text'}
-            title={'Task ID'}
-            value={this.state.task_id}
-            handleChange={this.handleTaskId}
-          />
+          <div style={horizontalLayoutStyle}>
+            <Input
+              type={'text'}
+              className={taskIdErr ? 'error' : ''}
+              title={'Task ID'}
+              value={this.state.task_id}
+              handleChange={this.handleTaskId}
+              style={taskIdErr ? fieldErrorStyle : null}
+            />
+            {taskIdErrorMsg}
+          </div>
 
-          <Input 
-            type={'text'}
-            title={'Task Name'}
-            value={this.state.task_name}
-            handleChange={this.handleTaskName}
-          />
+          <div style={horizontalLayoutStyle}>
+            <Input
+              type={'text'}
+              className={taskNameErr ? 'error' : ''}
+              title={'Task Name'}
+              value={this.state.task_name}
+              handleChange={this.handleTaskName}
+              style={taskNameErr ? fieldErrorStyle : null}
+            />
+            {taskNameErrorMsg}
+          </div>
 
           <TextArea
             type={'text'}
@@ -526,6 +722,7 @@ class TaskFormFields extends Component {
             readOnly
             title={'Category'}
             value={this.state.categories}
+            style={{ width: '20%'}}
           />
 
           <Input 
@@ -597,7 +794,7 @@ class TaskFormFields extends Component {
             action={this.handleCancelEdit}
           />
         </div>
-
+        {displaySuccessDialog}
 
       </div>
     )
