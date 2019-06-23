@@ -159,54 +159,37 @@ class CreateTasksForm extends Component {
     const taskAttrValid = task_attribute !== '' && !taskAttrErr ? true : false;
     const tagTypeValid = tag_types !== '' && !tagTypeErr ? true : false;
 
+    const taskIdErrMsg = !taskNameValid ? fieldRequiredErrorMsg : '';
+    const taskNameErrMsg = !taskNameValid ? fieldRequiredErrorMsg : '';
+    const taskAttrErrMsg = !taskAttrValid ? fieldRequiredErrorMsg : '';
+    const tagTypeErrMsg = !tagTypeValid ? fieldRequiredErrorMsg : '';
+    let fixedLaborErrMsg = '';
     let fixedLaborValid = true;
 
     if (use_fixed_labor_rate) {
       fixedLaborValid = fixed_labor_rate !== '' && !fixedLaborErr ? true : false;
+      fixedLaborErrMsg = fieldRequiredErrorMsg
     }
 
     const formValid = taskIdValid && taskNameValid && taskAttrValid && tagTypeValid && fixedLaborValid ? true : false;
 
-    if (!formValid) {
-      this.setState({
-        formValid: false,
-        formFieldErrors: {
-          ...this.state.formFieldErrors,
-          taskId: !taskIdValid,
-          taskName: !taskNameValid,
-          tagType: !tagTypeValid,
-          taskAttr: !taskAttrValid,
-          fixedLabor: !fixedLaborValid,
-        },
-        formFieldErrorMsgs: {
-          ...this.state.formFieldErrorMsgs,
-          taskId: fieldRequiredErrorMsg,
-          taskName: fieldRequiredErrorMsg,
-          tagType: fieldRequiredErrorMsg,
-          taskAttr: fieldRequiredErrorMsg,
-          fixedLabor: fieldRequiredErrorMsg,
-        },
-      });
-      return false;
-    }
 
     this.setState({
-      formValid,
       formFieldErrors: {
         ...this.state.formFieldErrors,
-        taskId: false,
-        taskName: false,
-        tagType: false,
-        taskAttr: false,
-        fixedLabor: false,
+        taskId: !taskIdValid,
+        taskName: !taskNameValid,
+        tagType: !tagTypeValid,
+        taskAttr: !taskAttrValid,
+        fixedLabor: !fixedLaborValid,
       },
       formFieldErrorMsgs: {
         ...this.state.formFieldErrorMsgs,
-        taskId: '',
-        taskName: '',
-        tagType: '',
-        taskAttr: '',
-        fixedLabor: '',
+        taskId: taskIdErrMsg,
+        taskName: taskNameErrMsg,
+        tagType: tagTypeErrMsg,
+        taskAttr: taskAttrErrMsg,
+        fixedLabor: fixedLaborErrMsg,
       },
     });
     return formValid;
@@ -219,7 +202,6 @@ class CreateTasksForm extends Component {
       redirectAfterSubmit,
       formFieldErrors,
       formFieldErrorMsgs,
-      formValid,
       ...formData
     } = this.state;
 
@@ -234,41 +216,29 @@ class CreateTasksForm extends Component {
     // if this is auto generated from backend, remove
     const taskId = e.target.value;
 
-    const lengthValid = taskId.length < 3 || taskId.length > 10 ? false : true;
+    const lengthValid = taskId.length > 2 && taskId.length < 11 ? true : false;
     const taskIdValidated = lettersNumbersHyphenRegEx.test(taskId);
 
-    if (!lengthValid || !taskIdValidated) {
-      const errorMsg = !lengthValid ? taskIdLengthErrorMsg : taskIdHyphensErrorMsg;
-
-      return this.setState({
-        task_id: taskId,
-        formFieldErrors: { ...this.state.formFieldErrors, taskId: true },
-        formFieldErrorMsgs: { ...this.state.formFieldErrorMsgs, taskId: errorMsg }
-      });
-    }
+    const taskIdErr = !lengthValid || !taskIdValidated ? true : false;
+    const errorMsg = !lengthValid ? taskIdLengthErrorMsg : !taskIdValidated ? taskIdHyphensErrorMsg : '';
 
     this.setState({ 
       task_id: taskId,
-      formFieldErrors: { ...this.state.formFieldErrors, taskId: false },
-      formFieldErrorMsgs: { ...this.state.formFieldErrorMsgs, taskId: '' }
+      formFieldErrors: { ...this.state.formFieldErrors, taskId: taskIdErr },
+      formFieldErrorMsgs: { ...this.state.formFieldErrorMsgs, taskId: errorMsg }
     });
   }
 
   handleTaskName(e) {
     const taskName = e.target.value;
 
-    if (taskName.length < 3) {
-      return this.setState({
-        task_name: taskName,
-        formFieldErrors: { ...this.state.formFieldErrors, taskName: true },
-        formFieldErrorMsgs: { ...this.state.formFieldErrorMsgs, taskName: taskNameErrorMsg }
-      });
-    }
+    const nameErr = taskName.length < 3 ? true : false;
+    const errMsg = taskName.length < 3 ? taskNameErrorMsg : '';
 
     this.setState({ 
       task_name: taskName,
-      formFieldErrors: { ...this.state.formFieldErrors, taskName: false },
-      formFieldErrorMsgs: { ...this.state.formFieldErrorMsgs, taskName: '' }
+      formFieldErrors: { ...this.state.formFieldErrors, taskName: nameErr },
+      formFieldErrorMsgs: { ...this.state.formFieldErrorMsgs, taskName: errMsg }
     });
   }
 
@@ -315,21 +285,15 @@ class CreateTasksForm extends Component {
 
   handleFixedLaborRate(e) {
     const laborRate = e.target.value;
-
     const laborRateValidated = moneyLimitSixRegEx.test(laborRate);
 
-    if (!laborRateValidated) {
-      return this.setState({
-        fixed_labor_rate: laborRate,
-        formFieldErrors: { ...this.state.formFieldErrors, fixedLabor: true },
-        formFieldErrorMsgs: { ...this.state.formFieldErrorMsgs, fixedLabor: taskFixedLaborRateErrorMsg },
-      });
-    }
+    const laborRateErr = laborRateValidated ? false : true;
+    const errorMsg = laborRateValidated ? '' : taskFixedLaborRateErrorMsg;
 
     this.setState({ 
       fixed_labor_rate: laborRate,
-      formFieldErrors: { ...this.state.formFieldErrors, fixedLabor: false },
-      formFieldErrorMsgs: { ...this.state.formFieldErrorMsgs, fixedLabor: '' },
+      formFieldErrors: { ...this.state.formFieldErrors, fixedLabor: laborRateErr },
+      formFieldErrorMsgs: { ...this.state.formFieldErrorMsgs, fixedLabor: errorMsg },
     });
   }
 
