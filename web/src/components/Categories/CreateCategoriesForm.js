@@ -193,14 +193,8 @@ class CreateCategoriesForm extends Component {
       return <Redirect to={CATEGORIES_DISPLAY_PATH} />
     }
 
-    const {
-      categoryId: catIdErr,
-      categoryName: catNameErr,
-    } = formFieldErrors;
-    const { 
-      categoryId: catIdMsg,
-      categoryName: catNameMsg,
-    } = formFieldErrorMsgs;
+    const { categoryId: catIdErr, categoryName: catNameErr } = formFieldErrors;
+    const { categoryId: catIdMsg, categoryName: catNameMsg } = formFieldErrorMsgs;
 
     const catIdErrorMsg = catIdErr ?
       <p style={fieldErrorInlineMsgStyle}>{catIdMsg}</p>

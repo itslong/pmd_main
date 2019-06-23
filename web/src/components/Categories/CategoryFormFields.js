@@ -6,6 +6,16 @@ import SearchComponent from '../SearchComponent';
 import { UpdateCategoryAndRelatedTasks, CSRFToken } from '../endpoints';
 import { CATEGORIES_DISPLAY_PATH } from '../frontendBaseRoutes';
 import { renameStaticTableFields } from '../fieldNameAliases';
+import {
+  lettersNumbersHyphenRegEx,
+  fieldRequiredErrorMsg,
+  fieldErrorStyle,
+  fieldErrorInlineMsgStyle,
+  horizontalLayoutStyle,
+  categoryNameErrorMsg,
+  categoryIdHyphensErrorMsg,
+  categoryIdLengthErrorMsg
+} from '../helpers';
 
 
 class CategoryFormFields extends Component {
@@ -21,7 +31,7 @@ class CategoryFormFields extends Component {
       category_name: data.category_name || '',
       category_desc: data.category_desc || '',
       is_active: data.is_active,
-      jobs: data.jobs.job_name || '',
+      jobs: data.jobs.job_name || 'No job attached to this category',
       relatedTasksTableIsLoaded: true,
       displayModalForSearch: false,
       submitTasksAsIds: tasksIdsArr,
@@ -30,6 +40,15 @@ class CategoryFormFields extends Component {
       tempTasksValuesForDisplay: data.tasks,
       toggleLoadNewData: false,
       madeChanges: false,
+      formFieldErrors: {
+        categoryId: false,
+        categoryName: false,
+      },
+      formFieldErrorMsgs: {
+        categoryId: '',
+        categoryName: '',
+      },
+      formValid: false,
     };
 
     this.handleCategoryId = this.handleCategoryId.bind(this);
@@ -63,7 +82,7 @@ class CategoryFormFields extends Component {
           category_id: newData.category_id,
           category_name: newData.category_name,
           category_desc: newData.category_desc,
-          jobs: newData.jobs.job_name || '',
+          jobs: newData.jobs.job_name || 'No job attached to this category',
           is_active: newData.is_active,
           submitTasksAsIds: cleanTaskIds,
           tempTasksAsIds: cleanTaskIds,
@@ -87,6 +106,71 @@ class CategoryFormFields extends Component {
     return renameStaticTableFields(tasksArr, 'category', 'child');
   }
 
+  handleSubmitChanges(e) {
+    e.preventDefault();
+    const formValid = this.validateFormState();
+    if (!formValid) {
+      return;
+    }
+
+    const { id, submitTasksValuesForDisplay, toggleLoadNewData } = this.state;
+
+    const formData = this.getFormDataFromState();
+
+    const submitted = UpdateCategoryAndRelatedTasks(id, formData);
+    submitted.then(() => {
+      this.setState({
+        relatedTasksTableIsLoaded: false,
+        toggleLoadNewData: !toggleLoadNewData
+      });
+    });
+  }
+
+  validateFormState() {
+    const { formFieldErrors, category_id, category_name } = this.state;
+    const {
+      categoryId: catIdErr,
+      categoryName: catNameErr,
+    } = formFieldErrors;
+
+    const catIdValid = category_id !== '' && !catIdErr ? true : false;
+    const catNameValid = category_name !== '' && !catNameErr ? true : false;
+
+    const formValid = catIdValid && catNameValid ? true : false;
+
+    if (!formValid) {
+      this.setState({
+        formValid: false,
+        formFieldErrors: {
+          ...this.state.formFieldErrors,
+          categoryId: !catIdValid,
+          categoryName: !catNameValid,
+        },
+        formFieldErrorMsgs: {
+          ...this.state.formFieldErrorMsgs,
+          categoryId: fieldRequiredErrorMsg,
+          categoryName: fieldRequiredErrorMsg,
+        },
+      });
+      return false;
+    }
+
+    this.setState({
+      formValid,
+      formFieldErrors: {
+        ...this.state.formFieldErrors,
+        categoryId: false,
+        categoryName: false,
+      },
+      formFieldErrorMsgs: {
+        ...this.state.formFieldErrorMsgs,
+        categoryId: '',
+        categoryName: '',
+      },
+    });
+    return formValid;
+  }
+
   getFormDataFromState() {
     const {       
       id,
@@ -99,6 +183,9 @@ class CategoryFormFields extends Component {
       toggleLoadNewData,
       madeChanges,
       submitTasksAsIds: tasks_set,
+      formFieldErrors,
+      formFieldErrorMsgs,
+      formValid,
       ...stateData
     } = this.state;
 
@@ -107,11 +194,44 @@ class CategoryFormFields extends Component {
   }
 
   handleCategoryId(e) {
-    this.setState({ category_id: e.target.value });
+    const catId = e.target.value;
+
+    const lengthValid = catId.length < 3 || catId.length > 10 ? false : true;
+    const catIdValidated = lettersNumbersHyphenRegEx.test(catId);
+
+    if (!lengthValid || !catIdValidated) {
+      const errorMsg = !lengthValid ? categoryIdLengthErrorMsg : categoryIdHyphensErrorMsg;
+
+      return this.setState({
+        category_id: catId,
+        formFieldErrors: { ...this.state.formFieldErrors, categoryId: true },
+        formFieldErrorMsgs: { ...this.state.formFieldErrorMsgs, categoryId: errorMsg }
+      });
+    }
+
+    this.setState({ 
+      category_id: catId,
+      formFieldErrors: { ...this.state.formFieldErrors, categoryId: false },
+      formFieldErrorMsgs: { ...this.state.formFieldErrorMsgs, categoryId: '' }
+    });
   }
 
   handleCategoryName(e) {
-    this.setState({ category_name: e.target.value });
+    const catName = e.target.value;
+
+    if (catName.length < 3) {
+      return this.setState({
+        category_name: catName,
+        formFieldErrors: { ...this.state.formFieldErrors, categoryName: true },
+        formFieldErrorMsgs: { ...this.state.formFieldErrorMsgs, categoryName: categoryNameErrorMsg }
+      });
+    }
+
+    this.setState({ 
+      category_name: catName,
+      formFieldErrors: { ...this.state.formFieldErrors, categoryName: false },
+      formFieldErrorMsgs: { ...this.state.formFieldErrorMsgs, categoryName: '' }
+    });
   }
 
   handleCategoryDesc(e) {
@@ -141,7 +261,6 @@ class CategoryFormFields extends Component {
       task_id,
       task_name,
       task_attribute,
-      // TODO: confirm the specific fields to add, like cost
     });
 
     this.setState({
@@ -195,21 +314,6 @@ class CategoryFormFields extends Component {
     });
   }
 
-  handleSubmitChanges(e) {
-    e.preventDefault();
-    const { id, submitTasksValuesForDisplay, toggleLoadNewData } = this.state;
-
-    const formData = this.getFormDataFromState();
-
-    const submitted = UpdateCategoryAndRelatedTasks(id, formData);
-    submitted.then(() => {
-      this.setState({
-        relatedTasksTableIsLoaded: false,
-        toggleLoadNewData: !toggleLoadNewData
-      });
-    });
-  }
-
   handleCancelEdit(e) {
     e.preventDefault();
     this.props.history.push(CATEGORIES_DISPLAY_PATH);
@@ -219,8 +323,11 @@ class CategoryFormFields extends Component {
     const { 
       relatedTasksTableIsLoaded, tempTasksValuesForDisplay,
       displayModalForSearch, submitTasksValuesForDisplay,
-      is_active, submitTasksAsIds, madeChanges
+      is_active, submitTasksAsIds, madeChanges, formFieldErrors, formFieldErrorMsgs
     } = this.state;
+
+    const { categoryId: catIdErr, categoryName: catNameErr } = formFieldErrors;
+    const { categoryId: catIdMsg, categoryName: catNameMsg } = formFieldErrorMsgs;
 
     const renamedTempTasksValues = this.filterRelatedTasksTableData(tempTasksValuesForDisplay);
     const renamedSubmitTasksValues = this.filterRelatedTasksTableData(submitTasksValuesForDisplay);
@@ -288,6 +395,14 @@ class CategoryFormFields extends Component {
         />
       </Modal>: '';
 
+    const catIdErrorMsg = catIdErr ?
+      <p style={fieldErrorInlineMsgStyle}>{catIdMsg}</p>
+      : '';
+
+    const catNameErrorMsg = catNameErr ?
+      <p style={fieldErrorInlineMsgStyle}>{catNameMsg}</p>
+      : '';
+
 
     return (
       <div>
@@ -299,19 +414,29 @@ class CategoryFormFields extends Component {
             value={this.state.id}
           />
 
-          <Input
-            type={'text'}
-            title={'Category ID'}
-            value={this.state.category_id}
-            handleChange={this.handleCategoryId}
-          />
+          <div style={horizontalLayoutStyle}>
+            <Input
+              type={'text'}
+              className={catIdErr ? 'error' : ''}
+              title={'Category ID'}
+              value={this.state.category_id}
+              handleChange={this.handleCategoryId}
+              style={catIdErr ? fieldErrorStyle : null}
+            />
+            {catIdErrorMsg}
+          </div>
 
-          <Input
-            type={'text'}
-            title={'Category Name'}
-            value={this.state.category_name}
-            handleChange={this.handleCategoryName}
-          />
+          <div style={horizontalLayoutStyle}>
+            <Input
+              type={'text'}
+              className={catNameErr ? 'error' : ''}
+              title={'Category Name'}
+              value={this.state.category_name}
+              handleChange={this.handleCategoryName}
+              style={catNameErr ? fieldErrorStyle : null}
+            />
+            {catNameErrorMsg}
+          </div>
 
           <TextArea
             type={'text'}
@@ -333,6 +458,7 @@ class CategoryFormFields extends Component {
             type={'text'}
             title={'Job Name'}
             value={this.state.jobs}
+            style={{ width: '25%' }}
           />
           {relatedTasksTableChanges}
           {relatedTasksTable}
