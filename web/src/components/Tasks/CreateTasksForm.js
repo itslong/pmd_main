@@ -137,7 +137,6 @@ class CreateTasksForm extends Component {
         taskAttr: '',
         fixedLabor: '',
       },
-      formValid: false,
     })
   }
 
