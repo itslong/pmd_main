@@ -8,7 +8,6 @@ import {
   moneyLimitSixRegEx,
   lettersNumbersHyphenRegEx,
   fieldRequiredErrorMsg,
-  singleTagTypeErrorMsg,
   fieldErrorStyle,
   fieldErrorInlineMsgStyle,
   horizontalLayoutStyle,
@@ -93,7 +92,7 @@ class CreateTasksForm extends Component {
     const formValid = this.validateFormState();
 
     if (!formValid) {
-      return
+      return;
     }
 
     const formData = this.getFormDataFromState();
@@ -218,6 +217,9 @@ class CreateTasksForm extends Component {
       tagTypeAsValue,
       tagTypesChoices,
       redirectAfterSubmit,
+      formFieldErrors,
+      formFieldErrorMsgs,
+      formValid,
       ...formData
     } = this.state;
 
@@ -229,7 +231,6 @@ class CreateTasksForm extends Component {
   }
 
   handleTaskId(e) {
-    // required
     // if this is auto generated from backend, remove
     const taskId = e.target.value;
 
@@ -254,7 +255,6 @@ class CreateTasksForm extends Component {
   }
 
   handleTaskName(e) {
-    //required
     const taskName = e.target.value;
 
     if (taskName.length < 3) {
