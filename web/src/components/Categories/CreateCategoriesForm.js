@@ -32,7 +32,6 @@ class CreateCategoriesForm extends Component {
         categoryId: '',
         categoryName: '',
       },
-      formValid: false,
     }
 
     this.handleCategoryId = this.handleCategoryId.bind(this);
@@ -70,36 +69,21 @@ class CreateCategoriesForm extends Component {
     const catIdValid = category_id !== '' && !catIdErr ? true : false;
     const catNameValid = category_name !== '' && !catNameErr ? true : false;
 
+    const catIdErrMsg = !catIdValid ? fieldRequiredErrorMsg : '';
+    const catNameErrMsg = !catNameValid ? fieldRequiredErrorMsg : '';
+
     const formValid = catIdValid && catNameValid ? true : false;
 
-    if (!formValid) {
-      this.setState({
-        formValid: false,
-        formFieldErrors: {
-          ...this.state.formFieldErrors,
-          categoryId: !catIdValid,
-          categoryName: !catNameValid,
-        },
-        formFieldErrorMsgs: {
-          ...this.state.formFieldErrorMsgs,
-          categoryId: fieldRequiredErrorMsg,
-          categoryName: fieldRequiredErrorMsg,
-        },
-      });
-      return false;
-    }
-
     this.setState({
-      formValid,
       formFieldErrors: {
         ...this.state.formFieldErrors,
-        categoryId: false,
-        categoryName: false,
+        categoryId: !catIdValid,
+        categoryName: !catNameValid,
       },
       formFieldErrorMsgs: {
         ...this.state.formFieldErrorMsgs,
-        categoryId: '',
-        categoryName: '',
+        categoryId: catIdErrMsg,
+        categoryName: catNameErrMsg,
       },
     });
     return formValid;
@@ -110,7 +94,6 @@ class CreateCategoriesForm extends Component {
       redirectAfterSubmit,
       formFieldErrors,
       formFieldErrorMsgs,
-      formValid,
       ...formData
     } = this.state;
 
@@ -134,48 +117,35 @@ class CreateCategoriesForm extends Component {
         categoryId: '',
         categoryName: '',
       },
-      formValid: false
     });
   }
 
   handleCategoryId(e) {
     const catId = e.target.value;
 
-    const lengthValid = catId.length < 3 || catId.length > 10 ? false : true;
+    const lengthValid = catId.length > 2 && catId.length < 11 ? true : false;
     const catIdValidated = lettersNumbersHyphenRegEx.test(catId);
 
-    if (!lengthValid || !catIdValidated) {
-      const errorMsg = !lengthValid ? categoryIdLengthErrorMsg : categoryIdHyphensErrorMsg;
-
-      return this.setState({
-        category_id: catId,
-        formFieldErrors: { ...this.state.formFieldErrors, categoryId: true },
-        formFieldErrorMsgs: { ...this.state.formFieldErrorMsgs, categoryId: errorMsg }
-      });
-    }
+    const catIdErr = !lengthValid || !catIdValidated ? true : false;
+    const errorMsg = !lengthValid ? categoryIdLengthErrorMsg : !catIdValidated ? categoryIdHyphensErrorMsg : '';
 
     this.setState({ 
       category_id: catId,
-      formFieldErrors: { ...this.state.formFieldErrors, categoryId: false },
-      formFieldErrorMsgs: { ...this.state.formFieldErrorMsgs, categoryId: '' }
+      formFieldErrors: { ...this.state.formFieldErrors, categoryId: catIdErr },
+      formFieldErrorMsgs: { ...this.state.formFieldErrorMsgs, categoryId: errorMsg }
     });
   }
 
   handleCategoryName(e) {
     const catName = e.target.value;
 
-    if (catName.length < 3) {
-      return this.setState({
-        category_name: catName,
-        formFieldErrors: { ...this.state.formFieldErrors, categoryName: true },
-        formFieldErrorMsgs: { ...this.state.formFieldErrorMsgs, categoryName: categoryNameErrorMsg }
-      });
-    }
+    const nameErr = catName.length < 3 ? true : false;
+    const errorMsg = catName.length < 3 ? categoryNameErrorMsg : '';
 
     this.setState({ 
       category_name: catName,
-      formFieldErrors: { ...this.state.formFieldErrors, categoryName: false },
-      formFieldErrorMsgs: { ...this.state.formFieldErrorMsgs, categoryName: '' }
+      formFieldErrors: { ...this.state.formFieldErrors, categoryName: nameErr },
+      formFieldErrorMsgs: { ...this.state.formFieldErrorMsgs, categoryName: errorMsg }
     });
   }
 
