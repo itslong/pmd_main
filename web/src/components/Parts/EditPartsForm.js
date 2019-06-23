@@ -57,7 +57,6 @@ class EditPartsForm extends Component {
         basePartCost: '',
         customRetail: '',
       },
-      formValid: false,
     }
 
     this.handlePartName = this.handlePartName.bind(this);
@@ -80,7 +79,6 @@ class EditPartsForm extends Component {
     // itemId is passed from prev component or pass through props.history
     // TODO: add error handling when history is undefined or when user routes to /part/edit/id directly
     // check for history first
-    // console.log('parts: ' + JSON.stringify(this.props));
     const { match, itemId } = this.props;
 
     const id = itemId ? itemId : match.params.id;
@@ -137,7 +135,7 @@ class EditPartsForm extends Component {
       this.props.itemEdit();
       this.props.handleCloseModal();
       this.props.handleShowDialog();
-    })
+    });
   }
 
   validateFormState() {
@@ -145,57 +143,46 @@ class EditPartsForm extends Component {
       formFieldErrors, part_name, master_part_num, base_part_cost,
       set_custom_part_cost, custom_retail_part_cost
     } = this.state;
-    const { partName, masterPartNum, basePartCost, customRetail } = formFieldErrors;
+    const { 
+      partName: partNameErr,
+      masterPartNum: partNumErr,
+      basePartCost: costErr, 
+      customRetail: retailErr
+    } = formFieldErrors;
 
     // field must not be empy and no errors
-    const partNameValid = part_name !== '' && !partName ? true : false;
-    const partNumValid = master_part_num !== '' && !masterPartNum ? true : false;
-    const partCostValid = base_part_cost !== '' && !basePartCost ? true : false;
+    const partNameValid = part_name !== '' && !partNameErr ? true : false;
+    const partNumValid = master_part_num !== '' && !partNumErr ? true : false;
+    const partCostValid = base_part_cost !== '' && !costErr ? true : false;
+
+    const partNameErrMsg = !partNameValid ? fieldRequiredErrorMsg : '';
+    const partNumErrMsg = !partNumValid ? fieldRequiredErrorMsg : '';
+    const partCostErrMsg = !partCostValid ? fieldRequiredErrorMsg : '';
+    let customRetailErrMsg = '';
 
     let customRetailValid = true;
 
     if (set_custom_part_cost) {
-      customRetailValid = custom_retail_part_cost !== '' && !customRetail ? true : false;
+      customRetailValid = custom_retail_part_cost !== '' && !retailErr ? true : false;
+      customRetailErrMsg = fieldRequiredErrorMsg;
     }
 
     const formValid = partNameValid && partNumValid && partCostValid && customRetailValid ? true : false;
 
-    if (!formValid) {
-      this.setState({
-        formValid: false,
-        formFieldErrors: {
-          ...this.state.formFieldErrors, 
-          partName: !partNameValid,
-          masterPartNum: !partNumValid,
-          basePartCost: !partCostValid,
-          customRetail: !customRetailValid,
-        },
-        formFieldErrorMsgs: {
-          ...this.state.formFieldErrorMsgs,
-          partName: fieldRequiredErrorMsg,
-          masterPartNum: fieldRequiredErrorMsg,
-          basePartCost: fieldRequiredErrorMsg,
-          customRetail: fieldRequiredErrorMsg,
-        },
-      });
-      return false;
-    }
-
     this.setState({ 
-      formValid,
       formFieldErrors: {
         ...this.state.formFieldErrors, 
-        partName: false,
-        masterPartNum: false,
-        basePartCost: false,
-        customRetail: false,
+        partName: !partNameValid,
+        masterPartNum: !partNumValid,
+        basePartCost: !partCostValid,
+        customRetail: !customRetailValid,
       },
       formFieldErrorMsgs: {
         ...this.state.formFieldErrorMsgs,
-        partName: '',
-        masterPartNum: '',
-        basePartCost: '',
-        customRetail: '',
+        partName: partNameErrMsg,
+        masterPartNum: partNumErrMsg,
+        basePartCost: partCostErrMsg,
+        customRetail: customRetailErrMsg,
       },
     });
     return formValid;
@@ -210,7 +197,6 @@ class EditPartsForm extends Component {
       actionType,
       formFieldErrors,
       formFieldErrorMsgs,
-      formValid,
       ...formData
     } = this.state;
 
@@ -220,43 +206,30 @@ class EditPartsForm extends Component {
   handlePartName(e) {
     const partName = e.target.value;
 
-    if (partName.length < 3) {
-      return this.setState({
-        part_name: partName,
-        formFieldErrors: { ...this.state.formFieldErrors, partName: true },
-        formFieldErrorMsgs: { ...this.state.formFieldErrorMsgs, partName: partNameErrorMsg }
-      });
-    }
+    const nameErr = partName.length < 3 ? true : false;
+    const errMsg = partName.length < 3 ? partNameErrorMsg : '';
 
     this.setState({ 
       part_name: partName,
-      formFieldErrors: { ...this.state.formFieldErrors, partName: false },
-      formFieldErrorMsgs: { ...this.state.formFieldErrorMsgs, partName: '' }
+      formFieldErrors: { ...this.state.formFieldErrors, partName: nameErr },
+      formFieldErrorMsgs: { ...this.state.formFieldErrorMsgs, partName: errMsg }
     });
   }
 
   handleMasterPartNum(e) {
     const partNum = e.target.value;
 
+    const lengthValid = partNum.length > 2 && partNum.length < 11 ? true : false;
     const partNumValidated = lettersNumbersHyphenRegEx.test(partNum);
-    const lengthValid = partNum.length < 3 || partNum.length > 10 ? false : true;
 
-
-    if (!lengthValid || !partNumValidated) {
-      // check if length is satisfied.
-      const errorMsg = !lengthValid ? partNumLengthErrorMsg : partNumHyphensErrorMsg;
-
-      return this.setState({
-        master_part_num: partNum,
-        formFieldErrors: { ...this.state.formFieldErrors, masterPartNum: true },
-        formFieldErrorMsgs: { ...this.state.formFieldErrorMsgs, masterPartNum: errorMsg }
-      });
-    }
+    const partNumErr = !lengthValid || !partNumValidated ? true : false;
+    // length error message, or invalid input, or no error
+    const errorMsg = !lengthValid ? partNumLengthErrorMsg : !partNumValidated ? partNumHyphensErrorMsg : '';
 
     this.setState({ 
       master_part_num: partNum,
-      formFieldErrors: { ...this.state.formFieldErrors, masterPartNum: false },
-      formFieldErrorMsgs: { ...this.state.formFieldErrorMsgs, masterPartNum: '' },
+      formFieldErrors: { ...this.state.formFieldErrors, masterPartNum: partNumErr },
+      formFieldErrorMsgs: { ...this.state.formFieldErrorMsgs, masterPartNum: errorMsg },
     });
   }
 
@@ -274,26 +247,19 @@ class EditPartsForm extends Component {
 
   handleBasePartCost(e) {
     const { set_custom_part_cost, partsMarkupData } = this.state;
-
     const partCost = e.target.value;
-    const costObjValidated = moneyLimitSixRegEx.test(partCost);
+    const costValidated = moneyLimitSixRegEx.test(partCost);
 
-    if (!costObjValidated) {
-      return this.setState({
-        base_part_cost: partCost,
-        formFieldErrors: { ...this.state.formFieldErrors, basePartCost: true },
-        formFieldErrorMsgs: { ...this.state.formFieldErrorMsgs, basePartCost: partCostErrorMsg },
-      });
-    }
+    const partCostErr = costValidated ? false : true;
+    const errorMsg = costValidated ? '' : partCostErrorMsg;
 
     this.setState({ 
       base_part_cost: partCost,
-      formFieldErrors: { ...this.state.formFieldErrors, basePartCost: false },
-      formFieldErrorMsgs: { ...this.state.formFieldErrorMsgs, basePartCost: ''}
+      formFieldErrors: { ...this.state.formFieldErrors, basePartCost: partCostErr },
+      formFieldErrorMsgs: { ...this.state.formFieldErrorMsgs, basePartCost: errorMsg}
     }, () => {
       if (!set_custom_part_cost) {
-        // must reference 'this.state.base_part_cost' to get the value AFTER setState.
-        const costObj = calculateRetailCost(this.state.base_part_cost, partsMarkupData);
+        const costObj = calculateRetailCost(partCost, this.state.partsMarkupData);
         this.handleRetailPartCost(costObj);
       }
     });
