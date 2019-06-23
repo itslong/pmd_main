@@ -6,6 +6,7 @@ import SearchComponent from '../SearchComponent';
 import { UpdateCategoryAndRelatedTasks, CSRFToken } from '../endpoints';
 import { CATEGORIES_DISPLAY_PATH } from '../frontendBaseRoutes';
 import { renameStaticTableFields } from '../fieldNameAliases';
+import DialogModal from '../DialogModal';
 import {
   lettersNumbersHyphenRegEx,
   fieldRequiredErrorMsg,
@@ -49,6 +50,7 @@ class CategoryFormFields extends Component {
         categoryName: '',
       },
       formValid: false,
+      toggleDialog: false,
     };
 
     this.handleCategoryId = this.handleCategoryId.bind(this);
@@ -66,6 +68,7 @@ class CategoryFormFields extends Component {
 
     this.handleSubmitChanges = this.handleSubmitChanges.bind(this);
     this.handleCancelEdit = this.handleCancelEdit.bind(this);
+    this.toggleDialogState = this.toggleDialogState.bind(this);
   }
 
   componentDidUpdate(prevProps, prevState) {
@@ -122,6 +125,8 @@ class CategoryFormFields extends Component {
       this.setState({
         relatedTasksTableIsLoaded: false,
         toggleLoadNewData: !toggleLoadNewData
+      }, () => {
+        this.toggleDialogState();
       });
     });
   }
@@ -319,11 +324,16 @@ class CategoryFormFields extends Component {
     this.props.history.push(CATEGORIES_DISPLAY_PATH);
   }
 
+  toggleDialogState() {
+    this.setState({ toggleDialog: !this.state.toggleDialog })
+  }
+
+
   render() {
     const { 
-      relatedTasksTableIsLoaded, tempTasksValuesForDisplay,
-      displayModalForSearch, submitTasksValuesForDisplay,
-      is_active, submitTasksAsIds, madeChanges, formFieldErrors, formFieldErrorMsgs
+      relatedTasksTableIsLoaded, tempTasksValuesForDisplay, displayModalForSearch, 
+      submitTasksValuesForDisplay, is_active, submitTasksAsIds, madeChanges,
+      formFieldErrors, formFieldErrorMsgs, toggleDialog
     } = this.state;
 
     const { categoryId: catIdErr, categoryName: catNameErr } = formFieldErrors;
@@ -403,6 +413,12 @@ class CategoryFormFields extends Component {
       <p style={fieldErrorInlineMsgStyle}>{catNameMsg}</p>
       : '';
 
+    const displaySuccessDialog = toggleDialog ?
+      <DialogModal
+        dialogText={'Successfully updated'}
+        handleCloseDialog={this.toggleDialogState}
+      />
+      : '';
 
     return (
       <div>
@@ -486,7 +502,7 @@ class CategoryFormFields extends Component {
             action={this.handleCancelEdit}
           />
         </div>
-
+        {displaySuccessDialog}
       </div>
     )
   }
