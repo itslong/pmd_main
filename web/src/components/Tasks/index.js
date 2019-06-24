@@ -7,7 +7,6 @@ export { default as TaskDetailTotalsTable } from './TaskDetailTotalsTable';
 export {
   calculateTasksMainDisplayFields,
   calculateTaskDetailRelatedPartsTableFields,
-  calculatePartRetailWithMarkup,
   preciseRound,
   createSingleMarkupObj,
   createCalcObj,
