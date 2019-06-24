@@ -43,6 +43,10 @@ class DetailView extends Component {
     ]);
 
     getData.then(([data, markupData]) => {
+      if (data.detail) {
+        return
+      }
+
       let parentName = '';
 
       const { 
@@ -120,7 +124,7 @@ class DetailView extends Component {
           numberOfLinks={tableNumLinks}
         />
       </div>
-      : <NotFound message={'This item does not exist.'} />
+      : <NotFound message={'This item may not exist.'} />
 
     const tableData = allowTotalsTable && isLoaded ? 
       {
