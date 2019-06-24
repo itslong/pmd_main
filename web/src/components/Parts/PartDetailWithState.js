@@ -143,6 +143,14 @@ class PartDetailWithState extends Component {
     const placeholder = !isLoaded ? <p>Loading details...</p> : '';
 
     const displayOrHideTaskTableButtonTitle = displayAndLoadRelatedTasks ? 'Hide Task Table' : 'Show Task Table';
+    const displayTaskTableButton = partFound ?
+      <Button
+        type={'primary'}
+        title={displayOrHideTaskTableButtonTitle}
+        action={this.handleDisplayAndLoadTaskTable}
+      />
+      : '';
+
     const renamedPartData = partFound ? this.filterOutputData('form'): partData;
 
     const showPartDetail = partFound ?
@@ -157,7 +165,7 @@ class PartDetailWithState extends Component {
           tagTypes={tagTypes}
         />
       </div> : 
-      <NotFound message={'Part may not exist.'}/>
+      <NotFound message={'This item may not exist.'}/>
     
     const renamedRelatedTasksData = displayAndLoadRelatedTasks && relatedTasksData.length > 0 ?
       this.filterOutputData('parent')
@@ -204,11 +212,7 @@ class PartDetailWithState extends Component {
       <div>
         { placeholder }
         { showPartDetail }
-        <Button
-          type={'primary'}
-          title={displayOrHideTaskTableButtonTitle}
-          action={this.handleDisplayAndLoadTaskTable}
-        />
+        { displayTaskTableButton }
         { showParentTaskTable }
         { showParentTaskTableMessage }
         { partEditModal }
