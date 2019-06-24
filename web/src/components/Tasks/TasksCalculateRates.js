@@ -369,7 +369,6 @@ const calculateTaskDetailRelatedPartsTableFields = (partsArr, tagTypeId, markupD
 export { 
   calculateTasksMainDisplayFields,
   calculateTaskDetailRelatedPartsTableFields,
-  calculatePartRetailWithMarkup,
   preciseRound,
   createSingleMarkupObj,
   createCalcObj,

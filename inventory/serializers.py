@@ -200,6 +200,11 @@ class TasksSearchableListSerializer(serializers.ModelSerializer):
     model = Tasks
     fields = ['id', 'task_id', 'task_name', 'task_attribute']
 
+  def to_representation(self, instance):
+    response = super().to_representation(instance)
+    response['categories'] = CategoriesExcludedSerializer(instance.categories).data
+    return response
+
 
 class TasksCreateSerializer(serializers.ModelSerializer):
   class Meta:
@@ -281,6 +286,10 @@ class CategoriesSearchableListSerializer(serializers.ModelSerializer):
     model = Categories
     exclude = ['is_active', 'jobs']
 
+  def to_representation(self, instance):
+    response = super().to_representation(instance)
+    response['jobs'] = JobsExcludedSerializer(instance.jobs).data
+    return response
 
 class PartsMarkupSerializer(serializers.ModelSerializer):
   class Meta:

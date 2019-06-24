@@ -80,7 +80,8 @@ const taskSearchResultsTableFields = {
   id: 'id',
   task_id: 'Task ID',
   task_name: 'Task Name',
-  task_attribute: 'Task Type'
+  task_attribute: 'Task Type',
+  categories: 'Category',
 };
 
 const taskDetailFormFields = {
@@ -105,6 +106,7 @@ const categorySearchResultsTableFields = {
   id: 'id',
   category_id: 'Category ID',
   category_name: 'Category Name',
+  jobs: 'Job',
 };
 
 const categoryDetailFormFields = {
