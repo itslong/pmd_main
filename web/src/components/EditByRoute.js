@@ -24,7 +24,7 @@ class EditByRoute extends Component {
     const { fetchRoute } = this.props;
     // fetch by id
     const id = this.props.match.params.id;
- 
+
     Promise.all([
       fetchRoute(id),
       FetchTagTypesChoices(),
@@ -58,6 +58,9 @@ class EditByRoute extends Component {
   render() {
     const { itemData, itemId, tagTypesChoices, isEditing } = this.state;
     const { children, searchTypeForChild, history, mainPath, mainPathName } = this.props;
+    const { location } = history;
+
+    const detailPath = location.state ? location.state.detailPath : (location.pathname).replace('edit/', '');
 
     // cloning TaskFormFields
     const childrenWithProps = Children.map(children, child => 
@@ -82,7 +85,7 @@ class EditByRoute extends Component {
       <div>
         { formFields }
         <Link to={mainPath}>Back to {mainPathName}</Link>
-        <Link style={{paddingLeft: '40px'}} to={history.location.state.detailPath}>Go to {mainPathName} detail</Link>
+        <Link style={{paddingLeft: '40px'}} to={detailPath}>Go to {mainPathName} detail</Link>
       </div>
     )
   }
