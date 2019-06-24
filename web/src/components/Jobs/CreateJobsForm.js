@@ -128,7 +128,7 @@ class CreateJobsForm extends Component {
           />
 
           <CSRFToken />
-          <p>Select categopries for this job by going to <b>Category -> Edit</b> after submit.</p>
+          <p>Select categories for this job by going to <b>Category -> Edit</b> after submit.</p>
           <Button
             type={'primary'}
             title={'Submit'}

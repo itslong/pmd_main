@@ -24,8 +24,8 @@ const calculateRetailCost = (basePartCost, markupPercentsData) => {
   let retailCost = 0;
 
   const markupObj = markupPercentsData.filter(data => {
-    const low = parseInt(data.range_low);
-    const high = parseInt(data.range_high);
+    const low = parseFloat(data.range_low);
+    const high = parseFloat(data.range_high);
 
     if (cost <= high && cost >= low) {
       return data;
