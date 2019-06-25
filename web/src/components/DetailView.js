@@ -16,6 +16,7 @@ import { TaskDetailTotalsTable } from './Tasks';
 Only applies to Tasks, Categories, Jobs. Reference PartDetailWithState for Parts Detail.
 */
 class DetailView extends Component {
+  _isMounted = false;
   constructor(props) {
     super(props);
     // only display the totalsTable when it's task detail.
@@ -36,6 +37,7 @@ class DetailView extends Component {
   }
 
   componentDidMount() {
+    this._isMounted = true;
     const { initRoute, itemId, relatedChild, relatedParent } = this.props;
     let getData = Promise.all([
       initRoute(itemId),
@@ -62,15 +64,21 @@ class DetailView extends Component {
           tag_name: data.job_name
         }) : tag_types;
 
-      this.setState({
-        itemData: filteredData,
-        relatedChildData: childArr,
-        relatedParent: parentName,
-        tagTypes: tags,
-        isLoaded:true,
-        globalMarkup: markupData
-      });
+      if (this._isMounted) {
+        this.setState({
+          itemData: filteredData,
+          relatedChildData: childArr,
+          relatedParent: parentName,
+          tagTypes: tags,
+          isLoaded:true,
+          globalMarkup: markupData
+        });        
+      }
     });
+  }
+
+  componentWillUnmount() {
+    this._isMounted = false;
   }
 
   filterOutputData() {

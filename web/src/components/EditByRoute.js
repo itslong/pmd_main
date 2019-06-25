@@ -7,6 +7,7 @@ import { FetchTagTypesChoices } from './endpoints';
 
 
 class EditByRoute extends Component {
+  _isMounted = false;
   constructor(props) {
     super(props);
     this.state = {
@@ -21,6 +22,7 @@ class EditByRoute extends Component {
   }
 
   componentDidMount() {
+    this._isMounted = true;
     const { fetchRoute } = this.props;
     // fetch by id
     const id = this.props.match.params.id;
@@ -30,15 +32,21 @@ class EditByRoute extends Component {
       FetchTagTypesChoices(),
     ])
     .then(([routeData, tagsChoices]) => {
-      this.setState({
-        itemId: id,
-        itemData: routeData,
-        tagTypesChoices: tagsChoices
-      });
+      if (this._isMounted) {
+        this.setState({
+          itemId: id,
+          itemData: routeData,
+          tagTypesChoices: tagsChoices
+        });
+      }
     })
     .catch(err => {
       return Promise.reject('Error from fetching a single item: ', err);
     })
+  }
+
+  componentWillUnmount() {
+    this._isMounted = false;
   }
 
   handleLoadNewData() {
