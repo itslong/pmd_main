@@ -13,6 +13,7 @@ import { Input, Button, TextArea, Checkbox, Select } from '../common';
 import { calculateRetailCost } from './CalculatePartsCustomMarkupField';
 import { PARTS_DISPLAY_PATH } from '../frontendBaseRoutes';
 import { moneyLimitSixRegEx, lettersNumbersHyphenRegEx } from '../helpers';
+import DialogModal from '../DialogModal';
 import {   
   partNameErrorMsg,
   partNumLengthErrorMsg,
@@ -57,6 +58,7 @@ class CreatePartsForm extends Component {
         basePartCost: '',
         tagTypes: '',
       },
+      displaySuccessModal: false,
     }
     this.handleSubmit = this.handleSubmit.bind(this);
     this.handleClearForm = this.handleClearForm.bind(this);
@@ -72,7 +74,7 @@ class CreatePartsForm extends Component {
 
     this.handleBasePartCost = this.handleBasePartCost.bind(this);
     this.handleRetailPartCost = this.handleRetailPartCost.bind(this);
-
+    this.toggleModal = this.toggleModal.bind(this);
   }
 
   componentDidMount() {
@@ -88,8 +90,7 @@ class CreatePartsForm extends Component {
     })
   }
 
-  handleClearForm(e) {
-    e.preventDefault();
+  handleClearForm() {
     this.setState({
       part_name: '',
       master_part_num: '',
@@ -131,8 +132,10 @@ class CreatePartsForm extends Component {
     let create = CreatePart(formData);
     create.then(data => {
       console.log('created: ' + JSON.stringify(data))
-      this.handleRedirectAfterSubmit();
-    });
+      // this.handleRedirectAfterSubmit();
+      this.toggleModal();
+      this.handleClearForm();
+    })
   }
 
   validateFormState() {
@@ -157,7 +160,7 @@ class CreatePartsForm extends Component {
 
     const formValid = partNameValid && partNumValid && partCostValid && tagTypesValid ? true : false;
 
-    this.setState({ 
+    this.setState({
       formFieldErrors: {
         ...this.state.formFieldErrors, 
         partName: !partNameValid,
@@ -187,6 +190,7 @@ class CreatePartsForm extends Component {
       partsMarkupData,
       formFieldErrors,
       formFieldErrorMsgs,
+      displaySuccessModal,
       ...formData
     } = this.state;
 
@@ -298,14 +302,19 @@ class CreatePartsForm extends Component {
     });
   }
 
+  toggleModal() {
+    this.setState({ displaySuccessModal: !this.state.displaySuccessModal })
+  }
+
   render() {
     const { 
       redirectAfterSubmit, tag_types, tagTypesChoices, tagTypesAsValues, 
-      tagTypesDisplay, formFieldErrors, formFieldErrorMsgs
+      tagTypesDisplay, formFieldErrors, formFieldErrorMsgs, displaySuccessModal
     } = this.state;
-    if (redirectAfterSubmit) {
-      return <Redirect to={PARTS_DISPLAY_PATH} />
-    }
+    // client prefers no redirect after successful submission at this time.
+    // if (redirectAfterSubmit) {
+    //   return <Redirect to={{ pathname: PARTS_DISPLAY_PATH, state: {blah: part_name} }} />
+    // }
 
     const { basePartCost, partName, masterPartNum, tagTypes } = formFieldErrors;
     const { basePartCost: basePartMsg, partName: partNameMsg, masterPartNum: partNumMsg, tagTypes: tagTypesMsg } = formFieldErrorMsgs;
@@ -336,6 +345,11 @@ class CreatePartsForm extends Component {
       <p style={fieldErrorInlineMsgStyle}>{basePartMsg}</p>
       : '';
 
+    const displayModal = displaySuccessModal ?
+    <DialogModal
+      dialogText={'Successfully created'}
+      handleCloseDialog={this.toggleModal}
+    /> : '';
 
     return (
       <div>
@@ -444,6 +458,7 @@ class CreatePartsForm extends Component {
 
         </form>
         <Link to={PARTS_DISPLAY_PATH}>Back to Parts</Link>
+        {displayModal}
       </div>
     );
   }

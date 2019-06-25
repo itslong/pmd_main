@@ -31,17 +31,28 @@ const textBody = {
 
 }
 
-// may not need showDialog. ONce switched to css, use showDialog to toggle modal display
+
 const DialogModal = ({ dialogText, handleCloseDialog }) => {
+
+  // use when css is added.
+  const showHideClassName = handleCloseDialog ? 'modal display-block' : 'modal display-none';
+
+  const buttonClose = handleCloseDialog ?
+    handleCloseDialog
+    : (() => { 
+      const successModal = document.querySelector('#single-modal');
+      successModal.setAttribute('style', 'display: none'); 
+    });
+
   return (
-    <div style={modalStyles}>
+    <div id={'single-modal'} style={modalStyles} className={showHideClassName}>
       <section className='modal-main' style={modalMain}>
         <div style={textBody}>
           {dialogText}
           <Button 
             type={'primary'}
             title={'Ok'}
-            action={handleCloseDialog}
+            action={buttonClose}
           />
           </div>
       </section>
