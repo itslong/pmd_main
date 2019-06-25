@@ -4,6 +4,7 @@ import { Link, Redirect } from 'react-router-dom';
 import { FetchTagTypesChoices, CreateTask, CSRFToken } from '../endpoints';
 import { Input, Button, TextArea, Checkbox, Select } from '../common';
 import { TASKS_DISPLAY_PATH } from '../frontendBaseRoutes';
+import DialogModal from '../DialogModal';
 import {
   moneyLimitSixRegEx,
   lettersNumbersHyphenRegEx,
@@ -58,7 +59,7 @@ class CreateTasksForm extends Component {
         taskAttr: '',
         fixedLabor: ''
       },
-      formValid: false,
+      displaySuccessModal: false,
     };
     this.handleSubmit = this.handleSubmit.bind(this);
     this.handleClearForm = this.handleClearForm.bind(this);
@@ -78,6 +79,7 @@ class CreateTasksForm extends Component {
     this.handleUseFixedLaborRate = this.handleUseFixedLaborRate.bind(this);
     this.handleFixedLaborRate = this.handleFixedLaborRate.bind(this);
     this.handleTagTypesChange = this.handleTagTypesChange.bind(this);
+    this.toggleModal = this.toggleModal.bind(this);
   }
 
   componentDidMount() {
@@ -100,13 +102,13 @@ class CreateTasksForm extends Component {
     let created = CreateTask(formData);
     created.then(data => {
       console.log('created task: ' + JSON.stringify(data))
-      this.handleRedirectAfterSubmit();
-      // this.handleClearForm(e);
+      // this.handleRedirectAfterSubmit();
+      this.toggleModal();
+      this.handleClearForm();
     });
   }
 
-  handleClearForm(e) {
-    e.preventDefault();
+  handleClearForm() {
     this.setState({
       task_id: '',
       task_name: '',
@@ -172,7 +174,6 @@ class CreateTasksForm extends Component {
 
     const formValid = taskIdValid && taskNameValid && taskAttrValid && tagTypeValid && fixedLaborValid ? true : false;
 
-
     this.setState({
       formFieldErrors: {
         ...this.state.formFieldErrors,
@@ -201,6 +202,7 @@ class CreateTasksForm extends Component {
       redirectAfterSubmit,
       formFieldErrors,
       formFieldErrorMsgs,
+      displaySuccessModal,
       ...formData
     } = this.state;
 
@@ -309,14 +311,18 @@ class CreateTasksForm extends Component {
     });
   }
 
+  toggleModal() {
+    this.setState({ displaySuccessModal: !this.state.displaySuccessModal })
+  }
+
   render() {
     const { 
       use_fixed_labor_rate, redirectAfterSubmit, tagTypesChoices, tagTypeAsValue,
-      formFieldErrors, formFieldErrorMsgs
+      formFieldErrors, formFieldErrorMsgs, displaySuccessModal
     } = this.state;
-    if (redirectAfterSubmit) {
-      return <Redirect to={TASKS_DISPLAY_PATH} />
-    } 
+    // if (redirectAfterSubmit) {
+    //   return <Redirect to={TASKS_DISPLAY_PATH} />
+    // } 
 
     const {
       taskId: taskIdErr,
@@ -366,6 +372,12 @@ class CreateTasksForm extends Component {
         />
         {fixedLaborErrorMsg}
       </div> : '';
+
+    const displayModal = displaySuccessModal ?
+    <DialogModal
+      dialogText={'Successfully created'}
+      handleCloseDialog={this.toggleModal}
+    /> : '';
 
     return (
       <div>
@@ -494,7 +506,7 @@ class CreateTasksForm extends Component {
           />
 
         </form>
-
+        {displayModal}
         <Link to={TASKS_DISPLAY_PATH}>Back to Tasks</Link>
       </div>
     )

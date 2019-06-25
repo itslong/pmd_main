@@ -190,6 +190,7 @@ class CreatePartsForm extends Component {
       partsMarkupData,
       formFieldErrors,
       formFieldErrorMsgs,
+      displaySuccessModal,
       ...formData
     } = this.state;
 

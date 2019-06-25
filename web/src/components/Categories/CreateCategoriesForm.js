@@ -4,6 +4,7 @@ import { Link, Redirect } from 'react-router-dom';
 import { CreateCategory, CSRFToken } from '../endpoints';
 import { Input, Button, TextArea, Checkbox, Select } from '../common';
 import { CATEGORIES_DISPLAY_PATH } from '../frontendBaseRoutes';
+import DialogModal from '../DialogModal';
 import {
   lettersNumbersHyphenRegEx,
   fieldRequiredErrorMsg,
@@ -32,6 +33,7 @@ class CreateCategoriesForm extends Component {
         categoryId: '',
         categoryName: '',
       },
+      displaySuccessModal: false,
     }
 
     this.handleCategoryId = this.handleCategoryId.bind(this);
@@ -40,6 +42,7 @@ class CreateCategoriesForm extends Component {
 
     this.handleSubmit = this.handleSubmit.bind(this);
     this.handleClearForm = this.handleClearForm.bind(this);
+    this.toggleModal = this.toggleModal.bind(this);
 
   }
 
@@ -55,7 +58,9 @@ class CreateCategoriesForm extends Component {
 
     let createCategory = CreateCategory(formData);
     createCategory.then(data => {
-      this.handleRedirectAfterSubmit();
+      // this.handleRedirectAfterSubmit();
+      this.toggleModal();
+      this.handleClearForm();
     })
   }
 
@@ -94,14 +99,14 @@ class CreateCategoriesForm extends Component {
       redirectAfterSubmit,
       formFieldErrors,
       formFieldErrorMsgs,
+      displaySuccessModal,
       ...formData
     } = this.state;
 
     return formData;
   }
 
-  handleClearForm(e) {
-    e.preventDefault();
+  handleClearForm() {
     this.setState({
       category_id: '',
       category_name: '',
@@ -157,11 +162,15 @@ class CreateCategoriesForm extends Component {
     this.setState({ redirectAfterSubmit: true });
   }
 
+  toggleModal() {
+    this.setState({ displaySuccessModal: !this.state.displaySuccessModal })
+  }
+
   render() {
-    const { redirectAfterSubmit, formFieldErrors, formFieldErrorMsgs } = this.state;
-    if (redirectAfterSubmit) {
-      return <Redirect to={CATEGORIES_DISPLAY_PATH} />
-    }
+    const { redirectAfterSubmit, formFieldErrors, formFieldErrorMsgs, displaySuccessModal } = this.state;
+    // if (redirectAfterSubmit) {
+    //   return <Redirect to={CATEGORIES_DISPLAY_PATH} />
+    // }
 
     const { categoryId: catIdErr, categoryName: catNameErr } = formFieldErrors;
     const { categoryId: catIdMsg, categoryName: catNameMsg } = formFieldErrorMsgs;
@@ -173,6 +182,12 @@ class CreateCategoriesForm extends Component {
     const catNameErrorMsg = catNameErr ?
       <p style={fieldErrorInlineMsgStyle}>{catNameMsg}</p>
       : '';
+
+    const displayModal = displaySuccessModal ?
+      <DialogModal
+        dialogText={'Successfully created'}
+        handleCloseDialog={this.toggleModal}
+      /> : '';
 
     return (
      <div>
@@ -225,8 +240,8 @@ class CreateCategoriesForm extends Component {
             title={'Clear Form'}
             action={this.handleClearForm}
           />
-
         </form>
+        {displayModal}
         <Link to={CATEGORIES_DISPLAY_PATH}>Back to Categories</Link>
       </div> 
     )
