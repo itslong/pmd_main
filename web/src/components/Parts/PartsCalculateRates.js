@@ -16,6 +16,7 @@ const calculatePartRetailWithQuantity = (retailPriceObj) => {
 };
 
 const allRelatedPartsBaseSubtotalCost = (partsArr) => {
+  // subtotal_cost_all_parts
   // total_cost is base_cost * quantity
   const sum = partsArr.length > 0 ? partsArr.reduce((acc, { total_cost }) => {
     return acc + Number(total_cost);
@@ -25,6 +26,7 @@ const allRelatedPartsBaseSubtotalCost = (partsArr) => {
 };
 
 const allRelatedPartsRetailWithQuantitySubtotal = (partsArr) => {
+  // subtotal_value-retail_all_parts: parts actual retail * quanty
   if (partsArr.length == 0) {
     return 0;
   }
@@ -41,13 +43,25 @@ const allRelatedPartsRetailWithQuantitySubtotal = (partsArr) => {
 };
 
 const allRelatedPartsRetailSubtotalCostWithMarkup = (partsArr, materialMarkupPercent) => {
+  // Standard_part_retail: part's retail * material percent
   const materialPercent = parseFloat(materialMarkupPercent / 100);
   const sum = partsArr.length > 0 ? partsArr.reduce((acc, { part_retail_part_cost }) => {
-    return acc + (Number(part_retail_part_cost) * (parseInt(1) + materialPercent));
+    return acc + (parseFloat(part_retail_part_cost) * (parseInt(1) + materialPercent));
   }, 0) : 0;
 
   return sum;
 };
+
+const allRelatedPartsRetailWithMarkupAndQuantitySubtotal = (partsArr, materialMarkupPercent) => {
+ // subtotal_standard-retail_single_part: (part's retail * markup) = "standard-retail" * quantity
+  const materialPercent = parseFloat(materialMarkupPercent / 100);
+  const sum = partsArr.length > 0 ? partsArr.reduce((acc, { part_retail_part_cost, quantity }) => {
+    const standardRate = (parseFloat(part_retail_part_cost) * (parseInt(1) + materialPercent));
+    return acc + (standardRate * quantity);
+  }, 0) : 0;
+
+  return sum;
+}
 
 const calculatePartsMainDisplayFields = (partsArr, markupData, displayFields) => {
   const markupObj = markupData[0];
@@ -86,6 +100,7 @@ const calculateProfitAllParts = (partsArr) => {
 };
 
 const calculateTaxForAllRelatedPartsRetailSubtotal = (partsArr, tagTypeId, markupData) => {
+  // part's retail only or "value retail"
   const markup =  markupData.find(markupObj => {
     return markupObj.id == tagTypeId;
   });
@@ -96,6 +111,21 @@ const calculateTaxForAllRelatedPartsRetailSubtotal = (partsArr, tagTypeId, marku
   const total = preciseRound((parseFloat(parts_tax_percent / 100) * parseFloat(partRetailSubtotal)), 2);
 
   return total;
+};
+
+const calculateTaxForAllRelatedPartsRetailMarkupWithQuantity = (partsArr, tagTypeId, markupData) => {
+  // part's retail with markup or "standard retail"
+  const markup =  markupData.find(markupObj => {
+    return markupObj.id == tagTypeId;
+  });
+
+  const { parts_tax_percent, standard_material_markup_percent } = markup;
+
+  const partRetailSubtotal = allRelatedPartsRetailWithMarkupAndQuantitySubtotal(partsArr, standard_material_markup_percent);
+  const total = preciseRound((parseFloat(parts_tax_percent / 100) * parseFloat(partRetailSubtotal)), 2);
+
+  return total;
+
 };
 
 const allRelatedPartsRetailIncludingTax = (partsArr, tagTypeId, markupData) => {
@@ -113,7 +143,9 @@ export {
   allRelatedPartsBaseSubtotalCost,
   allRelatedPartsRetailSubtotalCostWithMarkup,
   allRelatedPartsRetailWithQuantitySubtotal,
+  allRelatedPartsRetailWithMarkupAndQuantitySubtotal,
   allRelatedPartsRetailIncludingTax,
   calculateTaxForAllRelatedPartsRetailSubtotal,
+  calculateTaxForAllRelatedPartsRetailMarkupWithQuantity,
   calculateProfitAllParts,
 };
