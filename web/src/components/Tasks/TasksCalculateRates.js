@@ -4,7 +4,9 @@ import {
   allRelatedPartsBaseSubtotalCost,
   allRelatedPartsRetailWithQuantitySubtotal,
   allRelatedPartsRetailSubtotalCostWithMarkup,
+  allRelatedPartsRetailWithMarkupAndQuantitySubtotal,
   calculateTaxForAllRelatedPartsRetailSubtotal,
+  calculateTaxForAllRelatedPartsRetailMarkupWithQuantity,
 } from '../Parts';
 
 
@@ -13,6 +15,7 @@ const preciseRound = (x, decimalPlaces) => {
 };
 
 const taskOnlyLaborCost = (taskObj, markupObj) => {
+  //subtotal_cost_task_labor 
   const { estimated_contractor_hours, estimated_asst_hours } = taskObj;
   const { labor_cost_hourly_rate, asst_labor_cost_hourly_rate } = markupObj;
 
@@ -24,6 +27,7 @@ const taskOnlyLaborCost = (taskObj, markupObj) => {
 };
 
 const taskOnlyLaborRetail = (taskObj, markupObj) => {
+  //subtotal_retail_task_labor
   const { estimated_contractor_hours, estimated_asst_hours, use_fixed_labor_rate, fixed_labor_rate } = taskObj;
   const { labor_retail_hourly_rate, asst_labor_retail_hourly_rate } = markupObj;
 
@@ -39,6 +43,7 @@ const taskOnlyLaborRetail = (taskObj, markupObj) => {
 };
 
 const addonOnlyLaborCost = (addonObj, markupObj) => {
+  //subtotal_cost_addon_labor
   const { estimated_contractor_minutes, estimated_asst_minutes } = addonObj;
   const { labor_cost_hourly_rate, asst_labor_cost_hourly_rate } = markupObj;
 
@@ -50,6 +55,7 @@ const addonOnlyLaborCost = (addonObj, markupObj) => {
 };
 
 const addonOnlyLaborRetail = (addonObj, markupObj) => {
+  //subtotal_retail_addon_labor
   const { estimated_contractor_minutes, estimated_asst_minutes, use_fixed_labor_rate, fixed_labor_rate } = addonObj;
   const { labor_retail_hourly_rate, asst_labor_retail_hourly_rate } = markupObj;
 
@@ -65,6 +71,7 @@ const addonOnlyLaborRetail = (addonObj, markupObj) => {
 }
 
 const taskOnlyTotalCost = (calcObj) => {
+  //main Task Display (retail without markup)
   const { related: partsArr, markup, ...taskCostObj } = calcObj;
   const { misc_tos_cost_hourly_rate } = markup;
 
@@ -77,6 +84,7 @@ const taskOnlyTotalCost = (calcObj) => {
 };
 
 const addonOnlyTotalCost = (calcObj) => {
+  //main Task Display (retailout with markup)
   const { related: partsArr, markup, ...addonCostObj } = calcObj;
 
 
@@ -89,10 +97,11 @@ const addonOnlyTotalCost = (calcObj) => {
 };
 
 const taskOnlyStandardRate = (calcObj) => {
+  //total_standard-retail_task 
   const { related: partsArr, markup, ...taskRetailObj } = calcObj;
   const { standard_material_markup_percent, standard_labor_markup_percent, misc_tos_retail_hourly_rate } = markup;
 
-  const partsSubtotalRetail = allRelatedPartsRetailSubtotalCostWithMarkup(partsArr, standard_material_markup_percent);
+  const partsSubtotalRetail = allRelatedPartsRetailWithMarkupAndQuantitySubtotal(partsArr, standard_material_markup_percent);
   const taskLaborRetail = taskOnlyLaborRetail(taskRetailObj, markup);
   const markupPercent = parseFloat(standard_material_markup_percent / 100);
 
@@ -104,10 +113,11 @@ const taskOnlyStandardRate = (calcObj) => {
 };
 
 const addonOnlyStandardRate = (calcObj) => {
+  //total_standard-retail_addon 
   const { related: partsArr, markup, ...addonRetailObj } = calcObj;
   const { standard_material_markup_percent, standard_labor_markup_percent } = markup;
 
-  const partsSubtotalRetail = allRelatedPartsRetailSubtotalCostWithMarkup(partsArr, standard_material_markup_percent);
+  const partsSubtotalRetail = allRelatedPartsRetailWithMarkupAndQuantitySubtotal(partsArr, standard_material_markup_percent);
   const addonLaborRetail = addonOnlyLaborRetail(addonRetailObj, markup);
   const markupPercent = parseFloat(standard_material_markup_percent / 100);
 
@@ -119,6 +129,7 @@ const addonOnlyStandardRate = (calcObj) => {
 };
 
 const taskOrAddonLaborWithPartsRetail = (taskObj, partsArr, tagTypeId, markupData, taskAttrType) => {
+  //total_value-retail_addon, total_value-retail_task
   const markup = createSingleMarkupObj(tagTypeId, markupData);
 
   const partRetailSubtotal = allRelatedPartsRetailWithQuantitySubtotal(partsArr);
@@ -161,6 +172,7 @@ const taskAddonLaborPartsRetailWithMarkup = (taskObj, partsArr, tagTypeId, marku
 }
 
 const taxTotalForTaskAddonLaborWithPartsRetail = (taskObj, partsArr, tagTypeId, markupData, taskAttrType) => {
+  //tax_total_value-retail_task, tax_total_value-retail_addon 
   const laborRetail = taskAttrType == 'task' ?
     taskOrAddonLaborWithPartsRetail(taskObj, partsArr, tagTypeId, markupData, 'task')
     : taskOrAddonLaborWithPartsRetail(taskObj, partsArr, tagTypeId, markupData, 'addon');
@@ -172,17 +184,20 @@ const taxTotalForTaskAddonLaborWithPartsRetail = (taskObj, partsArr, tagTypeId, 
 };
 
 const taxTotalForTaskAddonLaborWithPartsRetailMarkup = (taskObj, partsArr, tagTypeId, markupData, taskAttrType) => {
+  //tax_total_standard-retail_task, tax_total_standard-retail_addon
   const laborRetailMarkup = taskAttrType == 'task' ?
     taskAddonLaborPartsRetailWithMarkup(taskObj, partsArr, tagTypeId, markupData, 'task')
     : taskAddonLaborPartsRetailWithMarkup(taskObj, partsArr, tagTypeId, markupData, 'addon');
 
   const tax = calculateTaxForAllRelatedPartsRetailSubtotal(partsArr, tagTypeId, markupData);
+  // const tax = calculateTaxForAllRelatedPartsRetailMarkupWithQuantity(partsArr, tagTypeId, markupData);
   const total = preciseRound(parseFloat(laborRetailMarkup) + parseFloat(tax), 2);
 
   return total;
 };
 
 const profitTaskOrAddonLabor = (taskObj, tagTypeId, markupData, taskAttrType) => {
+  //profit_task_labor, profit_addon_labor 
   const markup = createSingleMarkupObj(tagTypeId, markupData);
 
   const retail = taskAttrType == 'task' ?
@@ -199,6 +214,7 @@ const profitTaskOrAddonLabor = (taskObj, tagTypeId, markupData, taskAttrType) =>
 };
 
 const profitTaskOrAddonRetail = (taskObj, partsArr, tagTypeId, markupData, taskAttrType) => {
+  //profit_value-retail_task, profit_value-retail_addon
   const calcObj = createCalcObj(taskObj, partsArr, tagTypeId, markupData);
 
   const retail = taskAttrType == 'task' ?
@@ -215,6 +231,7 @@ const profitTaskOrAddonRetail = (taskObj, partsArr, tagTypeId, markupData, taskA
 };
 
 const profitTaskOrAddonRetailWithMarkup = (taskObj, partsArr, tagTypeId, markupData, taskAttrType) => {
+  //profit_standard-retail_task, profit_value-retail_addon 
   const calcObj = createCalcObj(taskObj, partsArr, tagTypeId, markupData);
 
   const retail = taskAttrType == 'task' ?
