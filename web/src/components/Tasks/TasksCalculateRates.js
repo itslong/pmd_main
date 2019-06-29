@@ -103,11 +103,11 @@ const taskOnlyStandardRate = (calcObj) => {
 
   const partsSubtotalRetail = allRelatedPartsRetailWithMarkupAndQuantitySubtotal(partsArr, standard_material_markup_percent);
   const taskLaborRetail = taskOnlyLaborRetail(taskRetailObj, markup);
-  const markupPercent = parseFloat(standard_material_markup_percent / 100);
 
-  const materialMarkup = partsSubtotalRetail * (parseInt(1) + markupPercent);
-  const laborMarkup = taskLaborRetail * (parseInt(1) + markupPercent);
-  const total = preciseRound(parseFloat(materialMarkup) + parseFloat(laborMarkup) + parseFloat(misc_tos_retail_hourly_rate), 2);
+  const markupPercent = parseInt(1) + parseFloat(standard_labor_markup_percent / 100);
+  const laborWithMarkup = parseFloat(taskLaborRetail) * markupPercent;
+
+  const total = preciseRound(partsSubtotalRetail + laborWithMarkup + parseFloat(misc_tos_retail_hourly_rate), 2);
 
   return total;
 };
@@ -119,12 +119,11 @@ const addonOnlyStandardRate = (calcObj) => {
 
   const partsSubtotalRetail = allRelatedPartsRetailWithMarkupAndQuantitySubtotal(partsArr, standard_material_markup_percent);
   const addonLaborRetail = addonOnlyLaborRetail(addonRetailObj, markup);
-  const markupPercent = parseFloat(standard_material_markup_percent / 100);
 
-  const materialMarkup = partsSubtotalRetail * (parseInt(1) + markupPercent);
-  const laborMarkup = addonLaborRetail * (parseInt(1) + markupPercent);
-  const total = preciseRound(parseFloat(materialMarkup) + parseFloat(laborMarkup), 2);
+  const markupPercent = parseInt(1) + parseFloat(standard_labor_markup_percent / 100);
+  const laborWithMarkup = parseFloat(addonLaborRetail * markupPercent);
 
+  const total = preciseRound(partsSubtotalRetail + laborWithMarkup, 2);
   return total;
 };
 
