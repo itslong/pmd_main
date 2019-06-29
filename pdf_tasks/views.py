@@ -166,45 +166,36 @@ def calculate_task_labor_with_parts(markup_data):
     task_val_ret_labor = round(Decimal(tasks_labor[tid]['subt_ret_task_labor']), 2)
     addon_val_ret_labor = round(Decimal(tasks_labor[tid]['subt_ret_addon_labor']), 2)
 
-    # parts
+    # parts * qty
     part_val_ret_subtotal = round(qty * Decimal(part_obj['retail_part_cost']), 2)
     part_std_ret_subtotal = round(qty * Decimal(part_obj['standard_retail']), 2)
-    # tax
-    part_subt_tax = round(Decimal(part_val_ret_subtotal * part_tax), 2)
 
-    # parts + task labor
-    task_val_ret_p_subt = part_val_ret_subtotal + task_val_ret_labor + misc_tos
-    addon_val_ret_p_subt = part_val_ret_subtotal + addon_val_ret_labor
-    task_std_ret_p_subt = part_std_ret_subtotal + task_val_ret_labor * (labor_markup + misc_tos)
-    addon_std_ret_p_subt = part_std_ret_subtotal + (addon_val_ret_labor * labor_markup)
+    # tax aded to each part. tax only applied to value_retail
+    part_val_ret_tax = round(Decimal(part_val_ret_subtotal * part_tax), 2)
 
-    # parts + task + tax
-    task_total_val_ret_tax = round(task_val_ret_p_subt + part_subt_tax, 2)
-    task_total_std_ret_tax = round(task_std_ret_p_subt + part_subt_tax, 2)
-    addon_total_val_ret_tax = round(addon_val_ret_p_subt + part_subt_tax, 2)
-    addon_total_std_ret_tax = round(addon_std_ret_p_subt + part_subt_tax, 2)
+    # part(and qty) + tax
+    part_val_ret_total = part_val_ret_subtotal + part_val_ret_tax
+    part_std_ret_total = part_std_ret_subtotal + part_val_ret_tax
 
-    rate_obj = {
-      'tid': tid,
-      'attribute': t_attr,
-      'task_id': task_id,
-      'task_name': t_name,
-      'task_value_rate': task_total_val_ret_tax,
-      'task_std_rate': task_total_std_ret_tax,
-      'addon_value_rate': addon_total_val_ret_tax,
-      'addon_std_rate': addon_total_std_ret_tax,
-    }
-
-    # add values to existing dupe or create new object
     if tid in task_dict:
       t_obj = task_dict[tid]
       # t_obj['task_value_rate'] += task_total_val_ret_tax,
-      t_obj['task_value_rate'] = t_obj['task_value_rate'] + task_total_val_ret_tax
-      t_obj['task_std_rate'] = t_obj['task_std_rate'] + task_total_std_ret_tax
-      t_obj['addon_value_rate'] = t_obj['addon_value_rate'] + addon_total_val_ret_tax
-      t_obj['addon_std_rate'] = t_obj['addon_std_rate'] + addon_total_std_ret_tax
+      t_obj['task_value_rate'] = t_obj['task_value_rate'] + part_val_ret_total
+      t_obj['task_std_rate'] = t_obj['task_std_rate'] + part_std_ret_total
+      t_obj['addon_value_rate'] = t_obj['addon_value_rate'] + part_val_ret_total
+      t_obj['addon_std_rate'] = t_obj['addon_std_rate'] + part_std_ret_total
     else:
-      task_dict[tid] = rate_obj
+      # labor is added only the first time
+      task_dict[tid] = {}
+      t_obj = task_dict[tid]
+      t_obj['tid'] = tid
+      t_obj['attribute'] = t_attr
+      t_obj['task_id'] = task_id
+      t_obj['task_name'] = t_name
+      t_obj['task_value_rate'] = round(misc_tos + task_val_ret_labor + part_val_ret_total, 2)
+      t_obj['task_std_rate'] = round((task_val_ret_labor * (labor_markup + misc_tos)) + part_std_ret_total, 2)
+      t_obj['addon_value_rate'] = round(addon_val_ret_labor + part_val_ret_total, 2)
+      t_obj['addon_std_rate'] = round((labor_markup * addon_val_ret_labor) + part_std_ret_total, 2)
 
   task_data = separate_into_task_and_addon(task_dict)
   return task_data
