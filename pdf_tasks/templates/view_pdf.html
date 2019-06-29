@@ -1,0 +1,72 @@
+<html>
+  <head>
+    <header>Some placeholder header</header>
+  </head>
+
+  <body>
+    <div>
+      <table>
+        <thead>Categories placeholder</thead>
+        <tbody>
+          <tr>
+            <td></td>
+          </tr>
+        </tbody>
+      </table>
+
+      <table>
+        <thead>
+          <h1>Tasks: Displaying {{ task|length }} total.</h1>
+          <th>ID</th>
+          <th>Attribute</th>
+          <th>Task ID</th>
+          <th>Task Name</th>
+          <th>Standard Rate</th>
+          <th>Value Rate</th>
+        </thead>
+
+        <tbody>
+          {% for t in task %}
+          <tr>
+            <td>{{ t.tid }}</td>
+            <td>{{ t.attribute }}</td>
+            <td>{{ t.task_id }}</td>
+            <td>{{ t.task_name }}</td>
+            <td>{{ t.task_std_rate }}</td>
+            <td>{{ t.task_value_rate }}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    
+    <div class="pagebreak" style="page-break-before:always;"> </div>
+    
+    <div>
+      <table>
+        <thead>
+          <h1>Addons: Displaying {{ addon|length }} total.</h1>
+          <th>ID</th>
+          <th>Attribute</th>
+          <th>Task ID</th>
+          <th>Task Name</th>
+          <th>Standard Rate</th>
+          <th>Value Rate</th>
+        </thead>
+        <tbody>
+          {% for a in addon %}
+          <tr>
+            <td>{{ a.tid }}</td>
+            <td>{{ a.attribute }}</td>
+            <td>{{ a.task_id }}</td>
+            <td>{{ a.task_name }}</td>
+            <td>{{ a.addon_std_rate }}</td>
+            <td>{{ a.addon_value_rate }}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+
+  </body>
+</html>

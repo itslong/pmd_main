@@ -212,7 +212,6 @@ class JobsExcludedView(generics.ListAPIView):
   queryset = Jobs.objects.all()
   serializer_class = JobsExcludedSerializer
   pagination_class = JobsCustomResultsSetPagination
-  permissions_classes = (permissions.IsAuthenticatedOrReadOnly, )
   permission_classes = (permissions.IsAuthenticated, )
 
 

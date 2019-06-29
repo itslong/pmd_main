@@ -1,0 +1,8 @@
+from django.urls import path
+
+from . import views 
+
+urlpatterns = [
+  path('book/', views.render_pdf_view),
+
+]

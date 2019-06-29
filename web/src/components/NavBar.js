@@ -15,6 +15,7 @@ import {
   JOBS_DISPLAY_PATH,
   CREATE_JOBS_PATH,
   SIGNUP_PATH,
+  PROD_BASE_PATH,
 } from './frontendBaseRoutes';
 
 const ulStyle = {
@@ -27,6 +28,8 @@ const ulStyle = {
 
 const NavBar = ({ handleLogout }) => {
   const username = useContext(UserContext);
+  const pdfPath = 'assets/book/';
+  const fullPdfPath = (process.env.LOCAL_PATH) ? process.env.LOCAL_PATH + pdfPath : PROD_BASE_PATH + pdfPath;
 
   return (
     <div>
@@ -46,6 +49,7 @@ const NavBar = ({ handleLogout }) => {
         <li><Link to={TASKS_DISPLAY_PATH}>Tasks</Link></li>
         <li><Link to={CATEGORIES_DISPLAY_PATH}>Categories</Link></li>
         <li><Link to={JOBS_DISPLAY_PATH}>Jobs</Link></li>
+        <li><a href={fullPdfPath}>PDF Test</a></li>
         <li style={{ display: 'flex', flexDirection: 'row' }}>
           <Link to={BASE_PATH} onClick={handleLogout}>Logout</Link>
           <p style={{ 'paddingLeft': '10px' }}>Signed in as: {username}</p>
