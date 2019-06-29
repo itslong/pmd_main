@@ -52,6 +52,7 @@ INSTALLED_APPS = [
     'inventory',
     'web',
     'pmd_auth',
+    'pdf_tasks',
     'django_filters',
     'localflavor',
 ]

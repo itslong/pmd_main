@@ -37,3 +37,7 @@ urlpatterns += [
 urlpatterns += [
   path('app/', include('web.urls')),
 ]
+
+urlpatterns += [
+  path('assets/', include('pdf_tasks.urls'))
+]
