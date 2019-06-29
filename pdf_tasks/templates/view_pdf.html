@@ -15,13 +15,14 @@
       </table>
 
       <table>
-        <thead><h1>Tasks</h1>
+        <thead>
+          <h1>Tasks: Displaying {{ task|length }} total.</h1>
           <th>ID</th>
           <th>Attribute</th>
           <th>Task ID</th>
           <th>Task Name</th>
-          <th>Value Rate</th>
           <th>Standard Rate</th>
+          <th>Value Rate</th>
         </thead>
 
         <tbody>
@@ -43,7 +44,15 @@
     
     <div>
       <table>
-        <thead><h1>Addons</h1></thead>
+        <thead>
+          <h1>Addons: Displaying {{ addon|length }} total.</h1>
+          <th>ID</th>
+          <th>Attribute</th>
+          <th>Task ID</th>
+          <th>Task Name</th>
+          <th>Standard Rate</th>
+          <th>Value Rate</th>
+        </thead>
         <tbody>
           {% for a in addon %}
           <tr>
