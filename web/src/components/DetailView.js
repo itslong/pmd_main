@@ -58,10 +58,10 @@ class DetailView extends Component {
       } = data;
 
       // tag_types only in Task. Category's tag_types = job's id
-      const tags = !tag_types ? 
+      const tags = !tag_types ?
         Object.assign({}, {
           id: data.id,
-          tag_name: data.job_name
+          tag_name: 'No job attached to this category.'
         }) : tag_types;
 
       if (this._isMounted) {
