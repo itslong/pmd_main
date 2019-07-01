@@ -579,7 +579,8 @@ class TaskFormFields extends Component {
           numberOfLinks={tableNumLinks}
         />
         {displayRemoveAllItemsButton}
-      </div> : 'No parts selected';
+        <br/>
+      </div> : <p>No parts selected</p>;
 
 
     const searchForChild = displayModalForSearch ?

@@ -1,12 +1,20 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { Link } from 'react-router-dom';
 
-import { HOME_PATH } from './frontendBaseRoutes';
+import { LOGIN_PATH } from './frontendBaseRoutes';
+import { IsAuthContext } from './AppContext';
 
-// modify this to accept text. Set up default error message.
+
 const NotFound = ({ message }) => {
+  const isAuth = useContext(IsAuthContext);
+
   const defaultText = "There doesn't seem to be anything here. Check the Url and try again.";
-  const bodyText = message ? message : defaultText;
+  let bodyText = message ? message : defaultText;
+
+  if (!isAuth) {
+    const loginLink = <Link to={LOGIN_PATH}>here</Link>;
+    bodyText = `Session expired. Login again ${loginLink}.`;
+  }
 
   return (
     <div>

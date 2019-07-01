@@ -846,11 +846,20 @@ const FetchGlobalMarkup = () => {
   return fetch(endpoint, {headers, })
   .then(response => {
     if (response.ok) {
-      return response.json()
+      return response.json();
+    } else if (response.status == 401 || response.status == 403) {
+      return {
+        status: response.statusText,
+        code: response.status
+      }
+    } 
+    else {
+      throw response;
     }
-
+  })
+  .catch(error => {
     return Promise.reject(
-     'Global Markup promise rejected. Status Code: ' + response.status + ' from this endpoint: ' + endpoint
+     'Global Markup promise rejected. Status Code: ' + error.status + ' from this endpoint: ' + endpoint
     );
   })
 }
