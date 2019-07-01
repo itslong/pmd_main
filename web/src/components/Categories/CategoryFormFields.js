@@ -349,7 +349,8 @@ class CategoryFormFields extends Component {
           numberOfLinks={this.props.tableNumLinks}
         />
         {displayRemoveAllItemsButton}
-      </div> : 'No tasks selected';
+        <br/>
+      </div> : <p>No tasks selected</p>;
 
 
     const searchTableConfigProps = {
