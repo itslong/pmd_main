@@ -28,7 +28,7 @@ const textBody = {
   display: 'flex',
   flexDirection: 'column',
   height: '100%',
-
+  padding: '10px',
 }
 
 
