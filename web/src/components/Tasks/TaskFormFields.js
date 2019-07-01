@@ -76,6 +76,7 @@ class TaskFormFields extends Component {
         fixedLabor: ''
       },
       toggleDialog: false,
+      dialogMsg: '',
     }
 
     this.handleSubmitChanges = this.handleSubmitChanges.bind(this);
@@ -207,7 +208,8 @@ class TaskFormFields extends Component {
         update.then(() => {
           this.setState({
             relatedPartsTableIsLoaded: false,
-            toggleLoadNewData: !this.state.toggleLoadNewData
+            toggleLoadNewData: !this.state.toggleLoadNewData,
+            dialogMsg: 'Successfully updated.',
           }, () => {
             this.toggleDialogState();
           });
@@ -273,6 +275,7 @@ class TaskFormFields extends Component {
       formFieldErrors,
       formFieldErrorMsgs,
       toggleDialog,
+      dialogMsg,
       ...formData
     } = this.state;
 
@@ -392,12 +395,15 @@ class TaskFormFields extends Component {
 
   handleAddPart(partData) {
     const { tempPartsAsIds } = this.state;
-    if (tempPartsAsIds.includes(partData.id)) {
-      // TODO: display message to user somewhere part is ialready in array
-      return null;
+    const { id, master_part_num, part_name, part_base_part_cost, part_retail_part_cost } = partData;
+
+    if (tempPartsAsIds.includes(id)) {
+      return this.setState({
+        toggleDialog: !this.state.toggleDialog,
+        dialogMsg: `${part_name} has already been added.`,
+      });
     }
 
-    const { id, master_part_num, part_name, part_base_part_cost, part_retail_part_cost } = partData;
     const newPart = Object.assign({}, {
       id,
       master_part_num,
@@ -498,7 +504,7 @@ class TaskFormFields extends Component {
       submitPartsAsIds, submitPartsValuesForDisplay, 
       tempPartsValuesForDisplay, categories, 
       displayModalForSearch, tempPartsAsIds,
-      globalMarkup, formFieldErrors, formFieldErrorMsgs, toggleDialog
+      globalMarkup, formFieldErrors, formFieldErrorMsgs, toggleDialog, dialogMsg
     } = this.state;
 
     const { tableNumLinks } = this.props;
@@ -608,9 +614,9 @@ class TaskFormFields extends Component {
       </Modal>: '';
 
 
-    const displaySuccessDialog = toggleDialog ?
+    const displayMessageDialog = toggleDialog ?
       <DialogModal
-        dialogText={'Successfully updated'}
+        dialogText={`${dialogMsg}`}
         handleCloseDialog={this.toggleDialogState}
       />
       : '';
@@ -760,7 +766,7 @@ class TaskFormFields extends Component {
             action={this.handleCancelEdit}
           />
         </div>
-        {displaySuccessDialog}
+        {displayMessageDialog}
 
       </div>
     )

@@ -50,6 +50,7 @@ class CategoryFormFields extends Component {
         categoryName: '',
       },
       toggleDialog: false,
+      dialogMsg: '',
     };
 
     this.handleCategoryId = this.handleCategoryId.bind(this);
@@ -123,7 +124,8 @@ class CategoryFormFields extends Component {
     submitted.then(() => {
       this.setState({
         relatedTasksTableIsLoaded: false,
-        toggleLoadNewData: !toggleLoadNewData
+        toggleLoadNewData: !toggleLoadNewData,
+        dialogMsg: 'Successfully updated.'
       }, () => {
         this.toggleDialogState();
       });
@@ -174,6 +176,8 @@ class CategoryFormFields extends Component {
       submitTasksAsIds: tasks_set,
       formFieldErrors,
       formFieldErrorMsgs,
+      toggleDialog,
+      dialogMsg,
       ...stateData
     } = this.state;
 
@@ -225,12 +229,14 @@ class CategoryFormFields extends Component {
 
   handleAddTask(taskData) {
     const { tempTasksAsIds, tempTasksValuesForDisplay } = this.state;
-    if (tempTasksAsIds.includes(taskData.id)) {
-      // TODO: display a message in a small modal
-      return null;
-    }
-
     const { id, task_id, task_name, task_attribute } = taskData;
+
+    if (tempTasksAsIds.includes(id)) {
+      return this.setState({
+        toggleDialog: !this.state.toggleDialog,
+        dialogMsg: `${task_name} has already been added.`
+      });
+    }
     
     const newTaskToAdd = Object.assign({}, {
       id,
@@ -304,7 +310,7 @@ class CategoryFormFields extends Component {
     const { 
       relatedTasksTableIsLoaded, tempTasksValuesForDisplay, displayModalForSearch, 
       submitTasksValuesForDisplay, is_active, submitTasksAsIds, madeChanges,
-      formFieldErrors, formFieldErrorMsgs, toggleDialog
+      formFieldErrors, formFieldErrorMsgs, toggleDialog, dialogMsg
     } = this.state;
 
     const { categoryId: catIdErr, categoryName: catNameErr } = formFieldErrors;
@@ -343,7 +349,8 @@ class CategoryFormFields extends Component {
           numberOfLinks={this.props.tableNumLinks}
         />
         {displayRemoveAllItemsButton}
-      </div> : 'No tasks selected';
+        <br/>
+      </div> : <p>No tasks selected</p>;
 
 
     const searchTableConfigProps = {
@@ -384,9 +391,9 @@ class CategoryFormFields extends Component {
       <p style={fieldErrorInlineMsgStyle}>{catNameMsg}</p>
       : '';
 
-    const displaySuccessDialog = toggleDialog ?
+    const displayMessageDialog = toggleDialog ?
       <DialogModal
-        dialogText={'Successfully updated'}
+        dialogText={dialogMsg}
         handleCloseDialog={this.toggleDialogState}
       />
       : '';
@@ -473,7 +480,7 @@ class CategoryFormFields extends Component {
             action={this.handleCancelEdit}
           />
         </div>
-        {displaySuccessDialog}
+        {displayMessageDialog}
       </div>
     )
   }

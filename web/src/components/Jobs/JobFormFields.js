@@ -6,6 +6,7 @@ import SearchComponent from '../SearchComponent';
 import { UpdateJobAndRelatedCategories, FetchTagTypesChoices, CSRFToken } from '../endpoints';
 import { JOBS_DISPLAY_PATH } from '../frontendBaseRoutes';
 import { renameStaticTableFields } from '../fieldNameAliases';
+import DialogModal from '../DialogModal';
 
 
 class JobFormFields extends Component {
@@ -31,6 +32,8 @@ class JobFormFields extends Component {
       tempCategoriesValuesForDisplay: data.categories,
       toggleLoadNewData: false,
       madeChanges: false,
+      toggleDialog: false,
+      dialogMsg: '',
     };
 
     this.handleJobId = this.handleJobId.bind(this);
@@ -50,6 +53,7 @@ class JobFormFields extends Component {
 
     this.handleSubmitChanges = this.handleSubmitChanges.bind(this);
     this.handleCancelEdit = this.handleCancelEdit.bind(this);
+    this.toggleDialogState = this.toggleDialogState.bind(this);
   }
 
   componentDidMount() {
@@ -143,13 +147,15 @@ class JobFormFields extends Component {
 
   handleAddCategory(categoryData) {
     const { tempCategoriesAsIds, tempCategoriesValuesForDisplay } = this.state;
-    if (tempCategoriesAsIds.includes(categoryData.id)) {
-      // TODO: display message
-      return null;
+    const { id, category_id, category_name, category_desc } = categoryData;
+
+    if (tempCategoriesAsIds.includes(id)) {
+      return this.setState({
+        toggleDialog: !this.state.toggleDialog,
+        dialogMsg: `${category_name} has already been added.`
+      })
     }
 
-    const { id, category_id, category_name, category_desc } = categoryData;
-    
     const newCategoryToAdd = Object.assign({}, {
       id,
       category_id,
@@ -217,7 +223,10 @@ class JobFormFields extends Component {
     submitted.then(() => {
       this.setState({
         relatedCategoriesTableIsLoaded: false,
-        toggleLoadNewData: !this.state.toggleLoadNewData
+        toggleLoadNewData: !this.state.toggleLoadNewData,
+        dialogMsg: 'Successfully updated.'
+      }, () => {
+        this.toggleDialogState();
       });
     });
   }
@@ -227,11 +236,15 @@ class JobFormFields extends Component {
     this.props.history.push(JOBS_DISPLAY_PATH);
   }
 
+  toggleDialogState() {
+    this.setState({ toggleDialog: !this.state.toggleDialog })
+  }
+
   render() {
     const {
       relatedCategoriesTableIsLoaded, tempCategoriesValuesForDisplay,
       displayModalForSearch, submitCategoriesValuesForDisplay,
-      is_active, submitCategoriesAsIds, madeChanges
+      is_active, submitCategoriesAsIds, madeChanges, toggleDialog, dialogMsg
     } = this.state;
 
     const { tableNumLinks } = this.props;
@@ -267,7 +280,7 @@ class JobFormFields extends Component {
           numberOfLinks={tableNumLinks}
         />
         {displayRemoveAllItemsButton}
-      </div> : 'No categories selected';
+      </div> : <p>No categories selected</p>;
 
 
     const searchTableConfigProps = {
@@ -300,6 +313,12 @@ class JobFormFields extends Component {
         />
       </Modal>: '';
 
+    const displayMessageDialog = toggleDialog ?
+      <DialogModal
+        dialogText={dialogMsg}
+        handleCloseDialog={this.toggleDialogState}
+      />
+      : '';
 
     return (
       <div>
@@ -373,7 +392,7 @@ class JobFormFields extends Component {
             action={this.handleCancelEdit}
           />
         </div>
-
+        {displayMessageDialog}
       </div>
     )
   }
