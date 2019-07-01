@@ -395,16 +395,15 @@ class TaskFormFields extends Component {
 
   handleAddPart(partData) {
     const { tempPartsAsIds } = this.state;
-    const { id, part_name } = partData;
+    const { id, master_part_num, part_name, part_base_part_cost, part_retail_part_cost } = partData;
 
     if (tempPartsAsIds.includes(id)) {
       return this.setState({
         toggleDialog: !this.state.toggleDialog,
-        dialogMsg: `${part_name} has already been selected.`,
+        dialogMsg: `${part_name} has already been added.`,
       });
     }
 
-    const { id, master_part_num, part_name, part_base_part_cost, part_retail_part_cost } = partData;
     const newPart = Object.assign({}, {
       id,
       master_part_num,
