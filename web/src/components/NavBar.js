@@ -31,6 +31,11 @@ const NavBar = ({ handleLogout }) => {
   const pdfPath = 'assets/book/';
   const fullPdfPath = (process.env.LOCAL_PATH) ? process.env.LOCAL_PATH + pdfPath : PROD_BASE_PATH + pdfPath;
 
+  // remove after testinng
+  const pdf100Path = (process.env.LOCAL_PATH) ? process.env.LOCAL_PATH + 'assets/book_100/' : PROD_BASE_PATH + 'assets/book_100/';
+  const pdf400Path = (process.env.LOCAL_PATH) ? process.env.LOCAL_PATH + 'assets/book_400/' : PROD_BASE_PATH + 'assets/book_400/';
+  const pdfAllPath = (process.env.LOCAL_PATH) ? process.env.LOCAL_PATH + 'assets/book_all/' : PROD_BASE_PATH + 'assets/book_all/';
+
   return (
     <div>
       <ul style={ulStyle}>
@@ -61,6 +66,14 @@ const NavBar = ({ handleLogout }) => {
         <li><Link to={CREATE_CATEGORIES_PATH}>Add Category</Link></li>
         <li><Link to={CREATE_JOBS_PATH}>Add Job</Link></li>
       </ul>
+
+      <ul style={ulStyle}>
+        <li>PDF Test. Numbers correspond to quantity of rows in the db table.</li>
+        <li><a href={pdf100Path}>PDF: 100</a></li>
+        <li><a href={pdf400Path}>PDF: 400</a></li>
+        <li><a href={pdfAllPath}>PDF: All</a></li>
+      </ul>
+
     </div>
   )
 };
