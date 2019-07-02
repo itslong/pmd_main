@@ -1,11 +1,12 @@
 import os
 from django.conf import settings
-from django.http import HttpResponse
+from django.http import HttpResponse, JsonResponse
 # from django.shortcuts import render
 # from django.template import Context
 from django.template.loader import get_template
 from xhtml2pdf import pisa
 from decimal import *
+
 
 from inventory.models import Tasks, Parts, TasksParts, GlobalMarkup
 
@@ -143,10 +144,13 @@ def separate_into_task_and_addon(task_dict):
   return data_dict
 
 
-def calculate_task_labor_with_parts(markup_data):
+def calculate_task_labor_with_parts(markup_data, limiter=40):
   parts = create_parts_with_standard_retail(markup_data)
   tasks_labor = tasks_calculated_labor_retail(markup_data)
-  tasksparts_values = TasksParts.objects.values('task_id', 'part_id', 'quantity').order_by('task_id')[:40]
+  tasksparts_values = TasksParts.objects.values('task_id', 'part_id', 'quantity').order_by('task_id')[:limiter]
+
+  if limiter == 0:
+    tasksparts_values = TasksParts.objects.values('task_id', 'part_id', 'quantity').order_by('task_id')
 
   task_dict = {}
 
@@ -230,7 +234,7 @@ def calculate_task_labor_with_parts(markup_data):
 
 def render_pdf_view(request):
   markup = dict((m['id'], m) for m in GlobalMarkup.objects.values())
-  tasks_data = calculate_task_labor_with_parts(markup)
+  tasks_data = calculate_task_labor_with_parts(markup) #default 40
 
   template_path = 'view_pdf.html'
   context = {
@@ -251,4 +255,32 @@ def render_pdf_view(request):
   # if error then show some funy view
   if pisaStatus.err:
      return HttpResponse('We had some errors <pre>' + html + '</pre>')
+  return response
+
+
+def render_json_view(request, limiter=0):
+  markup = dict((m['id'], m) for m in GlobalMarkup.objects.values())
+  custom_qs = calculate_task_labor_with_parts(markup, limiter)
+  task_count = len(custom_qs['task'])
+  addon_count = len(custom_qs['addon'])
+
+  response = JsonResponse({
+    'task_count': task_count, 
+    'addon_count': addon_count,
+    'data': custom_qs,
+  })
+  return response
+
+# remove after testing.
+def view_100(request):
+  response = render_json_view(request, limiter=100)
+  return response
+
+
+def view_400(request):
+  response = render_json_view(request, limiter=400)
+  return response
+
+def view_all(request):
+  response = render_json_view(request, limiter=0)
   return response
