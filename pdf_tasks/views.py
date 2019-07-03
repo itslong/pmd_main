@@ -231,10 +231,10 @@ def calculate_task_labor_with_parts(markup_data, limiter=40):
 #           )
 #   return path
 
-
-def render_pdf_view(request):
+# remove limiter parameter after testing
+def render_pdf_view(request, limiter=40):
   markup = dict((m['id'], m) for m in GlobalMarkup.objects.values())
-  tasks_data = calculate_task_labor_with_parts(markup) #default 40
+  tasks_data = calculate_task_labor_with_parts(markup, limiter) #default 40
 
   template_path = 'view_pdf.html'
   context = {
@@ -271,7 +271,7 @@ def render_json_view(request, limiter=0):
   })
   return response
 
-# remove after testing.
+# remove after testing. # api only
 def view_100(request):
   response = render_json_view(request, limiter=100)
   return response
@@ -284,3 +284,16 @@ def view_400(request):
 def view_all(request):
   response = render_json_view(request, limiter=0)
   return response
+
+
+def render_100(request):
+  pdf = render_pdf_view(request, limiter=100)
+  return pdf
+
+def render_400(request):
+  pdf = render_pdf_view(request, limiter=400)
+  return pdf
+
+def render_all(request):
+  pdf = render_pdf_view(request, limiter=0)
+  return pdf
