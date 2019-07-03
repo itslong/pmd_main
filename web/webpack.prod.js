@@ -2,7 +2,7 @@ const path = require('path');
 const webpack = require('webpack');
 const CleanWebpackPlugin = require('clean-webpack-plugin');
 const BundleTracker = require('webpack-bundle-tracker');
-const Dotenv = require('dotenv-webpack');
+
 
 module.exports = {
   mode: 'production',
@@ -16,7 +16,6 @@ module.exports = {
       filename: 'web/webpack-stats.prod.json',
       // path: path.resolve('./static/dist/')
     }),
-    // new Dotenv({path: 'web/.env'})
   ],
   output: {
     filename: '[name]-[hash].prod.bundle.js',
