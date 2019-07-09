@@ -33,12 +33,23 @@ const modalMainDelete = {
   transform: 'translate(-50%, -50%)'
 }
 
-const modalHeader = {
+const modalHeaderStyle = {
   background: 'lightGray',
   height: 'auto',
   display: 'flex',
-  flexDirection: 'row'
+  flexDirection: 'row',
+  width: '100%',
 }
+
+const modalHeaderButtonStyle = {
+  width: '100%',
+  display: 'flex',
+  justifyContent: 'end',
+};
+
+const modalHeaderTextStyle = {
+  width: '100%',
+};
 /**
   handleCloseModal: function to close modal. This should update State in parent.
   showEditModal: only used to dictate className once Css is added.
@@ -48,17 +59,18 @@ const modalHeader = {
 */
 
 const Modal = ({ handleCloseModal, showEditModal, headerText, actionType, children }) => {
-  // use to adjust modal class name when css is integrated.
-  // const showHideClassName = showEditModal ? 'modal display-block' : 'modal display-none';
-  
   const modalContainerStyle = (actionType === 'edit') ? modalMainEdit : modalMainDelete;
 
   return (
     <div className={'modal'} style={modalStyles}>
       <section className='modal-main' style={modalContainerStyle}>
-        <section className='modal-header' style={modalHeader}>
-          <p>{headerText}</p>
-          <Button type={'primary'} title={'X'} action={handleCloseModal} />
+        <section className='modal-header' style={modalHeaderStyle}>
+          <div style={modalHeaderTextStyle}>
+            <p>{headerText}</p>
+          </div>
+          <div style={modalHeaderButtonStyle}>
+            <Button type={'closeBtn'} title={'X'} action={handleCloseModal} />
+          </div>
         </section>
         { children }
       </section>

@@ -231,12 +231,12 @@ class CreateCategoriesForm extends Component {
           <CSRFToken />
           <p>Select tasks for this category by going to <b>Category -> Edit</b> after submit.</p>
           <Button
-            type={'primary'}
+            type={'submitBtn'}
             title={'Submit'}
             action={this.handleSubmit}
           />
           <Button
-            type={'secondary'}
+            type={'clearBtn'}
             title={'Clear Form'}
             action={this.handleClearForm}
           />
