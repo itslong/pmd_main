@@ -1,22 +1,12 @@
 import React, { Children, cloneElement } from "react";
 import { Link } from 'react-router-dom';
 
-import Button from './Button';
 import { itemPathWithId } from '../frontendBaseRoutes';
 import TableRowWithCheckbox from './TableRowWithCheckbox';
 import TableRowWithButtons from './TableRowWithButtons';
 import TableRow from './TableRow';
+import { GTable, columnThStyle } from './styles';
 
-
-const tableStyle = {
-  tableLayout: 'fixed',
-  width: '95%',
-  wordWrap: 'break-word'
-};
-
-const columnStyle = {
-  width: '50%'
-}
 
 /**
   data: array of objects.
@@ -58,7 +48,7 @@ const Table = ({
         { headerText }
       </h3>
 
-      <table id={tableId} className="table is-striped" style={tableStyle}>
+      <GTable id={tableId} className="table is-striped">
         <thead>
           <tr>
             {Object.entries(data[0]).map((headers, key) => {
@@ -66,10 +56,10 @@ const Table = ({
                 // skip over the id
                 return null;
               }
-              return <th key={key} style={columnStyle}>{headers[0]}</th>
+              return <th key={key} style={columnThStyle}>{headers[0]}</th>
             })}
             {extraColHeaders ? extraColHeaders.map((value, index) => {
-              return <th key={index} style={columnStyle}>{value}</th>
+              return <th key={index} style={columnThStyle}>{value}</th>
             }) : null}
           </tr>
         </thead>
@@ -78,7 +68,7 @@ const Table = ({
             // in display, id=pk; in edit view, uses part_id or task_id
             let itemId = items.id || items.part_id || items.task_id;
             // for each button passed down, add the item's id
-            const cleanRowProps = (extraRowProps !== undefined) ? extraRowProps.map(obj => {
+            const cleanRowProps = (extraRowProps) ? extraRowProps.map(obj => {
               return (
                 cloneElement(obj, {
                   id: itemId,
@@ -101,7 +91,7 @@ const Table = ({
             )
           })}
         </tbody>
-      </table>
+      </GTable>
     </div>
 
   )

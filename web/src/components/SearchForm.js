@@ -85,6 +85,7 @@ class SearchForm extends Component {
           
           <Button
             title={'Search'}
+            type={'primary'}
             action={this.handleSubmitSearch}
           />
 

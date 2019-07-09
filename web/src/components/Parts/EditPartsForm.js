@@ -514,13 +514,13 @@ class EditPartsForm extends Component {
 
         <CSRFToken />
         <Button
-          type={'primary'}
+          type={'submitBtn'}
           title={'Submit'}
           action={this.handleSubmit}
         />
 
         <Button
-          type={'primary'}
+          type={'clearBtn'}
           title={'Cancel'}
           action={this.props.handleCloseModal}
         />

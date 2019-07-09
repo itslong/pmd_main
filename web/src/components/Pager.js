@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 
-import { Button } from './common';
+import { Button, disabledButtonStyle, activeButtonStyle } from './common';
 import PageNavigation from './PageNavigation';
 
 const Pager = ({ 
@@ -44,7 +44,7 @@ const Pager = ({
         return null;
       }
 
-      let activePageSizeButtonClass = currentPageSize === pageSizeVal ? 'primary active': 'primary';
+      let activePageSizeButtonClass = currentPageSize === pageSizeVal ? 'active': 'normal';
       let activePageSizeButtonStyle = currentPageSize === pageSizeVal ? activeButtonStyle : null; 
 
       let lastPageOfPageSize = Math.ceil(totalItemsCount / pageSizeVal);
@@ -118,18 +118,6 @@ const generatePageNums = (lastPage, currentPageNum) => {
   return pageArr;
 };
 
-const disabledButtonStyle = {
-  cursor: 'not-allowed',
-  pointerEvents: 'none',
-  color: '#c0c0c0',
-  backgroundColor: '#ffffff'
-};
-
-const activeButtonStyle = {
-  backgroundColor: '#2284BA',
-  color: 'white',
-  cursor: 'pointer'
-};
 
 const pageNavStyle = {
   display: 'flex',

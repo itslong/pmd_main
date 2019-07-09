@@ -268,8 +268,8 @@ class DisplayComponent extends Component {
     const handleEdit = (editType === 'modal') ? this.handleClickEditInModal : this.handleClickEditByRoute;
 
     // create Edit Delete buttons here
-    const editButton = <Button key={0} type={'primary'} title={'Edit'} action={handleEdit} />;
-    const deleteButton = <Button key={1} type={'primary'} title={'Delete'} action={this.handleClickDelete} />;
+    const editButton = <Button key={0} type={'tblEditBtn'} title={'Edit'} action={handleEdit} />;
+    const deleteButton = <Button key={1} type={'tblDeleteBtn'} title={'Delete'} action={this.handleClickDelete} />;
 
     // table props for displaying items or search results
     const tableHeaderText = displaySearchResults ? 

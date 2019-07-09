@@ -14,7 +14,7 @@ const PartsAdminDisplay = () => {
       editType={'modal'}
       displayType={'parts'}
       tableRowType={'buttons'}
-      extraPropsLayout={'stacked'}
+      extraPropsLayout={'none'}
       pageSizeLimits={[10, 25, 50]}
       initPageSize={10}
       initPageNum={1}

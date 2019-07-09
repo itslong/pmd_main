@@ -29,10 +29,13 @@ const textBody = {
   flexDirection: 'column',
   height: '100%',
   padding: '10px',
+  height: '100%',
+  fontSize: '14px',
+  textAlign: 'center',
 }
 
 
-const DialogModal = ({ dialogText, handleCloseDialog }) => {
+const DialogModal = ({ dialogText, headerText, handleCloseDialog }) => {
 
   // use when css is added.
   const showHideClassName = handleCloseDialog ? 'modal display-block' : 'modal display-none';
@@ -54,7 +57,7 @@ const DialogModal = ({ dialogText, handleCloseDialog }) => {
             title={'Ok'}
             action={buttonClose}
           />
-          </div>
+        </div>
       </section>
     </div>
   )

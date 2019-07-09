@@ -495,12 +495,12 @@ class CreateTasksForm extends Component {
           <CSRFToken />
            <p>Select parts for this task by going to <b>Task -> Edit</b> after submit.</p>
           <Button
-            type={'primary'}
+            type={'submitBtn'}
             title={'Submit'}
             action={this.handleSubmit}
           />
           <Button
-            type={'secondary'}
+            type={'clearBtn'}
             title={'Clear Form'}
             action={this.handleClearForm}
           />

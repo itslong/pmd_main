@@ -381,13 +381,13 @@ class JobFormFields extends Component {
 
         <div>
           <Button
-            type={'primary'}
+            type={'submitBtn'}
             title={'Submit Changes'}
             action={this.handleSubmitChanges}
           />
 
           <Button
-            type={'primary'}
+            type={'clearBtn'}
             title={'Cancel'}
             action={this.handleCancelEdit}
           />

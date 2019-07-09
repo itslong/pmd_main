@@ -175,8 +175,6 @@ class PartDetailWithState extends Component {
       <Table 
         data={renamedRelatedTasksData}
         extraColHeaders={''}
-        extraRowProps={undefined}
-        extraPropsLayout={null}
         fetchType={'tasks'}
         numberOfLinks={1}
       /> : '';

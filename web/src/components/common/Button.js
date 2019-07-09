@@ -1,8 +1,10 @@
 import React from 'react';
+import { GButton } from './styles';
+
 
 const Button = (props) => {
   return (
-    <button
+    <GButton
       id={props.id}
       className={props.type}
       name={props.name}
@@ -11,7 +13,7 @@ const Button = (props) => {
       onClick={props.action}
     >
     {props.title}
-    </button>
+    </GButton>
   )
 }
 

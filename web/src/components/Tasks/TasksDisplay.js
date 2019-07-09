@@ -13,7 +13,7 @@ const TasksDisplay = () => {
       editType={'route'}
       displayType={'tasks'}
       tableRowType={'buttons'}
-      extraPropsLayout={'stacked'}
+      extraPropsLayout={'none'}
       pageSizeLimits={[10,40,50]}
       initPageSize={10}
       initPageNum={1}

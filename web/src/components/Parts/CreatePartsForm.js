@@ -446,12 +446,12 @@ class CreatePartsForm extends Component {
 
           <CSRFToken />
           <Button
-            type={'primary'}
+            type={'submitBtn'}
             title={'Submit'}
             action={this.handleSubmit}
           />
           <Button
-            type={'secondary'}
+            type={'clearBtn'}
             title={'Clear Form'}
             action={this.handleClearForm}
           />

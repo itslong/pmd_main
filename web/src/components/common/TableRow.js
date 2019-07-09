@@ -3,14 +3,8 @@ import { Link } from 'react-router-dom';
 
 import { itemPathWithId } from '../frontendBaseRoutes';
 import Input from './Input';
+import { tblTdStyle } from './styles';
 
-// temporary styles. remove later
-const stackedTdStyle ={
-  // top: '0px',
-  // left: '0px',
-  display: 'grid'
-  // position: 'absolute'
-}
 
 const convertTagTypesToJoinedString = (arrObj) => {
   const value = arrObj.length ? arrObj.map(({ tag_name }) => {
@@ -31,21 +25,18 @@ const TableRow = ({
   rowData, 
   numberOfLinks 
 }) => {
-  // determine if the extraPropsLayout exists
+  // determine if the extraPropsLayout exists. default to no td styling.
   let extraRowPropsLayout = null;
 
   if (extraPropsLayout) {
     extraRowPropsLayout = (extraPropsLayout === 'separate') ? 
       extraRowProps.map((obj, index) => {
-        return <td key={index}>{obj}</td>
-      }) : 
-      <td style={stackedTdStyle}>{extraRowProps}</td>;
+        return <td key={index} style={tblTdStyle}>{obj}</td>
+      })
+    : (extraPropsLayout === 'stacked') ?
+      <td className={'stacked'}>{extraRowProps}</td>
+    : <td style={tblTdStyle} className={'normal'}>{extraRowProps}</td>;
   }
-  // const extraRowPropsLayout = (extraPropsLayout) ? 
-  //   extraRowProps.map((obj, index) => {
-  //     return <td key={index}>{obj}</td>
-  //   }) : 
-  //   <td>{extraRowProps}</td>;
 
   const td = values.map((val, index) => {
     if (index == 0) {
@@ -57,7 +48,7 @@ const TableRow = ({
     // if (index > 0 && index < 3) {
     if (numberOfLinks > 0 && index <= numberOfLinks) {
       return (
-        <td key={index}>
+        <td key={index} style={tblTdStyle}>
           <Link to={itemPathWithId(itemId, fetchType)}>
             {valToString}
           </Link>
@@ -66,7 +57,7 @@ const TableRow = ({
     }
 
     return (
-      <td key={index}>{valToString}</td>
+      <td key={index} style={tblTdStyle}>{valToString}</td>
     );
   })
 
