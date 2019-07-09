@@ -32,7 +32,7 @@ def create_parts_with_standard_retail(markup_data):
   )
 
   parts = dict((p['id'], p) for p in parts_values)
-  part_markup = 1 + markup_percent
+  part_markup = 1 + Decimal(markup_percent / 100)
 
   for part in parts_values:
     if part['set_custom_part_cost']:
@@ -188,6 +188,7 @@ def calculate_task_labor_with_parts(markup_data, limiter=40):
       t_obj['task_std_rate'] = t_obj['task_std_rate'] + part_std_ret_total
       t_obj['addon_value_rate'] = t_obj['addon_value_rate'] + part_val_ret_total
       t_obj['addon_std_rate'] = t_obj['addon_std_rate'] + part_std_ret_total
+      # t_obj['quantity'] = t_obj['quantity'] + qty
     else:
       # labor is added only the first time
       task_dict[tid] = {}
@@ -197,9 +198,15 @@ def calculate_task_labor_with_parts(markup_data, limiter=40):
       t_obj['task_id'] = task_id
       t_obj['task_name'] = t_name
       t_obj['task_value_rate'] = round(misc_tos + task_val_ret_labor + part_val_ret_total, 2)
-      t_obj['task_std_rate'] = round((task_val_ret_labor * (labor_markup + misc_tos)) + part_std_ret_total, 2)
+      t_obj['task_std_rate'] = round((task_val_ret_labor * labor_markup) + misc_tos + part_std_ret_total, 2)
       t_obj['addon_value_rate'] = round(addon_val_ret_labor + part_val_ret_total, 2)
       t_obj['addon_std_rate'] = round((labor_markup * addon_val_ret_labor) + part_std_ret_total, 2)
+      # t_obj['labor_markup'] = labor_markup
+      # t_obj['task_val_ret_labor'] = task_val_ret_labor
+      # t_obj['part_val_ret_subtotal'] = part_val_ret_subtotal
+      # t_obj['part_val_ret_tax'] = part_val_ret_tax
+      # t_obj['quantity'] = qty
+      # t_obj['misc_tos'] = misc_tos
 
   task_data = separate_into_task_and_addon(task_dict)
   return task_data
