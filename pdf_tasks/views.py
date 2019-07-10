@@ -357,9 +357,6 @@ def categories_with_related_tasks():
       part_vr_total = 0
       part_std_total = 0
 
-      # delete after QA
-      quantity = 0
-
       if tid in tp_dict:
         related_parts = tp_dict[tid].items()
 
@@ -383,8 +380,6 @@ def categories_with_related_tasks():
           part_vr_total += part_val_ret_total
           part_std_total += part_std_ret_total
 
-          # delete after QA
-          quantity += qty
       
       # calc task labor. Some tasks will not require parts so tid will not be in taskparts
       task_val_ret_labor = task_obj['subt_ret_task_labor']
@@ -403,10 +398,6 @@ def categories_with_related_tasks():
       new_t_obj['attribute'] = t_attr
       new_t_obj['task_id'] = task_id
       new_t_obj['task_name'] = t_name
-
-      # delete these values after QA
-      new_t_obj['tos'] = misc_tos
-      new_t_obj['quantity'] = quantity
 
 
       # separate by task attribute
