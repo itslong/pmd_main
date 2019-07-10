@@ -28,9 +28,11 @@ const ulStyle = {
 
 const NavBar = ({ handleLogout }) => {
   const username = useContext(UserContext);
-  const pdfPath = 'assets/book/';
-  const fullPdfPath = (process.env.LOCAL_PATH) ? process.env.LOCAL_PATH + pdfPath : PROD_BASE_PATH + pdfPath;
-
+  const oldPdfPath = 'assets/book/';
+  const fullPdfPath = (process.env.LOCAL_PATH) ? process.env.LOCAL_PATH + oldPdfPath : PROD_BASE_PATH + oldPdfPath;
+  
+  const newPdfPath = 'assets/cat_as_pdf/';
+  const fullCatAsPdfPath = (process.env.LOCAL_PATH) ? process.env.LOCAL_PATH + newPdfPath : PROD_BASE_PATH + newPdfPath;
   // remove after testinng
   const pdfApi100Path = (process.env.LOCAL_PATH) ? process.env.LOCAL_PATH + 'assets/book_api_100/' : PROD_BASE_PATH + 'assets/book_api_100/';
   const pdfApi400Path = (process.env.LOCAL_PATH) ? process.env.LOCAL_PATH + 'assets/book_api_400/' : PROD_BASE_PATH + 'assets/book__api_400/';
@@ -58,7 +60,8 @@ const NavBar = ({ handleLogout }) => {
         <li><Link to={TASKS_DISPLAY_PATH}>Tasks</Link></li>
         <li><Link to={CATEGORIES_DISPLAY_PATH}>Categories</Link></li>
         <li><Link to={JOBS_DISPLAY_PATH}>Jobs</Link></li>
-        <li><a href={fullPdfPath}>PDF Test</a></li>
+        <li><a href={fullPdfPath}>Old PDF Test</a></li>
+        <li><a href={fullCatAsPdfPath}>New PDF Test</a></li>
         <li style={{ display: 'flex', flexDirection: 'row' }}>
           <Link to={BASE_PATH} onClick={handleLogout}>Logout</Link>
           <p style={{ 'paddingLeft': '10px' }}>Signed in as: {username}</p>

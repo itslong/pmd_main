@@ -1,0 +1,78 @@
+<html>
+  <head>
+    <p>Categories to PDF</p>
+    <style>
+      th {
+        width: 150px;
+      }
+      td {
+        text-align: center;
+      }
+    </style>
+  </head>
+
+  <body>
+    {% for category in cat_data %}
+
+    <div>
+      <h2>{{ category.name }}</h2>
+      <div>Displaying {{category.data.task|length}} tasks.</div>
+      <table>
+        <thead>
+          <tr>
+            <th>Task DB ID</th>
+            <th>Task ID</th>
+            <th>Task Name</th>
+            <th>Value Rate</th>
+            <th>Standard Rate</th>
+            <th>Task Attr</th>
+          </tr>
+        </thead>
+        
+        <tbody>
+          {% for t in category.data.task %}
+          <tr>
+            <td>{{ t.tid }}</td>
+            <td>{{ t.task_id }}</td>
+            <td>{{ t.task_name }}</td>
+            <td>{{ t.task_value_rate }}</td>
+            <td>{{ t.task_std_rate }}</td>
+            <td>{{ t.attribute }}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+
+    <div>
+      <div>Displaying {{category.data.addon|length}} addons.</div>
+      <table>
+        <thead>
+          <tr>
+            <th>Task DB ID</th>
+            <th>Task ID</th>
+            <th>Task Name</th>
+            <th>Value Rate</th>
+            <th>Standard Rate</th>
+            <th>Task Attr</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for a in category.data.addon %}
+          <tr>
+            <td>{{ a.tid }}</td>
+            <td>{{ a.task_id }}</td>
+            <td>{{ a.task_name }}</td>
+            <td>{{ a.task_value_rate }}</td>
+            <td>{{ a.task_std_rate }}</td>
+            <td>{{ a.attribute }}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    
+    <div class="pagebreak" style="page-break-before:always;"> </div>
+    {% endfor %}
+  </body>
+</html>
