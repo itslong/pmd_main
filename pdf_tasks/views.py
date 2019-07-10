@@ -1,14 +1,14 @@
 import os
 from django.conf import settings
 from django.http import HttpResponse, JsonResponse
-# from django.shortcuts import render
+from django.shortcuts import render
+from django.db.models import Prefetch
 # from django.template import Context
 from django.template.loader import get_template
 from xhtml2pdf import pisa
 from decimal import *
 
-
-from inventory.models import Tasks, Parts, TasksParts, GlobalMarkup
+from inventory.models import Tasks, Parts, TasksParts, GlobalMarkup, Categories
 
 
 def create_parts_with_standard_retail(markup_data):
@@ -66,7 +66,7 @@ def tasks_calculated_labor_retail(markup_data):
     'estimated_contractor_minutes',
     'estimated_asst_hours',
     'estimated_asst_minutes'
-    ).order_by('id')
+  )
 
   tasks_labor_dict = {}
 
@@ -108,9 +108,9 @@ def tasks_calculated_labor_retail(markup_data):
     tasks_labor_dict[key] = {
       'task_name': name,
       'task_item_id': task_id,
-      'subt_ret_task_labor': subt_ret_task_labor,
-      'subt_ret_addon_labor': subt_ret_addon_labor,
-      'standard_labor_markup': standard_labor_markup,
+      'subt_ret_task_labor': round(subt_ret_task_labor, 2),
+      'subt_ret_addon_labor': round(subt_ret_addon_labor, 2),
+      'standard_labor_markup': round(standard_labor_markup, 2),
       'task_misc_tos_retail_hourly': misc_tos_retail_hourly,
       'attr': t_attr,
     }
@@ -304,3 +304,149 @@ def render_400(request):
 def render_all(request):
   pdf = render_pdf_view(request, limiter=0)
   return pdf
+
+
+def tasksparts_dict():
+  tp_values = TasksParts.objects.values('task_id', 'part_id', 'quantity')
+  tp_dict = {}
+
+  for tp in tp_values:
+    tid = tp['task_id']
+
+    if tid not in tp_dict:
+      tp_dict[tid] = {}
+      tp_dict[tid] = {tp['part_id']: tp['quantity']}
+    else:
+      tp_dict[tid].update({tp['part_id']: tp['quantity']})
+
+  return tp_dict
+
+
+def categories_with_related_tasks():
+  markup = dict((m['id'], m) for m in GlobalMarkup.objects.values())
+  categories = Categories.objects.prefetch_related('tasks_set').all()
+  cat_arr = []
+
+  parts_dict = create_parts_with_standard_retail(markup)
+  tasks_labor_dict = tasks_calculated_labor_retail(markup)
+  tp_dict = tasksparts_dict()
+
+
+  for cat in categories:
+    related_tasks = cat.tasks_set.values()
+    cid = cat.id
+    cat_dict = {}
+    cat_dict['name'] = cat.category_name
+    cat_dict['id'] = cid
+    cat_dict['data'] = {}
+    cat_obj = cat_dict['data']
+    cat_obj['task'] = []
+    cat_obj['addon'] = []
+
+    for task in related_tasks:
+      # use task's db id to fetch qty from tasksparts
+      tid = task['id']
+      task_obj = tasks_labor_dict[tid]
+      t_attr = task_obj['attr']
+      task_id = task_obj['task_item_id']
+      t_name = task_obj['task_name']
+
+      misc_tos = Decimal(task_obj['task_misc_tos_retail_hourly'])
+      labor_markup = round(1 + Decimal(task_obj['standard_labor_markup'] / 100), 2)
+
+      part_vr_total = 0
+      part_std_total = 0
+
+      # delete after QA
+      quantity = 0
+
+      if tid in tp_dict:
+        related_parts = tp_dict[tid].items()
+
+        for part in related_parts:
+          pid = part[0]
+          qty = part[1]
+          part_obj = parts_dict[pid]
+          part_tax = Decimal(part_obj['parts_tax'] / 100)
+
+          # calc value_retail subtotal and std_retail subtotal with quantity.
+          part_val_ret_subtotal = round(qty * Decimal(part_obj['retail_part_cost']), 2)
+          part_std_ret_subtotal = round(qty * Decimal(part_obj['standard_retail']), 2)
+
+          # tax applied part. tax only applied to value_retail.
+          part_tax_value = round(Decimal(part_val_ret_subtotal * part_tax), 2)
+          
+          # part(and qty) + tax
+          part_val_ret_total = part_val_ret_subtotal + part_tax_value
+          part_std_ret_total = part_std_ret_subtotal + part_tax_value
+
+          part_vr_total += part_val_ret_total
+          part_std_total += part_std_ret_total
+
+          # delete after QA
+          quantity += qty
+      
+      # calc task labor. Some tasks will not require parts so tid will not be in taskparts
+      task_val_ret_labor = task_obj['subt_ret_task_labor']
+      addon_val_ret_labor = task_obj['subt_ret_addon_labor']
+
+
+      # calc task labor with parts
+      task_value_rate = misc_tos + task_val_ret_labor + part_vr_total
+      task_std_rate = (task_val_ret_labor * labor_markup) + misc_tos + part_std_total
+      addon_value_rate = addon_val_ret_labor + part_vr_total
+      addon_std_rate = (addon_val_ret_labor * labor_markup) + part_std_total
+
+      # prepare task obj
+      new_t_obj = {}
+      new_t_obj['tid'] = tid
+      new_t_obj['attribute'] = t_attr
+      new_t_obj['task_id'] = task_id
+      new_t_obj['task_name'] = t_name
+
+      # delete these values after QA
+      new_t_obj['tos'] = misc_tos
+      new_t_obj['quantity'] = quantity
+
+
+      # separate by task attribute
+      if t_attr == 'Addon And Task':
+        new_t_obj['task_value_rate'] = round(task_value_rate, 2)
+        new_t_obj['task_std_rate'] = round(task_std_rate, 2)
+        new_t_obj['addon_value_rate'] = round(addon_value_rate, 2)
+        new_t_obj['addon_std_rate'] = round(addon_std_rate, 2)
+        cat_obj['task'].append(new_t_obj)
+        cat_obj['addon'].append(new_t_obj)
+      elif t_attr == 'Task Only':
+        new_t_obj['task_value_rate'] = round(task_value_rate, 2)
+        new_t_obj['task_std_rate'] = round(task_std_rate, 2)
+        cat_obj['task'].append(new_t_obj)
+      else:
+        new_t_obj['addon_value_rate'] = round(addon_value_rate, 2)
+        new_t_obj['addon_std_rate'] = round(addon_std_rate, 2)
+        cat_obj['addon'].append(new_t_obj)
+    cat_arr.append(cat_dict)
+
+  return cat_arr
+
+
+def render_categories_as_pdf(request):
+  cat_data = categories_with_related_tasks()
+
+  template_path = 'category_pdf.html'
+  context = {
+    'cat_data': cat_data
+  }
+
+  response = HttpResponse(content_type='application/pdf')
+  # response['Content-Disposition'] = 'attachment; filename="pmd-book.pdf"'
+  template = get_template(template_path)
+  html = template.render(context)
+
+  # create a pdf
+  # pisaStatus = pisa.CreatePDF(html, dest=response, link_callback=link_callback)
+  pisaStatus = pisa.CreatePDF(html, dest=response)
+
+  if pisaStatus.err:
+     return HttpResponse('We had some errors <pre>' + html + '</pre>')
+  return response

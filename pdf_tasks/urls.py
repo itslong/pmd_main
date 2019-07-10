@@ -13,4 +13,5 @@ urlpatterns = [
   path('book_render_400/', views.render_400),
   path('book_render_all/', views.render_all),
 
+  path('cat_as_pdf/', views.render_categories_as_pdf),
 ]
