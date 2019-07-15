@@ -34,13 +34,27 @@ const NavBar = ({ handleLogout }) => {
   const newPdfPath = 'assets/cat_as_pdf/';
   const fullCatAsPdfPath = (process.env.LOCAL_PATH) ? process.env.LOCAL_PATH + newPdfPath : PROD_BASE_PATH + newPdfPath;
   // remove after testinng
-  const pdfApi100Path = (process.env.LOCAL_PATH) ? process.env.LOCAL_PATH + 'assets/book_api_100/' : PROD_BASE_PATH + 'assets/book_api_100/';
-  const pdfApi400Path = (process.env.LOCAL_PATH) ? process.env.LOCAL_PATH + 'assets/book_api_400/' : PROD_BASE_PATH + 'assets/book__api_400/';
-  const pdfApiAllPath = (process.env.LOCAL_PATH) ? process.env.LOCAL_PATH + 'assets/book_api_all/' : PROD_BASE_PATH + 'assets/book_api_all/';
+  // const pdfApi100Path = (process.env.LOCAL_PATH) ? process.env.LOCAL_PATH + 'assets/book_api_100/' : PROD_BASE_PATH + 'assets/book_api_100/';
+  // const pdfApi400Path = (process.env.LOCAL_PATH) ? process.env.LOCAL_PATH + 'assets/book_api_400/' : PROD_BASE_PATH + 'assets/book__api_400/';
+  // const pdfApiAllPath = (process.env.LOCAL_PATH) ? process.env.LOCAL_PATH + 'assets/book_api_all/' : PROD_BASE_PATH + 'assets/book_api_all/';
 
   const pdfRender100Path = (process.env.LOCAL_PATH) ? process.env.LOCAL_PATH + 'assets/book_render_100/' : PROD_BASE_PATH + 'assets/book_render_100/';
   const pdfRender400Path = (process.env.LOCAL_PATH) ? process.env.LOCAL_PATH + 'assets/book_render_400/' : PROD_BASE_PATH + 'assets/book_render_400/';
   const pdfRenderAllPath = (process.env.LOCAL_PATH) ? process.env.LOCAL_PATH + 'assets/book_render_all/' : PROD_BASE_PATH + 'assets/book_render_all/';
+
+
+  // jobs query testing with <table> and <div> tables
+  const htmlTableHtml = 'assets/html_table/';
+  const htmlTablePdf = 'assets/html_table_as_pdf/'
+  const navHtmlTable = (process.env.LOCAL_PATH) ? process.env.LOCAL_PATH + htmlTableHtml : PROD_BASE_PATH + htmlTableHtml;
+  const navPdfTable = (process.env.LOCAL_PATH) ? process.env.LOCAL_PATH + htmlTablePdf : PROD_BASE_PATH + htmlTablePdf;
+
+
+  const divTablePath = 'assets/div_table/';
+  const divTablePdf = 'assets/div_table_as_pdf/';
+  const navDivTable = (process.env.LOCAL_PATH) ? process.env.LOCAL_PATH + divTablePath : PROD_BASE_PATH + divTablePath;
+  const navPdfDiv = (process.env.LOCAL_PATH) ? process.env.LOCAL_PATH + divTablePdf : PROD_BASE_PATH + divTablePdf;
+
 
   return (
     <div>
@@ -75,17 +89,19 @@ const NavBar = ({ handleLogout }) => {
       </ul>
 
       <ul style={ulStyle}>
-        <li>PDF API Test. Numbers correspond to quantity of rows in the db table.</li>
-        <li><a href={pdfApi100Path}>API: 100</a></li>
-        <li><a href={pdfApi400Path}>API: 400</a></li>
-        <li><a href={pdfApiAllPath}>API: All</a></li>
-      </ul>
-
-      <ul style={ulStyle}>
-        <li>PGenerate PDF Test. Numbers correspond to quantity of rows in the db table.</li>
+        <li>Old PDF Test. (Numbers correspond to quantity of rows in the db table).</li>
         <li><a href={pdfRender100Path}>PDF: 100</a></li>
         <li><a href={pdfRender400Path}>PDF: 400</a></li>
         <li><a href={pdfRenderAllPath}>PDF: All</a></li>
+      </ul>
+
+      <ul style={ulStyle}>
+        <li>New PDF And Query Test. html table vs div table.</li>
+        <li><a href={navHtmlTable}>HTML Only with Table</a></li>
+        <li><a href={navPdfTable}>PDF with Table</a></li>
+        <li>|||</li>
+        <li><a href={navDivTable}>HTML Only with Div table</a></li>
+        <li><a href={navPdfDiv}>PDF with Div table</a></li>
       </ul>
 
     </div>
