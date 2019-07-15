@@ -14,4 +14,11 @@ urlpatterns = [
   path('book_render_all/', views.render_all),
 
   path('cat_as_pdf/', views.render_categories_as_pdf),
+  # new query with html table
+  path('html_table/', views.jobs_with_related_categories_as_html),
+  path('html_table_as_pdf/', views.jobs_with_related_categories_as_pdf),
+
+  # table with css
+  path('div_table/', views.jobs_div_table_as_html),
+  path('div_table_as_pdf/', views.jobs_div_table_as_pdf),
 ]
