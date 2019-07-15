@@ -1,0 +1,73 @@
+<html>
+  <head>
+    <p>Jobs to Cats to PDF</p>
+    <style>
+      td {
+        text-align: center;
+      }
+    </style>
+  </head>
+
+  <body>
+    {% for jd, job_data in jobs_data.items %}
+      <h2>{{ job_data.job_name }}</h2>
+      {% for j, categories in job_data.items %}
+        {% for cat, category in categories.items %}
+          <p><h3>{{ category.category_name }}</h3></p>
+          <p><h4>Task - Total tasks in this category: {{category.task|length}}</h4></p>
+          <table>
+            <thead>
+              <th>ID</th>
+              <th>Task ID</th>
+              <th>Task Name</th>
+              <th>Attribute</th>
+              <th>Standard Rate</th>
+              <th>Value Rate</th>
+            </thead>
+            
+            <tbody>
+              {% for t, tasks in category.task.items %}
+              <tr>
+                <td>{{ tasks.id }}</td>
+                <td>{{ tasks.task_id }}</td>
+                <td>{{ tasks.task_name }}</td>
+                <td>{{ tasks.attribute }}</td>
+                <td>{{ tasks.task_value_rate}}</td>
+                <td>{{ tasks.task_std_rate}}</td>
+              </tr>
+              {% endfor %}
+
+            </tbody>
+          </table>
+
+
+          <p><h4>Addon - Total addons in this category: {{category.addon|length}}</h4></p>
+          <table>
+            <thead>
+              <th>ID</th>
+              <th>Task ID</th>
+              <th>Task Name</th>
+              <th>Attribute</th>
+              <th>Standard Rate</th>
+              <th>Value Rate</th>
+            </thead>
+
+            <tbody>
+              {% for a, addons in category.addon.items %}
+              <tr>
+                <td>{{ addons.task_id }}</td>
+                <td>{{ addons.task_name }}</td>
+                <td>{{ addons.attribute }}</td>
+                <td>{{ addons.addon_value_rate}}</td>
+                <td>{{ addons.addon_std_rate}}</td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+         <div class="pagebreak" style="page-break-before:always;"> </div>    
+        {% endfor %}
+      {% endfor %}
+    {% endfor %}
+
+  </body>
+</html>
