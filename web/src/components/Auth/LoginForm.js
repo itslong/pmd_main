@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 
-import { Input, Button } from '../common';
+import { Input, Button, centerHorizontalAndVerticalStyle } from '../common';
 import { BASE_PATH, HOME_PATH } from '../frontendBaseRoutes';
 import { LoginUser } from '../endpoints';
 
@@ -105,36 +105,39 @@ class LoginForm extends Component {
     const displayErrorMsg = errorMsg ? errorMsg : '';
 
     return (
-      <form>
-        <h4>Log In</h4>
-        {displayErrorMsg}
-        <Input
-          title={'Username'}
-          id={'username'}
-          name={'username'}
-          type={'text'}
-          value={username}
-          handleChange={this.handleValueChange}
-          placeholder={'Enter username here.'}
-        />
+      <div className="login-form-container" style={centerHorizontalAndVerticalStyle}>
+        <form>
+          <h4>Log In</h4>
+          {displayErrorMsg}
+          <Input
+            title={'Username'}
+            id={'username'}
+            name={'username'}
+            type={'text'}
+            value={username}
+            handleChange={this.handleValueChange}
+            placeholder={'Enter username here.'}
+            style={{width: 'auto'}}
+          />
 
-        <Input
-          title={'Password'}
-          id={'password'}
-          name={'password'}
-          type={'password'}
-          value={password}
-          handleChange={this.handleValueChange}
-          placeholder={'Enter password here.'}
-        />
+          <Input
+            title={'Password'}
+            id={'password'}
+            name={'password'}
+            type={'password'}
+            value={password}
+            handleChange={this.handleValueChange}
+            placeholder={'Enter password here.'}
+          />
 
-        <Button
-          id={'submit'}
-          type={'primary'}
-          title={'Enter'}
-          action={this.validateFormData}
-        />
-      </form>
+          <Button
+            id={'submit'}
+            type={'primary'}
+            title={'Enter'}
+            action={this.validateFormData}
+          />
+        </form>
+      </div>
     )
   }
 }

@@ -76,7 +76,16 @@ const columnThStyle = {
   verticalAlign: 'middle',
   fontSize: '14px',
   border: '1px solid #bcc0b7',
-}
+};
+
+const centerHorizontalAndVerticalStyle = {
+  position: 'fixed',
+  top: '50%',
+  left: '50%',
+  width: 'auto',
+  height: 'auto',
+  transform: 'translate(-50%, -50%)',
+};
 
 export {
   GButton,
@@ -85,4 +94,5 @@ export {
   activeButtonStyle,
   tblTdStyle,
   columnThStyle,
+  centerHorizontalAndVerticalStyle,
 };
