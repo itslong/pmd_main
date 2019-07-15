@@ -8,7 +8,7 @@ from django.template.loader import get_template
 from xhtml2pdf import pisa
 from decimal import *
 
-from inventory.models import Tasks, Parts, TasksParts, GlobalMarkup, Categories
+from inventory.models import Tasks, Parts, TasksParts, GlobalMarkup, Categories, Jobs
 
 
 def create_parts_with_standard_retail(markup_data):
@@ -427,6 +427,226 @@ def render_categories_as_pdf(request):
   template_path = 'category_pdf.html'
   context = {
     'cat_data': cat_data
+  }
+
+  response = HttpResponse(content_type='application/pdf')
+  # response['Content-Disposition'] = 'attachment; filename="pmd-book.pdf"'
+  template = get_template(template_path)
+  html = template.render(context)
+
+  # create a pdf
+  # pisaStatus = pisa.CreatePDF(html, dest=response, link_callback=link_callback)
+  pisaStatus = pisa.CreatePDF(html, dest=response)
+
+  if pisaStatus.err:
+     return HttpResponse('We had some errors <pre>' + html + '</pre>')
+  return response
+
+
+def calculate_task_labor_obj(task_data, markup):
+  task_obj = {}
+  task_obj['id'] = task_data['id']
+  task_obj['task_id'] = task_data['task_id']
+  task_obj['task_name'] = task_data['task_name']
+  task_obj['attribute'] = task_data['task_attribute']
+
+  if task_data['use_fixed_labor_rate']:
+
+    fixed_rate = task_data['fixed_labor_rate']
+    task_obj['task_value_rate'] = fixed_rate
+    task_obj['task_std_rate'] = fixed_rate
+    task_obj['addon_value_rate'] = fixed_rate
+    task_obj['addon_std_rate'] = fixed_rate
+    # print('fixed: data: ', task_obj)
+    return task_obj
+
+  tos = markup['misc_tos_retail_hourly_rate']
+  labor_markup = 1 + Decimal(markup['standard_labor_markup_percent'] / 100)
+  labor_retail = Decimal(markup['labor_retail_hourly_rate'])
+
+  # task only
+  cntr_hours = labor_retail * Decimal(task_data['estimated_contractor_hours'])
+  asst_hours = labor_retail * Decimal(task_data['estimated_asst_hours'])
+  task_val_ret_labor = Decimal(cntr_hours + asst_hours)
+
+  # addon only
+  cntr_mins = (labor_retail / 60) * Decimal(task_data['estimated_contractor_minutes'])
+  asst_mins = (labor_retail / 60) * Decimal(task_data['estimated_asst_minutes'])
+  addon_val_ret_labor = Decimal(cntr_mins + asst_mins)
+
+
+  task_obj['task_value_rate'] = round(tos + task_val_ret_labor, 2) #+ part_vr_total
+  task_obj['task_std_rate'] = round((task_val_ret_labor * labor_markup) + tos, 2) #+ part_std_total
+  task_obj['addon_value_rate'] = round(addon_val_ret_labor, 2) #+ part_vr_total
+  task_obj['addon_std_rate'] = round(addon_val_ret_labor * labor_markup, 2) #+ part_std_total
+
+  return task_obj
+
+
+def jobs_with_related_categories():
+  markup = dict((m['id'], m) for m in GlobalMarkup.objects.values())
+
+  jobs = Jobs.objects.prefetch_related('categories_set').all()
+  jobs_dict = {}
+
+  for job in jobs:
+    jobs_dict[job.job_name] = {}
+    jobs_dict[job.job_name]['job_name'] = job.job_name
+    jobs_dict[job.job_name]['job_data'] = {}
+    related_categories = job.categories_set.all()
+
+
+    for cat in related_categories:
+      cat_dict = {}
+      cid = cat.id
+      cat_dict['id'] = cat.id
+      cat_dict['category_name'] = cat.category_name
+      cat_dict['task'] = {}
+      cat_dict['addon'] = {}
+
+      related_tasks_and_parts = cat.tasks_set.prefetch_related('tasksparts_set').select_related('part').values(
+        'id', 'task_id', 'task_name', 'task_attribute', 'tag_types', 
+        'estimated_contractor_hours', 'estimated_contractor_minutes', 'estimated_asst_hours', 'estimated_asst_minutes',
+        'fixed_labor_rate', 'use_fixed_labor_rate',
+        'parts__id', 'parts__part_name', 'parts__retail_part_cost', 
+        'parts__set_custom_part_cost', 'parts__custom_retail_part_cost', 'tasksparts__quantity'
+      )
+
+      dedupe_task_ids = {}
+
+      for item in related_tasks_and_parts:
+        # temp_task_obj = {}
+        tid = item['id']
+        tag_id = item['tag_types']
+        task_attr = item['task_attribute']
+        markup_obj = markup[tag_id]
+        part_tax = Decimal(markup_obj['parts_tax_percent'] / 100)
+        qty = 0
+
+        # calculate parts for each item
+        part_markup = 1 + Decimal(markup_obj['standard_material_markup_percent'] / 100)
+
+        # calc part standard retail or use custom retail
+        if item['parts__set_custom_part_cost']:
+          qty = item['tasksparts__quantity']
+          part_std_retail = Decimal(item['parts__custom_retail_part_cost']) * part_markup
+        else:
+          # some tasks may not contain parts. 
+          if item['parts__retail_part_cost'] is None:
+            # placeholder values for task when there are no parts.
+            part_std_retail = 0
+            part_val_ret_subtotal = 0
+          else:
+            part_std_retail = Decimal(item['parts__retail_part_cost']) * part_markup
+            # re-set qty when there are parts for the task.
+            qty = item['tasksparts__quantity']
+            # part * qty
+            part_val_ret_subtotal = qty * item['parts__retail_part_cost']
+          
+        part_std_ret_subtotal = qty * part_std_retail
+
+        part_val_ret_tax = part_val_ret_subtotal * part_tax
+
+        # # part(and qty) + tax
+        part_val_ret_total = round(part_val_ret_subtotal + part_val_ret_tax, 2)
+        part_std_ret_total = round(part_std_ret_subtotal + part_val_ret_tax, 2)
+
+        
+        # only calculate task once. calc parts every time.
+        if tid not in dedupe_task_ids:
+          task_obj = calculate_task_labor_obj(item, markup_obj)
+          dedupe_task_ids[tid] = 0
+
+        # determine if both or task only or addon only
+          if task_attr == 'Addon And Task':
+            cat_dict['task'][tid] = task_obj
+            cat_dict['task'][tid]['task_value_rate'] += part_val_ret_total
+            cat_dict['task'][tid]['task_std_rate'] += part_std_ret_total
+            
+            cat_dict['addon'][tid] = task_obj
+            cat_dict['addon'][tid]['addon_value_rate'] += part_val_ret_total 
+            cat_dict['addon'][tid]['addon_std_rate'] += part_std_ret_total
+          elif task_attr == 'Task Only':
+            cat_dict['task'][tid] = task_obj
+            cat_dict['task'][tid]['task_value_rate'] += part_val_ret_total 
+            cat_dict['task'][tid]['task_std_rate'] += part_std_ret_total
+          else:
+            cat_dict['addon'][tid] = task_obj
+            cat_dict['addon'][tid]['addon_value_rate'] += part_val_ret_total
+            cat_dict['addon'][tid]['addon_std_rate'] += part_std_ret_total
+        else:
+          # this task exists. Add part values only.
+          if task_attr == 'Addon And Task':
+            cat_dict['task'][tid]['task_value_rate'] += part_val_ret_total
+            cat_dict['task'][tid]['task_std_rate'] += part_std_ret_total
+
+            cat_dict['addon'][tid]['addon_value_rate'] += part_val_ret_total
+            cat_dict['addon'][tid]['addon_std_rate'] += part_std_ret_total
+          elif task_attr == 'Task Only':
+            cat_dict['task'][tid]['task_value_rate'] += part_val_ret_total
+            cat_dict['task'][tid]['task_std_rate'] += part_std_ret_total
+          else:
+            cat_dict['addon'][tid]['addon_value_rate'] += part_val_ret_total
+            cat_dict['addon'][tid]['addon_std_rate'] += part_std_ret_total
+
+      jobs_dict[job.job_name]['job_data'][cid] = cat_dict
+
+  # context = {
+  #   'jobs_data': jobs_dict
+  # }
+  return jobs_dict
+
+  # return render(request, 'jobs_cats_pdf.html', context)
+
+# uses <table>
+def jobs_with_related_categories_as_html(request):
+  jobs_data = jobs_with_related_categories()
+  # print(jobs_data)
+  context = {
+    'jobs_data': jobs_data
+  }
+  return render(request, 'jobs_cats_html_table_pdf.html', context)
+
+
+def jobs_with_related_categories_as_pdf(request):
+  jobs_data = jobs_with_related_categories()
+
+  template_path = 'jobs_cats_html_table_pdf.html'
+  context = {
+    'jobs_data': jobs_data
+  }
+
+  response = HttpResponse(content_type='application/pdf')
+  # response['Content-Disposition'] = 'attachment; filename="pmd-book.pdf"'
+  template = get_template(template_path)
+  html = template.render(context)
+
+  # create a pdf
+  # pisaStatus = pisa.CreatePDF(html, dest=response, link_callback=link_callback)
+  pisaStatus = pisa.CreatePDF(html, dest=response)
+
+  if pisaStatus.err:
+     return HttpResponse('We had some errors <pre>' + html + '</pre>')
+  return response
+
+
+
+# no <table> in the html to test for performance
+def jobs_div_table_as_html(request):
+  jobs_data = jobs_with_related_categories()
+  # print(jobs_data)
+  context = {
+    'jobs_data': jobs_data
+  }
+  return render(request, 'jobs_cats_div_table_pdf.html', context)
+
+
+def jobs_div_table_as_pdf(request):
+  jobs_data = jobs_with_related_categories()
+
+  template_path = 'jobs_cats_div_table_pdf.html'
+  context = {
+    'jobs_data': jobs_data
   }
 
   response = HttpResponse(content_type='application/pdf')

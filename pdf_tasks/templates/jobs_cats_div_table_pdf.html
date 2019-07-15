@@ -1,0 +1,79 @@
+<html>
+  <head>
+    <p>Jobs to Cats to PDF</p>
+    <style>
+      .resp-table {
+        display: table;
+      }
+      .resp-table-row {
+        display: table-row;
+      }
+      .resp-table-cell {
+        display: table-cell;
+      }
+    </style>
+  </head>
+
+  <body>
+    {% for jd, job_data in jobs_data.items %}
+      <h2>{{ job_data.job_name }}</h2>
+      {% for j, categories in job_data.items %}
+        {% for cat, category in categories.items %}
+          <p><h3>{{ category.category_name }}</h3></p>
+          <p><h4>Task - Total tasks in this category: {{category.task|length}}</h4></p>
+          <div class="resp-table">
+            <div class="resp-table-row">
+              <div class="resp-table-cell">ID</div>
+              <div class="rresp-table-cell">Task ID</div>
+              <div class="resp-table-cell">Task Name</div>
+              <div class="resp-table-cell">Attribute</div>
+              <div class="resp-table-cell">Val Rate</div>
+              <div class="resp-table-celll">Std Rate</div>
+            </div>
+
+
+            {% for t, tasks in category.task.items %}
+  
+            <div class="resp-table-row">
+              <div class="resp-table-cell">{{ tasks.id }}</div>
+              <div class="resp-table-cell">{{ tasks.task_id }}</div>
+              <div class="resp-table-cell">{{ tasks.task_name }}</div>
+              <div class="resp-table-cell">{{ tasks.attribute }}</div>
+              <div class="resp-table-cell">{{ tasks.task_value_rate}}</div>
+              <div class="resp-table-cell">{{ tasks.task_std_rate}}</div>
+            </div>
+            {% endfor %}
+          </div>
+            
+  
+          <p><h4>Addon - Total addons in this category: {{category.addon|length}}</h4></p>
+          <div class="resp-table">
+            <div class="resp-table-row">
+              <div class="resp-table-cell">ID</div>
+              <div class="rresp-table-cell">Task ID</div>
+              <div class="resp-table-cell">Task Name</div>
+              <div class="resp-table-cell">Attribute</div>
+              <div class="resp-table-cell">Val Rate</div>
+              <div class="resp-table-celll">Std Rate</div>
+            </div>
+
+             
+            {% for a, addons in category.addon.items %}
+            <div class="resp-table-row">
+              <div class="resp-table-cell">{{ addons.id }}</div>
+              <div class="resp-table-cell">{{ addons.task_id }}</div>
+              <div class="resp-table-cell">{{ addons.task_name }}</div>
+              <div class="resp-table-cell">{{ addons.attribute }}</div>
+              <div class="resp-table-cell">{{ addons.addon_value_rate}}</div>
+              <div class="resp-table-cell">{{ addons.addon_std_rate}}</div>
+            </div>
+            {% endfor %}
+          </div>
+
+         <div class="pagebreak" style="page-break-before:always;"> </div>    
+        {% endfor %}
+      {% endfor %}
+    {% endfor %}
+
+  </body>
+</html>
