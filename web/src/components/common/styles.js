@@ -8,7 +8,7 @@ import styled from 'styled-components';
 const GButton = styled.button`
   background: ${props => buttonBackgroundColor[props.className]};
   color: ${props => buttonFontColor[props.className]};
-  cursor:pointer;
+  cursor: pointer;
   border-radius: 4px;
   font-size: 12px;
   border: 1px solid #cbcbcb;
@@ -52,31 +52,58 @@ const activeButtonStyle = {
 
 /*
   Table styling.
-  Stacked: buttons are to be stacked on top of each other. For Categories and Job Tables.
-  Normal: Parts and Tasks tables contain many columns so 
 */
 const GTable = styled.table`
   table-layout: fixed;
   width: 100%;
   word-wrap: break-word;
   border: 1px solid #bcc0b7;
+  font-size: 14px;
+
+  thead > tr > th {
+    width: auto;
+    color: #9A0008;
+    text-align: center;
+    vertical-align: middle;
+    border: 1px solid #bcc0b7;
+  }
+
+  td {
+    text-align: center;
+    vertical-align: middle;
+    border: 1px solid #bcc0b7;
+  }
+
+  .dbl-task-header {
+    text-align: center;
+    background-color: #5e9ca1;
+  }
+
+  .dbl-addon-header {
+    text-align: center;
+    background-color: #A1635E;
+  }
 `;
 
+const StyledNavBar = styled.div`
+  background-color: black;
+  margin-bottom: 10px;
+  ul {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    justify-content: space-evenly;
+    list-style: none;
+  }
 
-const tblTdStyle = {
-  textAlign: 'center',
-  verticalAlign: 'middle',
-  border: '1px solid #bcc0b7',
-};
+  p {
+    color: #FF8C00;
+  }
+    a {
+      color: ivory;
+    }
+`;
 
-const columnThStyle = {
-  width: 'auto',
-  textAlign: 'center',
-  color: '#9A0008',
-  verticalAlign: 'middle',
-  fontSize: '14px',
-  border: '1px solid #bcc0b7',
-};
 
 const centerHorizontalAndVerticalStyle = {
   position: 'fixed',
@@ -87,25 +114,12 @@ const centerHorizontalAndVerticalStyle = {
   transform: 'translate(-50%, -50%)',
 };
 
-// Task Totals table in Task Detail only.
-const dblTaskTotalHeaderStyle = {
-  textAlign: 'center',
-  backgroundColor: '#5e9ca1',
-};
-
-const dblAddonTotalHeaderStyle = {
-  textAlign: 'center',
-  backgroundColor: '#A1635E',
-};
 
 export {
   GButton,
   GTable,
   disabledButtonStyle,
   activeButtonStyle,
-  tblTdStyle,
-  columnThStyle,
   centerHorizontalAndVerticalStyle,
-  dblTaskTotalHeaderStyle,
-  dblAddonTotalHeaderStyle,
+  StyledNavBar,
 };

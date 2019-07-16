@@ -13,6 +13,5 @@ export {
   disabledButtonStyle,
   activeButtonStyle,
   centerHorizontalAndVerticalStyle,
-  dblTaskTotalHeaderStyle,
-  dblAddonTotalHeaderStyle,
+  StyledNavBar
 } from './styles';

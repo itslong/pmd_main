@@ -3,6 +3,12 @@ import { Link } from 'react-router-dom';
 
 import { UserContext } from './AppContext';
 import {
+  navBarStyle,
+  navUlStyle,
+  navLiStyle,
+  StyledNavBar
+} from './common';
+import {
   HOME_PATH,
   BASE_PATH,
   PARTS_DISPLAY_PATH,
@@ -18,13 +24,7 @@ import {
   PROD_BASE_PATH,
 } from './frontendBaseRoutes';
 
-const ulStyle = {
-  display: 'flex',
-  flexDirection: 'row',
-  width: '100%',
-  // borderStyle: 'solid',
-  justifyContent: 'space-evenly'
-};
+
 
 const NavBar = ({ handleLogout }) => {
   const username = useContext(UserContext);
@@ -57,8 +57,8 @@ const NavBar = ({ handleLogout }) => {
 
 
   return (
-    <div>
-      <ul style={ulStyle}>
+    <StyledNavBar>
+      <ul>
         <li><Link to={HOME_PATH}>Home</Link></li>
         <li><Link to={PARTS_DISPLAY_PATH}>Parts</Link></li>
         <li>
@@ -76,35 +76,33 @@ const NavBar = ({ handleLogout }) => {
         <li><Link to={JOBS_DISPLAY_PATH}>Jobs</Link></li>
         <li><a href={fullPdfPath}>Old PDF Test</a></li>
         <li><a href={fullCatAsPdfPath}>New PDF Test</a></li>
-        <li style={{ display: 'flex', flexDirection: 'row' }}>
-          <Link to={BASE_PATH} onClick={handleLogout}>Logout</Link>
-          <p style={{ 'paddingLeft': '10px' }}>Signed in as: {username}</p>
-        </li>
+        <li><Link to={BASE_PATH} onClick={handleLogout}>Logout</Link></li>
+        <li><p>Signed in as: {username}</p></li>
       </ul>
-      <ul style={ulStyle}>
+      <ul>
         <li><Link to={CREATE_PARTS_PATH}>Add Part</Link></li>
         <li><Link to={CREATE_TASKS_PATH}>Add Task</Link></li>
         <li><Link to={CREATE_CATEGORIES_PATH}>Add Category</Link></li>
         <li><Link to={CREATE_JOBS_PATH}>Add Job</Link></li>
       </ul>
 
-      <ul style={ulStyle}>
-        <li>Old PDF Test. (Numbers correspond to quantity of rows in the db table).</li>
+      <ul>
+        <p>Old PDF Test. (Numbers correspond to quantity of rows in the db table).</p>
         <li><a href={pdfRender100Path}>PDF: 100</a></li>
         <li><a href={pdfRender400Path}>PDF: 400</a></li>
         <li><a href={pdfRenderAllPath}>PDF: All</a></li>
       </ul>
 
-      <ul style={ulStyle}>
-        <li>New PDF And Query Test. html table vs div table.</li>
+      <ul>
+        <p>New PDF And Query Test. html table vs div table.</p>
         <li><a href={navHtmlTable}>HTML Only with Table</a></li>
         <li><a href={navPdfTable}>PDF with Table</a></li>
-        <li>|||</li>
+        <p>|||</p>
         <li><a href={navDivTable}>HTML Only with Div table</a></li>
         <li><a href={navPdfDiv}>PDF with Div table</a></li>
       </ul>
 
-    </div>
+    </StyledNavBar>
   )
 };
 
