@@ -87,6 +87,17 @@ const centerHorizontalAndVerticalStyle = {
   transform: 'translate(-50%, -50%)',
 };
 
+// Task Totals table in Task Detail only.
+const dblTaskTotalHeaderStyle = {
+  textAlign: 'center',
+  backgroundColor: '#5e9ca1',
+};
+
+const dblAddonTotalHeaderStyle = {
+  textAlign: 'center',
+  backgroundColor: '#A1635E',
+};
+
 export {
   GButton,
   GTable,
@@ -95,4 +106,6 @@ export {
   tblTdStyle,
   columnThStyle,
   centerHorizontalAndVerticalStyle,
+  dblTaskTotalHeaderStyle,
+  dblAddonTotalHeaderStyle,
 };
