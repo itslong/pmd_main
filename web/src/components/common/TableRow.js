@@ -3,7 +3,6 @@ import { Link } from 'react-router-dom';
 
 import { itemPathWithId } from '../frontendBaseRoutes';
 import Input from './Input';
-import { tblTdStyle } from './styles';
 
 
 const convertTagTypesToJoinedString = (arrObj) => {
@@ -31,11 +30,11 @@ const TableRow = ({
   if (extraPropsLayout) {
     extraRowPropsLayout = (extraPropsLayout === 'separate') ? 
       extraRowProps.map((obj, index) => {
-        return <td key={index} style={tblTdStyle}>{obj}</td>
+        return <td key={index}>{obj}</td>
       })
     : (extraPropsLayout === 'stacked') ?
       <td className={'stacked'}>{extraRowProps}</td>
-    : <td style={tblTdStyle} className={'normal'}>{extraRowProps}</td>;
+    : <td className={'normal'}>{extraRowProps}</td>;
   }
 
   const td = values.map((val, index) => {
@@ -48,7 +47,7 @@ const TableRow = ({
     // if (index > 0 && index < 3) {
     if (numberOfLinks > 0 && index <= numberOfLinks) {
       return (
-        <td key={index} style={tblTdStyle}>
+        <td key={index}>
           <Link to={itemPathWithId(itemId, fetchType)}>
             {valToString}
           </Link>
@@ -57,7 +56,7 @@ const TableRow = ({
     }
 
     return (
-      <td key={index} style={tblTdStyle}>{valToString}</td>
+      <td key={index}>{valToString}</td>
     );
   })
 

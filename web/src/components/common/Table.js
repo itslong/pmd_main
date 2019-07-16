@@ -5,12 +5,7 @@ import { itemPathWithId } from '../frontendBaseRoutes';
 import TableRowWithCheckbox from './TableRowWithCheckbox';
 import TableRowWithButtons from './TableRowWithButtons';
 import TableRow from './TableRow';
-import { 
-  GTable,
-  columnThStyle,
-  dblTaskTotalHeaderStyle,
-  dblAddonTotalHeaderStyle 
-} from './styles';
+import { GTable } from './styles';
 
 
 /**
@@ -53,9 +48,9 @@ const Table = ({
     numberOfLinks={numLinks}
   />;
 
-  let dblStyle;
+  let dblClassName;
   if (dblStyleType) {
-    dblStyle = dblStyleType == 'task' ? dblTaskTotalHeaderStyle : dblAddonTotalHeaderStyle;
+    dblClassName = dblStyleType == 'task' ? 'dbl-task-header' : 'dbl-addon-header';
   }
 
   // add 1 to colSpan since an extra column was added to the row headers for Task Totals Table.
@@ -63,7 +58,7 @@ const Table = ({
     <tr>
       <th 
         colSpan={data.length + Number(1)}
-        style={dblStyle}
+        className={dblClassName}
       >
         {dblTableHeaderText}
       </th>
@@ -86,10 +81,10 @@ const Table = ({
                 // skip over the id
                 return null;
               }
-              return <th key={key} style={columnThStyle}>{headers[0]}</th>
+              return <th key={key}>{headers[0]}</th>
             })}
             {extraColHeaders ? extraColHeaders.map((value, index) => {
-              return <th key={index} style={columnThStyle}>{value}</th>
+              return <th key={index}>{value}</th>
             }) : null}
           </tr>
         </thead>
