@@ -77,13 +77,17 @@ class TaskDetailTotalsTable extends Component {
     const totalsTaskTable = displayTaskTable ?
       <Table
         data={totalsTableTaskData}
-        headerText={'Task Totals Table'}
+        dblTableHeaders={true}
+        dblTableHeaderText={'Task Table'}
+        dblStyleType={'task'}
       /> : '';
 
     const totalsAddonTable = displayAddonTable ?
       <Table
         data={totalsTableAddonData}
-        headerText={'Addon Totals Table'}
+        dblTableHeaders={true}
+        dblTableHeaderText={'Addon Table'}
+        dblStyleType={'addon'}
       /> : '';
 
     if (taskAttr == 'both') {

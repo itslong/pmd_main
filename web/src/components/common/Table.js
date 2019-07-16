@@ -5,7 +5,12 @@ import { itemPathWithId } from '../frontendBaseRoutes';
 import TableRowWithCheckbox from './TableRowWithCheckbox';
 import TableRowWithButtons from './TableRowWithButtons';
 import TableRow from './TableRow';
-import { GTable, columnThStyle } from './styles';
+import { 
+  GTable,
+  columnThStyle,
+  dblTaskTotalHeaderStyle,
+  dblAddonTotalHeaderStyle 
+} from './styles';
 
 
 /**
@@ -21,6 +26,10 @@ import { GTable, columnThStyle } from './styles';
   extraPropsLayout: string: 'stacked' (elements are stacked in one column)
                             'separate' (elements are separate in their own columns)
   numberOfLinks: integer. Determins the number of items that should be <ii> from left to right. Farthest left item is 1 (since 0 is dropped)
+  dblTableHeaders: boolean. If used, adds a second row on top of existing table headers.
+  dblTableHeaderText: string. Text for the second table header row. ColSpan is calculated so text spans whole row.
+  dblStyleType: string: 'task': Task Totals Table color
+                        'addon': Addons Totals Table color
 **/
 const Table = ({ 
   tableId,
@@ -32,7 +41,10 @@ const Table = ({
   extraRowProps,
   extraPropsLayout,
   rowData,
-  numberOfLinks
+  numberOfLinks,
+  dblTableHeaders,
+  dblTableHeaderText,
+  dblStyleType
 }) => {
   const numLinks = numberOfLinks ? numberOfLinks : 0;
   let tableRow = <TableRow 
@@ -40,6 +52,23 @@ const Table = ({
     extraPropsLayout={extraPropsLayout} 
     numberOfLinks={numLinks}
   />;
+
+  let dblStyle;
+  if (dblStyleType) {
+    dblStyle = dblStyleType == 'task' ? dblTaskTotalHeaderStyle : dblAddonTotalHeaderStyle;
+  }
+
+  // add 1 to colSpan since an extra column was added to the row headers for Task Totals Table.
+  const secondHeaderRow = dblTableHeaders ?
+    <tr>
+      <th 
+        colSpan={data.length + Number(1)}
+        style={dblStyle}
+      >
+        {dblTableHeaderText}
+      </th>
+    </tr>
+    : null;
 
   return (
     !data.length ? <p>No data is available.</p> :
@@ -50,6 +79,7 @@ const Table = ({
 
       <GTable id={tableId} className="table is-striped">
         <thead>
+          {secondHeaderRow}
           <tr>
             {Object.entries(data[0]).map((headers, key) => {
               if (key == 0) {

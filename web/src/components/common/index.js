@@ -12,5 +12,7 @@ export { default as DetailsTable } from './DetailsTable';
 export {
   disabledButtonStyle,
   activeButtonStyle,
-  centerHorizontalAndVerticalStyle
+  centerHorizontalAndVerticalStyle,
+  dblTaskTotalHeaderStyle,
+  dblAddonTotalHeaderStyle,
 } from './styles';
