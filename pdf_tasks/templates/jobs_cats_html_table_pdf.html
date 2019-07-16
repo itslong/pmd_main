@@ -21,8 +21,8 @@
               <th>Task ID</th>
               <th>Task Name</th>
               <th>Attribute</th>
-              <th>Standard Rate</th>
               <th>Value Rate</th>
+              <th>Standard Rate</th>
             </thead>
             
             <tbody>
@@ -48,13 +48,14 @@
               <th>Task ID</th>
               <th>Task Name</th>
               <th>Attribute</th>
-              <th>Standard Rate</th>
               <th>Value Rate</th>
+              <th>Standard Rate</th>
             </thead>
 
             <tbody>
               {% for a, addons in category.addon.items %}
               <tr>
+                <td>{{ addons.id }}</td>
                 <td>{{ addons.task_id }}</td>
                 <td>{{ addons.task_name }}</td>
                 <td>{{ addons.attribute }}</td>
