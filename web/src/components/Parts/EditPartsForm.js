@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 
-import { Input, Button, TextArea, Checkbox, Select } from '../common';
+import { Input, Button, TextArea, Checkbox, Select, PartsModalButtonContainer } from '../common';
 import { calculateRetailCost } from './CalculatePartsCustomMarkupField';
 import { 
   FetchPart,
@@ -514,17 +514,19 @@ class EditPartsForm extends Component {
         { partsFields }
 
         <CSRFToken />
-        <Button
-          type={'submitBtn'}
-          title={'Submit'}
-          action={this.handleSubmit}
-        />
+        <PartsModalButtonContainer actionType={actionType}>
+          <Button
+            type={'submitBtn'}
+            title={'Submit'}
+            action={this.handleSubmit}
+          />
 
-        <Button
-          type={'clearBtn'}
-          title={'Cancel'}
-          action={this.props.handleCloseModal}
-        />
+          <Button
+            type={'closeBtn'}
+            title={'Cancel'}
+            action={this.props.handleCloseModal}
+          />
+        </PartsModalButtonContainer>
 
       </form>
     );

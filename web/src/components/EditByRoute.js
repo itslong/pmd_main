@@ -1,8 +1,7 @@
 import React, { Component, cloneElement, Children } from 'react';
 import { withRouter, Link } from 'react-router-dom';
 
-import { Button } from './common';
-import Modal from './Modal';
+import { Button, Modal } from './common';
 import { FetchTagTypesChoices } from './endpoints';
 
 

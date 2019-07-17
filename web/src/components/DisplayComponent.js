@@ -1,8 +1,7 @@
 import React, { Component, cloneElement, Children, useContext } from 'react';
 import { withRouter } from 'react-router-dom';
 
-import { Input, Button, Table, TableRowWithButtons, TableRowWithCheckbox } from './common';
-import Modal from './Modal';
+import { Input, Button, Table, TableRowWithButtons, TableRowWithCheckbox, Modal } from './common';
 import DialogModal from './DialogModal';
 import { editPathWithId, itemPathWithId } from './frontendBaseRoutes';
 import Pager from './Pager';
@@ -10,7 +9,6 @@ import SearchComponent from './SearchComponent';
 import { FetchGlobalMarkup } from './endpoints';
 import { renameAndRebuildMainDisplayFields } from './CalculationsWithGlobalMarkup';
 import { renameStaticTableFields } from './fieldNameAliases';
-import ModalConfirmationForm from './ModalConfirmationForm'
 
 
 class DisplayComponent extends Component {
@@ -160,7 +158,8 @@ class DisplayComponent extends Component {
     this.setState({ showActionModal: true });
   }
 
-  handleCloseEditModal() {
+  handleCloseEditModal(e) {
+    e.preventDefault();
     this.setState({ 
       showActionModal: false,
       itemId: '',
@@ -335,16 +334,6 @@ class DisplayComponent extends Component {
       ))
       : '';
 
-    // make new component: NonPartModalForm
-    const modalBodyContent = displayType == 'parts' ? partsChildrenWithProps : actionType == 'delete' ?
-      <div>
-        <p>Are you sure you want to delete: {itemName}?</p>
-        <ModalConfirmationForm 
-          handleConfirmButton={this.handleConfirmDeleteItem}
-          handleCancelButton={this.handleCloseEditModal}
-        />
-      </div>
-      : '';
     // TODO: if admin, display edit/delete controls
 
     const handleEdit = (editType === 'modal') ? this.handleClickEditInModal : this.handleClickEditByRoute;
@@ -386,8 +375,11 @@ class DisplayComponent extends Component {
         handleCloseModal={this.handleCloseEditModal}
         headerText={modalHeaderText}
         actionType={actionType}
+        displayType={displayType}
+        itemName={itemName}
+        handleConfirmButton={this.handleConfirmDeleteItem}
       >
-        { modalBodyContent }
+        { partsChildrenWithProps }
       </Modal> : '';
 
 

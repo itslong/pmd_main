@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 
-import { Input, Button, TextArea, Checkbox, Table } from '../common';
-import Modal from '../Modal';
+import { Input, Button, TextArea, Checkbox, Table, Modal } from '../common';
 import SearchComponent from '../SearchComponent';
 import { UpdateCategoryAndRelatedTasks, CSRFToken } from '../endpoints';
 import { CATEGORIES_DISPLAY_PATH } from '../frontendBaseRoutes';

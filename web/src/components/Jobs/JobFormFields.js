@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 
-import { Input, Button, TextArea, Checkbox, Select, Table } from '../common';
-import Modal from '../Modal';
+import { Input, Button, TextArea, Checkbox, Select, Table, Modal } from '../common';
 import SearchComponent from '../SearchComponent';
 import { UpdateJobAndRelatedCategories, FetchTagTypesChoices, CSRFToken } from '../endpoints';
 import { JOBS_DISPLAY_PATH } from '../frontendBaseRoutes';
