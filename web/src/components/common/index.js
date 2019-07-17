@@ -9,10 +9,10 @@ export { default as TableRow } from './TableRow';
 export { default as TableRowWithButtons } from './TableRowWithButtons';
 export { default as TableRowWithCheckbox } from './TableRowWithCheckbox';
 export { default as DetailsTable } from './DetailsTable';
+export { default as Modal } from './Modal';
 export {
   disabledButtonStyle,
   activeButtonStyle,
   centerHorizontalAndVerticalStyle,
   StyledNavBar,
-  StyledModal,
 } from './styles';

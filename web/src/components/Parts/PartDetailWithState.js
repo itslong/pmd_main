@@ -3,9 +3,8 @@ import React, { Component } from 'react';
 import { FetchPart, FetchAllTasksRelatedToParts } from '../endpoints';
 import NotFound from '../NotFound';
 import DialogModal from '../DialogModal'
-import Modal from '../Modal';
 import EditPartsForm from './EditPartsForm';
-import { Button, Table, DetailsTable } from '../common';
+import { Button, Table, DetailsTable, Modal } from '../common';
 import { renameStaticTableFields, renameStaticObjTableFields } from '../fieldNameAliases';
 
 
