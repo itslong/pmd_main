@@ -13,5 +13,6 @@ export {
   disabledButtonStyle,
   activeButtonStyle,
   centerHorizontalAndVerticalStyle,
-  StyledNavBar
+  StyledNavBar,
+  StyledModal,
 } from './styles';

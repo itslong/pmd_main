@@ -105,6 +105,51 @@ const StyledNavBar = styled.div`
 `;
 
 
+const StyledModal = styled.div`
+  display: block;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0.6);
+
+  .modal-container {
+    position: fixed;
+    background: white;
+    height: auto;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+
+  }
+
+  .edit-modal {
+    width: 80%;
+    overflow-y: auto;
+    max-height: 100%;
+  }
+
+  .del-modal {
+    width: 20%;
+    height: 40%;
+  }
+
+  .modal-header {
+    background: lightgray;
+    height: auto;
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    justify-content: space-between;
+    padding: 0 5px;
+  }
+
+  .modal-body {
+    padding: 10px;
+  }
+`;
+
 const centerHorizontalAndVerticalStyle = {
   position: 'fixed',
   top: '50%',
@@ -122,4 +167,5 @@ export {
   activeButtonStyle,
   centerHorizontalAndVerticalStyle,
   StyledNavBar,
+  StyledModal,
 };
