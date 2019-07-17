@@ -114,6 +114,9 @@ class JobFormFields extends Component {
       toggleLoadNewData,
       madeChanges,
       submitCategoriesAsIds: categories_set,
+      jobNameOptions,
+      dialogMsg,
+      toggleDialog,
       ...stateData
     } = this.state;
 

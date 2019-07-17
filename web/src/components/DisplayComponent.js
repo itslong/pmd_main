@@ -10,6 +10,7 @@ import SearchComponent from './SearchComponent';
 import { FetchGlobalMarkup } from './endpoints';
 import { renameAndRebuildMainDisplayFields } from './CalculationsWithGlobalMarkup';
 import { renameStaticTableFields } from './fieldNameAliases';
+import ModalConfirmationForm from './ModalConfirmationForm'
 
 
 class DisplayComponent extends Component {
@@ -36,6 +37,7 @@ class DisplayComponent extends Component {
       currentPageNum: this.props.initPageNum || 1,
       displaySearchResults: false,
       globalMarkup: [],
+      isPaging: false, // determines if paging and page size used in fetch.
     };
 
     // this.handleClickEdit = this.handleClickEdit.bind(this);
@@ -57,6 +59,7 @@ class DisplayComponent extends Component {
     this.handlePageNav = this.handlePageNav.bind(this);
     this.displaySearchResults = this.displaySearchResults.bind(this);
     this.resetSearch = this.resetSearch.bind(this);
+    this.handleConfirmDeleteItem = this.handleConfirmDeleteItem.bind(this);
   }
 
   componentDidMount() {
@@ -84,12 +87,17 @@ class DisplayComponent extends Component {
   }
 
   componentDidUpdate(prevProps, prevState) {
-    const { itemEditing, isLoaded, currentPageNum, currentPageSize } = this.state;
+    const { itemEditing, isLoaded, currentPageNum, currentPageSize, isPaging } = this.state;
  
     if (itemEditing !== prevState.itemEditing || prevState.isLoaded === true && isLoaded == false) {
-      const { initFetch, initDataKeyToParse} = this.props;
+      const { initFetch, initDataKeyToParse, initPageNum, initPageSize} = this.props;
 
-      const endpoint = initFetch(currentPageNum, currentPageSize);
+      const endpoint = isPaging ?
+        initFetch(currentPageNum, currentPageSize)
+        : initFetch();
+
+      const newPageSize = isPaging ? currentPageSize : initPageSize;
+      const newPageNum = isPaging ? currentPageNum : initPageNum;
 
       endpoint.then(data => {
 
@@ -97,12 +105,13 @@ class DisplayComponent extends Component {
           items: data[initDataKeyToParse],
           nextPage: data.next,
           previousPage: data.previous,
-          itemEditing: false,
+          // itemEditing: false,
           actionType: '',
           totalItemsCount: data.count,
           totalPages: data.total_pages,
-          currentPageSize: currentPageSize,
-          currentPageNum: currentPageNum,
+          currentPageSize: newPageSize,
+          currentPageNum: newPageNum,
+          isPaging: false,
         });
       })
       .then(() => {
@@ -155,13 +164,20 @@ class DisplayComponent extends Component {
     this.setState({ 
       showActionModal: false,
       itemId: '',
+      itemName: '',
       actionType: '',
     });
   }
 
   handleClickDelete(e) {
+    const { displayType } = this.state;
+
     const itemId = e.target.id;
-    const itemName = this.getItemNameById(itemId);
+    const item = this.getItemById(itemId);
+
+    const singleName = singularizeItemNames[displayType];
+    const fullName = singleName + '_name';
+    const itemName = item[fullName];
 
     this.setState({
       itemId,
@@ -171,24 +187,21 @@ class DisplayComponent extends Component {
     })
   }
 
-  getItemNameById(id) {
-    const { items, displayType } = this.state;
+  getItemById(id) {
+    const { items } = this.state;
 
-    const singleName = singularizeItemNames[displayType];
-    const fullName = singleName + '_name';
-
-    const itemName = items.find(item => {
+    const itemObj = items.find(item => {
       if (item.id == id) {
         return item
       }
     });
 
-    return itemName[fullName];
+    return itemObj;
   }
 
-  handleItemEdit(bool) {
+  handleItemEdit() {
     this.setState({ 
-      itemEditing: bool,
+      itemEditing: !this.state.itemEditing,
       itemId: '',
      })
   }
@@ -232,7 +245,8 @@ class DisplayComponent extends Component {
 
     this.setState({
       currentPageNum: parseInt(selectedPage),
-      isLoaded: false
+      isLoaded: false,
+      isPaging: true,
     });
   }
 
@@ -246,6 +260,7 @@ class DisplayComponent extends Component {
     this.setState({ 
       currentPageSize: newPageSizeVal,
       isLoaded: false,
+      isPaging: true,
     });
   }
 
@@ -264,6 +279,40 @@ class DisplayComponent extends Component {
     })
   }
 
+  handleConfirmDeleteItem(e) {
+    e.preventDefault();
+    const { deleteRoute } = this.props;
+    const { itemId, displayType } = this.state;
+
+    const item = this.getItemById(itemId)
+
+    let updatedItemData = Object.assign({...item}, {
+      is_active: false,
+    });
+
+    if (displayType == 'tasks') {
+      const { id: tagTypeId } = item.tag_types;
+      updatedItemData = Object.assign({...updatedItemData}, {
+        tag_types: tagTypeId,
+      });
+    }
+
+
+    const update = deleteRoute(itemId, updatedItemData);
+    update.then((results) => {
+      if (results === 'Success') {
+        return this.setState({
+          showDialog: true,
+          itemEditing: !this.state.itemEditing,
+          showActionModal: false,
+          itemId: '',
+          itemName: '',
+          actionType: '',
+        });
+      }
+    });
+  }
+
   render() {
     const { 
       isLoaded, items, showActionModal, itemId, itemName,
@@ -272,7 +321,7 @@ class DisplayComponent extends Component {
       currentPageNum, currentPageSize, displaySearchResults
     } = this.state;
     const { children, tableRowType, pageSizeLimits, tableNumLinks, adminDisplayFields } = this.props;
-    
+
     // parts use a modal for edit/delete. Non-parts only use modal for delete.
     const partsChildrenWithProps = displayType == 'parts' ?
       Children.map(children, child => cloneElement(child, 
@@ -288,9 +337,13 @@ class DisplayComponent extends Component {
 
     // make new component: NonPartModalForm
     const modalBodyContent = displayType == 'parts' ? partsChildrenWithProps : actionType == 'delete' ?
-      <p>
-        Are you sure you want to delete: {itemName}?
-      </p>
+      <div>
+        <p>Are you sure you want to delete: {itemName}?</p>
+        <ModalConfirmationForm 
+          handleConfirmButton={this.handleConfirmDeleteItem}
+          handleCancelButton={this.handleCloseEditModal}
+        />
+      </div>
       : '';
     // TODO: if admin, display edit/delete controls
 
