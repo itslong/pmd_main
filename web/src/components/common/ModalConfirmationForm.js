@@ -1,13 +1,11 @@
 import React from 'react';
-
-import { Button } from './common';
+import Button from './Button';
 
 
 const ModalConfirmationForm = ({ handleConfirmButton, handleCancelButton }) => {
-
   return (
     <form>
-      <div style={{ textAlign: 'center' }}>
+      <div className='modal-buttons-container'>
         <Button
           type={'submitBtn'}
           title={'Confirm'}
@@ -21,7 +19,7 @@ const ModalConfirmationForm = ({ handleConfirmButton, handleCancelButton }) => {
         />
       </div>
     </form>
-  )  
-};
+  )
+}
 
 export default ModalConfirmationForm;

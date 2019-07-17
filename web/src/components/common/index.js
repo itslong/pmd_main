@@ -15,4 +15,5 @@ export {
   activeButtonStyle,
   centerHorizontalAndVerticalStyle,
   StyledNavBar,
+  PartsModalButtonContainer
 } from './styles';

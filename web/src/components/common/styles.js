@@ -125,14 +125,14 @@ const StyledModal = styled.div`
   }
 
   .edit-modal {
-    width: 80%;
+    width: 60%;
     overflow-y: auto;
     max-height: 100%;
   }
 
   .del-modal {
     width: 20%;
-    height: 40%;
+    height: auto;
   }
 
   .modal-header {
@@ -148,6 +148,14 @@ const StyledModal = styled.div`
   .modal-body {
     padding: 10px;
   }
+
+  .modal-buttons-container {
+    padding: 10px 0;
+
+    button {
+      width: 100%;
+    }
+  }
 `;
 
 const centerHorizontalAndVerticalStyle = {
@@ -159,6 +167,14 @@ const centerHorizontalAndVerticalStyle = {
   transform: 'translate(-50%, -50%)',
 };
 
+const PartsModalButtonContainer = styled.div`
+  padding: 10px 0;
+  text-align: center;
+
+  button {
+    width: ${props => props.actionType == 'edit' ? '80%' : '100%'};
+  }
+`;
 
 export {
   GButton,
@@ -168,4 +184,5 @@ export {
   centerHorizontalAndVerticalStyle,
   StyledNavBar,
   StyledModal,
+  PartsModalButtonContainer
 };
