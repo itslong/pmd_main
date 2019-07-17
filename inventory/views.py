@@ -82,7 +82,7 @@ class PartsSearchableList(generics.ListAPIView):
 
 
 class TasksExcludedView(generics.ListAPIView):
-  queryset = Tasks.objects.all()
+  queryset = Tasks.objects.exclude(is_active=False)
   serializer_class = TasksExcludedSerializer
   permission_classes = (permissions.IsAuthenticated, )
   pagination_class = TasksCustomResultsSetPagination
@@ -169,7 +169,7 @@ class TasksPartsViewSet(viewsets.ReadOnlyModelViewSet):
 
 
 class CategoriesExcludedView(generics.ListAPIView):
-  queryset = Categories.objects.all()
+  queryset = Categories.objects.exclude(is_active=False)
   serializer_class = CategoriesExcludedSerializer
   pagination_class = CategoriesCustomResultsSetPagination
   permission_classes = (permissions.IsAuthenticated, )
@@ -209,7 +209,7 @@ class CategoriesSearchableList(generics.ListAPIView):
 
 
 class JobsExcludedView(generics.ListAPIView):
-  queryset = Jobs.objects.all()
+  queryset = Jobs.objects.exclude(is_active=False)
   serializer_class = JobsExcludedSerializer
   pagination_class = JobsCustomResultsSetPagination
   permission_classes = (permissions.IsAuthenticated, )

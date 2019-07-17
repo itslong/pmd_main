@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 
 import DisplayComponent from '../DisplayComponent';
-import { FetchAllCategories } from '../endpoints';
+import { FetchAllCategories, UpdateCategoryAndRelatedTasks } from '../endpoints';
 
 
 const CategoriesDisplay = () => {
@@ -17,6 +17,7 @@ const CategoriesDisplay = () => {
         initPageSize={10}
         initPageNum={1}
         tableNumLinks={2}
+        deleteRoute={UpdateCategoryAndRelatedTasks}
       />
     )
 };

@@ -26,7 +26,7 @@ class TagTypesChoicesSerializer(serializers.ModelSerializer):
 class JobsExcludedSerializer(serializers.ModelSerializer):
   class Meta:
     model = Jobs
-    exclude = ['ordering_num', 'is_active']
+    fields = ['id', 'job_id', 'job_name', 'categories_set']
 
 
 class JobsCreateSerializer(serializers.ModelSerializer):
@@ -252,7 +252,7 @@ class CategoriesRelatedTasksSerializer(serializers.ModelSerializer):
 class CategoriesExcludedSerializer(serializers.ModelSerializer):
   class Meta:
     model = Categories
-    fields = ['id', 'category_id', 'category_name', 'category_desc']
+    fields = ['id', 'category_id', 'category_name', 'category_desc', 'tasks_set']
 
 
 class CategoriesCreateSerializer(serializers.ModelSerializer):

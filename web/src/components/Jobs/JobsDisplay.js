@@ -1,7 +1,7 @@
 import React from 'react';
 
 import DisplayComponent from '../DisplayComponent';
-import { FetchAllJobs } from '../endpoints';
+import { FetchAllJobs, UpdateJobAndRelatedCategories } from '../endpoints';
 
 
 const JobsDisplay = () => {
@@ -17,6 +17,7 @@ const JobsDisplay = () => {
         initPageSize={10}
         initPageNum={1}
         tableNumLinks={2}
+        deleteRoute={UpdateJobAndRelatedCategories}
       />
     )
 };

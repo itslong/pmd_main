@@ -10,6 +10,7 @@ import SearchComponent from './SearchComponent';
 import { FetchGlobalMarkup } from './endpoints';
 import { renameAndRebuildMainDisplayFields } from './CalculationsWithGlobalMarkup';
 import { renameStaticTableFields } from './fieldNameAliases';
+import ModalConfirmationForm from './ModalConfirmationForm'
 
 
 class DisplayComponent extends Component {
@@ -22,7 +23,7 @@ class DisplayComponent extends Component {
       isLoaded: false,
       itemId: '',
       itemName: '',
-      showEditModal: false,
+      showActionModal: false,
       itemEditing: false,
       showDialog: false,
       actionType: '', // 'edit' or 'delete',
@@ -36,13 +37,14 @@ class DisplayComponent extends Component {
       currentPageNum: this.props.initPageNum || 1,
       displaySearchResults: false,
       globalMarkup: [],
+      isPaging: false, // determines if paging and page size used in fetch.
     };
 
     // this.handleClickEdit = this.handleClickEdit.bind(this);
     this.handleClickEditInModal = this.handleClickEditInModal.bind(this);
     this.handleClickEditByRoute = this.handleClickEditByRoute.bind(this);
 
-    this.handleShowEditModal = this.handleShowEditModal.bind(this);
+    this.handleshowActionModal = this.handleshowActionModal.bind(this);
     this.handleCloseEditModal = this.handleCloseEditModal.bind(this);
 
     this.handleClickDelete = this.handleClickDelete.bind(this);
@@ -53,11 +55,11 @@ class DisplayComponent extends Component {
 
     this.handlePreviousPageClick = this.handlePreviousPageClick.bind(this);
     this.handleNextPageClick = this.handleNextPageClick.bind(this);
-    // this.getItemNameById = this.getItemNameById.bind(this);
     this.handlePageSizeLimitClick = this.handlePageSizeLimitClick.bind(this);
     this.handlePageNav = this.handlePageNav.bind(this);
     this.displaySearchResults = this.displaySearchResults.bind(this);
     this.resetSearch = this.resetSearch.bind(this);
+    this.handleConfirmDeleteItem = this.handleConfirmDeleteItem.bind(this);
   }
 
   componentDidMount() {
@@ -85,12 +87,17 @@ class DisplayComponent extends Component {
   }
 
   componentDidUpdate(prevProps, prevState) {
-    const { itemEditing, isLoaded, currentPageNum, currentPageSize } = this.state;
+    const { itemEditing, isLoaded, currentPageNum, currentPageSize, isPaging } = this.state;
  
     if (itemEditing !== prevState.itemEditing || prevState.isLoaded === true && isLoaded == false) {
-      const { initFetch, initDataKeyToParse} = this.props;
+      const { initFetch, initDataKeyToParse, initPageNum, initPageSize} = this.props;
 
-      const endpoint = initFetch(currentPageNum, currentPageSize);
+      const endpoint = isPaging ?
+        initFetch(currentPageNum, currentPageSize)
+        : initFetch();
+
+      const newPageSize = isPaging ? currentPageSize : initPageSize;
+      const newPageNum = isPaging ? currentPageNum : initPageNum;
 
       endpoint.then(data => {
 
@@ -98,12 +105,13 @@ class DisplayComponent extends Component {
           items: data[initDataKeyToParse],
           nextPage: data.next,
           previousPage: data.previous,
-          itemEditing: false,
+          // itemEditing: false,
           actionType: '',
           totalItemsCount: data.count,
           totalPages: data.total_pages,
-          currentPageSize: currentPageSize,
-          currentPageNum: currentPageNum,
+          currentPageSize: newPageSize,
+          currentPageNum: newPageNum,
+          isPaging: false,
         });
       })
       .then(() => {
@@ -143,35 +151,58 @@ class DisplayComponent extends Component {
   handleClickEditInModal(e) {
     this.setState({
       itemId: e.target.id,
-      showEditModal: true,
+      showActionModal: true,
       actionType: 'edit',
     })
   }
 
-  handleShowEditModal() {
-    this.setState({ showEditModal: true });
+  handleshowActionModal() {
+    this.setState({ showActionModal: true });
   }
 
   handleCloseEditModal() {
     this.setState({ 
-      showEditModal: false,
+      showActionModal: false,
       itemId: '',
+      itemName: '',
       actionType: '',
     });
   }
 
   handleClickDelete(e) {
+    const { displayType } = this.state;
+
+    const itemId = e.target.id;
+    const item = this.getItemById(itemId);
+
+    const singleName = singularizeItemNames[displayType];
+    const fullName = singleName + '_name';
+    const itemName = item[fullName];
+
     this.setState({
-      itemId: e.target.id,
-      showEditModal: true,
+      itemId,
+      itemName,
+      showActionModal: true,
       actionType: 'delete'
     })
   }
 
-  handleItemEdit(bool) {
+  getItemById(id) {
+    const { items } = this.state;
+
+    const itemObj = items.find(item => {
+      if (item.id == id) {
+        return item
+      }
+    });
+
+    return itemObj;
+  }
+
+  handleItemEdit() {
     this.setState({ 
-      itemEditing: bool,
-      itemId: ''
+      itemEditing: !this.state.itemEditing,
+      itemId: '',
      })
   }
 
@@ -214,7 +245,8 @@ class DisplayComponent extends Component {
 
     this.setState({
       currentPageNum: parseInt(selectedPage),
-      isLoaded: false
+      isLoaded: false,
+      isPaging: true,
     });
   }
 
@@ -228,6 +260,7 @@ class DisplayComponent extends Component {
     this.setState({ 
       currentPageSize: newPageSizeVal,
       isLoaded: false,
+      isPaging: true,
     });
   }
 
@@ -246,23 +279,72 @@ class DisplayComponent extends Component {
     })
   }
 
+  handleConfirmDeleteItem(e) {
+    e.preventDefault();
+    const { deleteRoute } = this.props;
+    const { itemId, displayType } = this.state;
+
+    const item = this.getItemById(itemId)
+
+    let updatedItemData = Object.assign({...item}, {
+      is_active: false,
+    });
+
+    if (displayType == 'tasks') {
+      const { id: tagTypeId } = item.tag_types;
+      updatedItemData = Object.assign({...updatedItemData}, {
+        tag_types: tagTypeId,
+      });
+    }
+
+
+    const update = deleteRoute(itemId, updatedItemData);
+    update.then((results) => {
+      if (results === 'Success') {
+        return this.setState({
+          showDialog: true,
+          itemEditing: !this.state.itemEditing,
+          showActionModal: false,
+          itemId: '',
+          itemName: '',
+          actionType: '',
+        });
+      }
+    });
+  }
+
   render() {
     const { 
-      isLoaded, items, showEditModal, itemId, 
+      isLoaded, items, showActionModal, itemId, itemName,
       showDialog, actionType, editType, displayType, 
       totalItemsCount, totalPages, previousPage, nextPage, 
       currentPageNum, currentPageSize, displaySearchResults
     } = this.state;
     const { children, tableRowType, pageSizeLimits, tableNumLinks, adminDisplayFields } = this.props;
-    const childrenWithProps = Children.map(children, child => 
-      cloneElement(child, {
-        itemId,
-        handleCloseModal: this.handleCloseEditModal,
-        itemEdit: this.handleItemEdit,
-        handleShowDialog: this.handleShowDialog,
-        actionType
-      })
-    );
+
+    // parts use a modal for edit/delete. Non-parts only use modal for delete.
+    const partsChildrenWithProps = displayType == 'parts' ?
+      Children.map(children, child => cloneElement(child, 
+        {
+          itemId,
+          handleCloseModal: this.handleCloseEditModal,
+          itemEdit: this.handleItemEdit,
+          handleShowDialog: this.handleShowDialog,
+          actionType
+        }
+      ))
+      : '';
+
+    // make new component: NonPartModalForm
+    const modalBodyContent = displayType == 'parts' ? partsChildrenWithProps : actionType == 'delete' ?
+      <div>
+        <p>Are you sure you want to delete: {itemName}?</p>
+        <ModalConfirmationForm 
+          handleConfirmButton={this.handleConfirmDeleteItem}
+          handleCancelButton={this.handleCloseEditModal}
+        />
+      </div>
+      : '';
     // TODO: if admin, display edit/delete controls
 
     const handleEdit = (editType === 'modal') ? this.handleClickEditInModal : this.handleClickEditByRoute;
@@ -296,16 +378,16 @@ class DisplayComponent extends Component {
         extraPropsLayout={this.props.extraPropsLayout}
         numberOfLinks={tableNumLinks}
       /> : '';
-    
+
     const modalHeaderText = (actionType === 'edit') ? 'Editing' : 'Deleting'
-    const editFormModal = showEditModal ? 
+    const actionFormModal = showActionModal ? 
       <Modal 
-        showEditModal={showEditModal} 
+        showActionModal={showActionModal} 
         handleCloseModal={this.handleCloseEditModal}
         headerText={modalHeaderText}
         actionType={actionType}
       >
-        { childrenWithProps }
+        { modalBodyContent }
       </Modal> : '';
 
 
@@ -348,11 +430,18 @@ class DisplayComponent extends Component {
         { totalItemsDisplay } <br/>
         { pagerNav }
         { table }
-        { editFormModal }
+        { actionFormModal }
         { showSuccessDialog }
       </div>
     )
   }
 }
+
+const singularizeItemNames = {
+  'tasks': 'task',
+  'parts': 'part',
+  'categories': 'category',
+  'jobs': 'job'
+};
 
 export default withRouter(DisplayComponent);

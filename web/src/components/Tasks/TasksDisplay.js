@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { FetchAllTasks } from '../endpoints';
+import { FetchAllTasks, UpdateTaskOnly } from '../endpoints';
 import DisplayComponent from '../DisplayComponent';
 import { taskMainDisplayFields, taskMainDispayCalculationFields } from '../fieldNameAliases';
 
@@ -20,6 +20,7 @@ const TasksDisplay = () => {
       tableNumLinks={2}
       calculationFields={taskMainDispayCalculationFields}
       mainDisplayFields={taskMainDisplayFields}
+      deleteRoute={UpdateTaskOnly}
     />
   )
 

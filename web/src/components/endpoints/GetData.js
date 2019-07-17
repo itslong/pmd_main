@@ -425,7 +425,8 @@ const UpdateTaskOnly = (taskId, formData) => {
     headers,
   })
   .then(response => {
-    return response.json();
+    const responseStatus = response.ok ? 'Success' : response.json();
+    return responseStatus;
   })
   .catch(error => {
     console.log('Updating task failed: ', error)
@@ -647,16 +648,14 @@ const UpdateCategoryAndRelatedTasks = (categoryId, formData) => {
     headers,
   })
   .then(response => {
-    if (response.ok) {
-      return response.json();
-    }
-    
-    return Promise.reject(
-      'Promise rejected. Status Code: ' + response.status + ' from this endpoint: ' + endpoint
-    );
+    const responseStatus = response.ok ? 'Success' : response.json();
+    return responseStatus;
   })
   .catch(error => {
-    console.log('Updating category failed: ', error)
+    return Promise.reject({
+      status: response.status,
+      errorMsg: 'Promise rejected from this endpoint: ' + endpoint
+    });
   })
 }
 
@@ -775,16 +774,14 @@ const UpdateJobAndRelatedCategories = (jobId, formData) => {
     headers,
   })
   .then(response => {
-    if (response.ok) {
-      return response.json();
-    }
-    
-    return Promise.reject(
-      'Promise rejected. Status Code: ' + response.status + ' from this endpoint: ' + endpoint
-    );
+    const responseStatus = response.ok ? 'Success' : response.json();
+    return responseStatus;
   })
   .catch(error => {
-    console.log('Updating job failed: ', error)
+    return Promise.reject({
+      status: response.status,
+      errorMsg: 'Promise rejected from this endpoint: ' + endpoint,
+    });
   })
 }
 
