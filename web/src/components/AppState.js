@@ -63,7 +63,9 @@ class AppState extends Component {
             <NavBar
               handleLogout={this.handleLogout}
             />
-            <MainRoutes />
+            <div className='container'>
+              <MainRoutes />
+            </div>
           </UserContext.Provider>
         </IsAuthContext.Provider>
       : <LoginForm updateAuthState={this.updateAuthState} />;
