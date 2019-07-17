@@ -1,11 +1,10 @@
 import React, { Component } from 'react';
 
-import { Input, Button, TextArea, Checkbox, Table, Select, Modal } from '../common';
+import { Input, Button, TextArea, Checkbox, Table, Select, Modal, Dialog } from '../common';
 import SearchComponent from '../SearchComponent';
 import { UpdateTaskRelatedPartsSubmit, FetchGlobalMarkup, CSRFToken } from '../endpoints';
 import { TASKS_DISPLAY_PATH } from '../frontendBaseRoutes';
 import { renameAndRebuildRelatedPartsDisplayFields } from '../CalculationsWithGlobalMarkup';
-import DialogModal from '../DialogModal';
 import { 
   taskDetailRelatedPartsTableFields,
   taskRelatedPartsSearchResultsTableFields,

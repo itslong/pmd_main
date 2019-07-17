@@ -1,11 +1,10 @@
 import React, { Component } from 'react';
 
-import { Input, Button, TextArea, Checkbox, Select, Table, Modal } from '../common';
+import { Input, Button, TextArea, Checkbox, Select, Table, Modal, Dialog } from '../common';
 import SearchComponent from '../SearchComponent';
 import { UpdateJobAndRelatedCategories, FetchTagTypesChoices, CSRFToken } from '../endpoints';
 import { JOBS_DISPLAY_PATH } from '../frontendBaseRoutes';
 import { renameStaticTableFields } from '../fieldNameAliases';
-import DialogModal from '../DialogModal';
 
 
 class JobFormFields extends Component {

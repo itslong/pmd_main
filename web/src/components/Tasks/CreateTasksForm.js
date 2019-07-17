@@ -2,9 +2,8 @@ import React, { Component } from 'react';
 import { Link, Redirect } from 'react-router-dom';
 
 import { FetchTagTypesChoices, CreateTask, CSRFToken } from '../endpoints';
-import { Input, Button, TextArea, Checkbox, Select } from '../common';
+import { Input, Button, TextArea, Checkbox, Select, Dialog } from '../common';
 import { TASKS_DISPLAY_PATH } from '../frontendBaseRoutes';
-import DialogModal from '../DialogModal';
 import {
   moneyLimitSixRegEx,
   lettersNumbersHyphenRegEx,

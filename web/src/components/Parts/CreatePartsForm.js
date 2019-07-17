@@ -9,11 +9,10 @@ import {
   GetCookie,
   CSRFToken 
 } from '../endpoints';
-import { Input, Button, TextArea, Checkbox, Select } from '../common';
+import { Input, Button, TextArea, Checkbox, Select, Dialog } from '../common';
 import { calculateRetailCost } from './CalculatePartsCustomMarkupField';
 import { PARTS_DISPLAY_PATH } from '../frontendBaseRoutes';
 import { moneyLimitSixRegEx, lettersNumbersHyphenRegEx } from '../helpers';
-import DialogModal from '../DialogModal';
 import {   
   partNameErrorMsg,
   partNumLengthErrorMsg,

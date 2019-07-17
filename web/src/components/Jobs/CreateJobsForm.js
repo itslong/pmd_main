@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { Link, Redirect } from 'react-router-dom';
 
 import { CreateJob, FetchTagTypesChoices, CSRFToken } from '../endpoints';
-import { Input, Button, TextArea, Checkbox, Select } from '../common';
+import { Input, Button, TextArea, Checkbox, Select, Dialog } from '../common';
 import { JOBS_DISPLAY_PATH } from '../frontendBaseRoutes';
 
 

@@ -1,8 +1,7 @@
 import React, { Component, cloneElement, Children, useContext } from 'react';
 import { withRouter } from 'react-router-dom';
 
-import { Input, Button, Table, TableRowWithButtons, TableRowWithCheckbox, Modal } from './common';
-import DialogModal from './DialogModal';
+import { Input, Button, Table, TableRowWithButtons, TableRowWithCheckbox, Modal, Dialog } from './common';
 import { editPathWithId, itemPathWithId } from './frontendBaseRoutes';
 import Pager from './Pager';
 import SearchComponent from './SearchComponent';

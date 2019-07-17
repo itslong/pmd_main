@@ -1,5 +1,5 @@
 import React from 'react';
-import { Button }  from './common';
+import Button from './Button';
 
 
 const modalStyles = {
@@ -35,7 +35,7 @@ const textBody = {
 }
 
 
-const DialogModal = ({ dialogText, headerText, handleCloseDialog }) => {
+const Dialog = ({ dialogText, headerText, handleCloseDialog }) => {
 
   // use when css is added.
   const showHideClassName = handleCloseDialog ? 'modal display-block' : 'modal display-none';
@@ -63,4 +63,4 @@ const DialogModal = ({ dialogText, headerText, handleCloseDialog }) => {
   )
 };
 
-export default DialogModal;
+export default Dialog;
