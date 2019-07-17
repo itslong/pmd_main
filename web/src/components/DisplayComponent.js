@@ -22,7 +22,7 @@ class DisplayComponent extends Component {
       isLoaded: false,
       itemId: '',
       itemName: '',
-      showEditModal: false,
+      showActionModal: false,
       itemEditing: false,
       showDialog: false,
       actionType: '', // 'edit' or 'delete',
@@ -42,7 +42,7 @@ class DisplayComponent extends Component {
     this.handleClickEditInModal = this.handleClickEditInModal.bind(this);
     this.handleClickEditByRoute = this.handleClickEditByRoute.bind(this);
 
-    this.handleShowEditModal = this.handleShowEditModal.bind(this);
+    this.handleshowActionModal = this.handleshowActionModal.bind(this);
     this.handleCloseEditModal = this.handleCloseEditModal.bind(this);
 
     this.handleClickDelete = this.handleClickDelete.bind(this);
@@ -53,7 +53,6 @@ class DisplayComponent extends Component {
 
     this.handlePreviousPageClick = this.handlePreviousPageClick.bind(this);
     this.handleNextPageClick = this.handleNextPageClick.bind(this);
-    // this.getItemNameById = this.getItemNameById.bind(this);
     this.handlePageSizeLimitClick = this.handlePageSizeLimitClick.bind(this);
     this.handlePageNav = this.handlePageNav.bind(this);
     this.displaySearchResults = this.displaySearchResults.bind(this);
@@ -143,35 +142,54 @@ class DisplayComponent extends Component {
   handleClickEditInModal(e) {
     this.setState({
       itemId: e.target.id,
-      showEditModal: true,
+      showActionModal: true,
       actionType: 'edit',
     })
   }
 
-  handleShowEditModal() {
-    this.setState({ showEditModal: true });
+  handleshowActionModal() {
+    this.setState({ showActionModal: true });
   }
 
   handleCloseEditModal() {
     this.setState({ 
-      showEditModal: false,
+      showActionModal: false,
       itemId: '',
       actionType: '',
     });
   }
 
   handleClickDelete(e) {
+    const itemId = e.target.id;
+    const itemName = this.getItemNameById(itemId);
+
     this.setState({
-      itemId: e.target.id,
-      showEditModal: true,
+      itemId,
+      itemName,
+      showActionModal: true,
       actionType: 'delete'
     })
+  }
+
+  getItemNameById(id) {
+    const { items, displayType } = this.state;
+
+    const singleName = singularizeItemNames[displayType];
+    const fullName = singleName + '_name';
+
+    const itemName = items.find(item => {
+      if (item.id == id) {
+        return item
+      }
+    });
+
+    return itemName[fullName];
   }
 
   handleItemEdit(bool) {
     this.setState({ 
       itemEditing: bool,
-      itemId: ''
+      itemId: '',
      })
   }
 
@@ -248,21 +266,32 @@ class DisplayComponent extends Component {
 
   render() {
     const { 
-      isLoaded, items, showEditModal, itemId, 
+      isLoaded, items, showActionModal, itemId, itemName,
       showDialog, actionType, editType, displayType, 
       totalItemsCount, totalPages, previousPage, nextPage, 
       currentPageNum, currentPageSize, displaySearchResults
     } = this.state;
     const { children, tableRowType, pageSizeLimits, tableNumLinks, adminDisplayFields } = this.props;
-    const childrenWithProps = Children.map(children, child => 
-      cloneElement(child, {
-        itemId,
-        handleCloseModal: this.handleCloseEditModal,
-        itemEdit: this.handleItemEdit,
-        handleShowDialog: this.handleShowDialog,
-        actionType
-      })
-    );
+    
+    // parts use a modal for edit/delete. Non-parts only use modal for delete.
+    const partsChildrenWithProps = displayType == 'parts' ?
+      Children.map(children, child => cloneElement(child, 
+        {
+          itemId,
+          handleCloseModal: this.handleCloseEditModal,
+          itemEdit: this.handleItemEdit,
+          handleShowDialog: this.handleShowDialog,
+          actionType
+        }
+      ))
+      : '';
+
+    // make new component: NonPartModalForm
+    const modalBodyContent = displayType == 'parts' ? partsChildrenWithProps : actionType == 'delete' ?
+      <p>
+        Are you sure you want to delete: {itemName}?
+      </p>
+      : '';
     // TODO: if admin, display edit/delete controls
 
     const handleEdit = (editType === 'modal') ? this.handleClickEditInModal : this.handleClickEditByRoute;
@@ -296,16 +325,16 @@ class DisplayComponent extends Component {
         extraPropsLayout={this.props.extraPropsLayout}
         numberOfLinks={tableNumLinks}
       /> : '';
-    
+
     const modalHeaderText = (actionType === 'edit') ? 'Editing' : 'Deleting'
-    const editFormModal = showEditModal ? 
+    const actionFormModal = showActionModal ? 
       <Modal 
-        showEditModal={showEditModal} 
+        showActionModal={showActionModal} 
         handleCloseModal={this.handleCloseEditModal}
         headerText={modalHeaderText}
         actionType={actionType}
       >
-        { childrenWithProps }
+        { modalBodyContent }
       </Modal> : '';
 
 
@@ -348,11 +377,18 @@ class DisplayComponent extends Component {
         { totalItemsDisplay } <br/>
         { pagerNav }
         { table }
-        { editFormModal }
+        { actionFormModal }
         { showSuccessDialog }
       </div>
     )
   }
 }
+
+const singularizeItemNames = {
+  'tasks': 'task',
+  'parts': 'part',
+  'categories': 'category',
+  'jobs': 'job'
+};
 
 export default withRouter(DisplayComponent);

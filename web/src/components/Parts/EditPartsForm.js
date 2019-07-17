@@ -392,6 +392,7 @@ class EditPartsForm extends Component {
         {customRetailErrorMsg}
       </div> : '';
 
+    // controls display of form fields or a delete message with the part name
     const partsFields = (actionType === 'delete') ?
       <div>
         <p>Are you sure you want to delete: {part_name} ?</p>
