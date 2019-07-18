@@ -221,6 +221,7 @@ class DisplayComponent extends Component {
       this.setState({ 
         currentPageNum: currentPageNum - 1,
         isLoaded: false,
+        isPaging: true,
       })
     }
   }
@@ -231,6 +232,7 @@ class DisplayComponent extends Component {
     this.setState({ 
       currentPageNum: currentPageNum + 1,
       isLoaded: false,
+      isPaging: true,
     })
   }
 
