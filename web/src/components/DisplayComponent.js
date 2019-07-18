@@ -157,8 +157,8 @@ class DisplayComponent extends Component {
     this.setState({ showActionModal: true });
   }
 
-  handleCloseEditModal(e) {
-    e.preventDefault();
+  handleCloseEditModal() {
+    // e.preventDefault();
     this.setState({ 
       showActionModal: false,
       itemId: '',
@@ -383,7 +383,7 @@ class DisplayComponent extends Component {
 
 
     const showSuccessDialog = showDialog ?
-      <DialogModal
+      <Dialog
         dialogText={'Success'}
         showDialog={showDialog}
         handleCloseDialog={this.handleCloseDialog}

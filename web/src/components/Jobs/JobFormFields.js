@@ -315,7 +315,7 @@ class JobFormFields extends Component {
       </Modal>: '';
 
     const displayMessageDialog = toggleDialog ?
-      <DialogModal
+      <Dialog
         dialogText={dialogMsg}
         handleCloseDialog={this.toggleDialogState}
       />

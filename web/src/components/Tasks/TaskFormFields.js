@@ -613,7 +613,7 @@ class TaskFormFields extends Component {
 
 
     const displayMessageDialog = toggleDialog ?
-      <DialogModal
+      <Dialog
         dialogText={`${dialogMsg}`}
         handleCloseDialog={this.toggleDialogState}
       />

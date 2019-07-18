@@ -1,10 +1,10 @@
 import React from 'react';
-import { GButton } from './styles';
+import { StyledButton } from './styles';
 
 
 const Button = (props) => {
   return (
-    <GButton
+    <StyledButton
       id={props.id}
       className={props.type}
       name={props.name}
@@ -13,7 +13,7 @@ const Button = (props) => {
       onClick={props.action}
     >
     {props.title}
-    </GButton>
+    </StyledButton>
   )
 }
 

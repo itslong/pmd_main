@@ -373,7 +373,7 @@ class CreateTasksForm extends Component {
       </div> : '';
 
     const displayModal = displaySuccessModal ?
-    <DialogModal
+    <Dialog
       dialogText={'Successfully created'}
       handleCloseDialog={this.toggleModal}
     /> : '';

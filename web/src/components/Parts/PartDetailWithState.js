@@ -182,7 +182,7 @@ class PartDetailWithState extends Component {
       : '';
 
     const showSuccessDialog = showDialog ?
-      <DialogModal 
+      <Dialog
         dialogText={'Success'}
         showDialog={showDialog}
         handleCloseDialog={this.handleCloseDialog}

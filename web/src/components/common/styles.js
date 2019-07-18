@@ -3,9 +3,8 @@ import styled from 'styled-components';
 
 /*
   Prefixes determines the type of component styling.
-  G: Global style
 */
-const GButton = styled.button`
+const StyledButton = styled.button`
   background: ${props => buttonBackgroundColor[props.className]};
   color: ${props => buttonFontColor[props.className]};
   cursor: pointer;
@@ -53,7 +52,7 @@ const activeButtonStyle = {
 /*
   Table styling.
 */
-const GTable = styled.table`
+const StyledTable = styled.table`
   table-layout: fixed;
   width: 100%;
   word-wrap: break-word;
@@ -104,8 +103,7 @@ const StyledNavBar = styled.div`
     }
 `;
 
-
-const StyledModal = styled.div`
+const BaseDialogAndModal = styled.div`
   display: block;
   position: fixed;
   top: 0;
@@ -113,7 +111,9 @@ const StyledModal = styled.div`
   width: 100%;
   height: 100%;
   background: rgba(0,0,0,0.6);
+`;
 
+const StyledModal = styled(BaseDialogAndModal)`
   .modal-container {
     position: fixed;
     background: white;
@@ -121,7 +121,6 @@ const StyledModal = styled.div`
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-
   }
 
   .edit-modal {
@@ -176,13 +175,42 @@ const PartsModalButtonContainer = styled.div`
   }
 `;
 
+const StyledDialog = styled(BaseDialogAndModal)`
+  .dialog-container {
+    position: fixed;
+    background: white;
+    width: 25%;
+    height: 20%;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    border-radius: 4px;
+    
+    .dialog-body {
+      justify-content: space-evenly;
+      align-items: center;
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+      padding: 10px;
+      height: 100%;
+      font-size: 16px;
+
+      button {
+        width: 40%;
+      }
+    }
+  }
+`;
+
 export {
-  GButton,
-  GTable,
+  StyledButton,
+  StyledTable,
   disabledButtonStyle,
   activeButtonStyle,
   centerHorizontalAndVerticalStyle,
   StyledNavBar,
   StyledModal,
+  StyledDialog,
   PartsModalButtonContainer
 };

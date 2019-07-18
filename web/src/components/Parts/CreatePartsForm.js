@@ -345,7 +345,7 @@ class CreatePartsForm extends Component {
       : '';
 
     const displayModal = displaySuccessModal ?
-    <DialogModal
+    <Dialog
       dialogText={'Successfully created'}
       handleCloseDialog={this.toggleModal}
     /> : '';
