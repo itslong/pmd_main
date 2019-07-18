@@ -3,6 +3,7 @@ export {
   moneyLimitSixRegEx,
   // itemIdWithDashRegEx,
   lettersNumbersHyphenRegEx,
+  numbersOnlyRegEx,
 } from './Validators';
 export {
   partNameErrorMsg,
@@ -22,7 +23,8 @@ export {
   taskNameErrorMsg,
   taskIdLengthErrorMsg,
   taskIdHyphensErrorMsg,
-  taskFixedLaborRateErrorMsg
+  taskFixedLaborRateErrorMsg,
+  taskIdNumbersOnlyErrorMsg
 } from './TaskFieldsErrorHandling';
 export {
   categoryNameErrorMsg,

@@ -6,14 +6,14 @@ import { Input, Button, TextArea, Checkbox, Select, Dialog } from '../common';
 import { TASKS_DISPLAY_PATH } from '../frontendBaseRoutes';
 import {
   moneyLimitSixRegEx,
-  lettersNumbersHyphenRegEx,
+  numbersOnlyRegEx,
   fieldRequiredErrorMsg,
   fieldErrorStyle,
   fieldErrorInlineMsgStyle,
   horizontalLayoutStyle,
   taskNameErrorMsg,
   taskIdLengthErrorMsg,
-  taskIdHyphensErrorMsg,
+  taskIdNumbersOnlyErrorMsg,
   taskFixedLaborRateErrorMsg,
 } from '../helpers';
 
@@ -217,10 +217,10 @@ class CreateTasksForm extends Component {
     const taskId = e.target.value;
 
     const lengthValid = taskId.length > 2 && taskId.length < 11 ? true : false;
-    const taskIdValidated = lettersNumbersHyphenRegEx.test(taskId);
+    const taskIdValidated = numbersOnlyRegEx.test(taskId);
 
     const taskIdErr = !lengthValid || !taskIdValidated ? true : false;
-    const errorMsg = !lengthValid ? taskIdLengthErrorMsg : !taskIdValidated ? taskIdHyphensErrorMsg : '';
+    const errorMsg = !lengthValid ? taskIdNumbersOnlyErrorMsg : !taskIdValidated ? taskIdNumbersOnlyErrorMsg : '';
 
     this.setState({ 
       task_id: taskId,

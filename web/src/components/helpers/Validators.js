@@ -5,7 +5,11 @@ const moneyLimitSixRegEx = /^(0([.]\d{2})$)|^([1-9]{1}([.]\d{2})$)|^([1-9]{1}\d{
 //must be 2 characters minimum. Must start and end with a character or digit. One hyphen allowed.
 const lettersNumbersHyphenRegEx = /^(\w{1}\w*[-]?\w*\w{1})$/;
 
+const numbersOnlyRegEx = /^(\d{1}\d*)$/;
+
+
 export {
   moneyLimitSixRegEx,
   lettersNumbersHyphenRegEx,
+  numbersOnlyRegEx,
 };
