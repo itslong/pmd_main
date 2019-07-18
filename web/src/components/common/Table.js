@@ -5,7 +5,7 @@ import { itemPathWithId } from '../frontendBaseRoutes';
 import TableRowWithCheckbox from './TableRowWithCheckbox';
 import TableRowWithButtons from './TableRowWithButtons';
 import TableRow from './TableRow';
-import { GTable } from './styles';
+import { StyledTable } from './styles';
 
 
 /**
@@ -72,7 +72,7 @@ const Table = ({
         { headerText }
       </h3>
 
-      <GTable id={tableId} className="table is-striped">
+      <StyledTable id={tableId} className="table is-striped">
         <thead>
           {secondHeaderRow}
           <tr>
@@ -116,7 +116,7 @@ const Table = ({
             )
           })}
         </tbody>
-      </GTable>
+      </StyledTable>
     </div>
 
   )

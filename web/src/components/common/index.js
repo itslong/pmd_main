@@ -10,6 +10,7 @@ export { default as TableRowWithButtons } from './TableRowWithButtons';
 export { default as TableRowWithCheckbox } from './TableRowWithCheckbox';
 export { default as DetailsTable } from './DetailsTable';
 export { default as Modal } from './Modal';
+export { default as Dialog } from './Dialog';
 export {
   disabledButtonStyle,
   activeButtonStyle,

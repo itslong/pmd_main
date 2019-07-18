@@ -2,9 +2,8 @@ import React, { Component } from 'react';
 import { Link, Redirect } from 'react-router-dom';
 
 import { CreateCategory, CSRFToken } from '../endpoints';
-import { Input, Button, TextArea, Checkbox, Select } from '../common';
+import { Input, Button, TextArea, Checkbox, Select, Dialog } from '../common';
 import { CATEGORIES_DISPLAY_PATH } from '../frontendBaseRoutes';
-import DialogModal from '../DialogModal';
 import {
   lettersNumbersHyphenRegEx,
   fieldRequiredErrorMsg,
@@ -184,7 +183,7 @@ class CreateCategoriesForm extends Component {
       : '';
 
     const displayModal = displaySuccessModal ?
-      <DialogModal
+      <Dialog
         dialogText={'Successfully created'}
         handleCloseDialog={this.toggleModal}
       /> : '';

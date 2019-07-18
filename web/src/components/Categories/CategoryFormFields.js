@@ -1,11 +1,10 @@
 import React, { Component } from 'react';
 
-import { Input, Button, TextArea, Checkbox, Table, Modal } from '../common';
+import { Input, Button, TextArea, Checkbox, Table, Modal, Dialog } from '../common';
 import SearchComponent from '../SearchComponent';
 import { UpdateCategoryAndRelatedTasks, CSRFToken } from '../endpoints';
 import { CATEGORIES_DISPLAY_PATH } from '../frontendBaseRoutes';
 import { renameStaticTableFields } from '../fieldNameAliases';
-import DialogModal from '../DialogModal';
 import {
   lettersNumbersHyphenRegEx,
   fieldRequiredErrorMsg,
@@ -391,7 +390,7 @@ class CategoryFormFields extends Component {
       : '';
 
     const displayMessageDialog = toggleDialog ?
-      <DialogModal
+      <Dialog
         dialogText={dialogMsg}
         handleCloseDialog={this.toggleDialogState}
       />

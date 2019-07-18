@@ -1,8 +1,7 @@
 import React, { Component, cloneElement, Children, useContext } from 'react';
 import { withRouter } from 'react-router-dom';
 
-import { Input, Button, Table, TableRowWithButtons, TableRowWithCheckbox, Modal } from './common';
-import DialogModal from './DialogModal';
+import { Input, Button, Table, TableRowWithButtons, TableRowWithCheckbox, Modal, Dialog } from './common';
 import { editPathWithId, itemPathWithId } from './frontendBaseRoutes';
 import Pager from './Pager';
 import SearchComponent from './SearchComponent';
@@ -158,8 +157,8 @@ class DisplayComponent extends Component {
     this.setState({ showActionModal: true });
   }
 
-  handleCloseEditModal(e) {
-    e.preventDefault();
+  handleCloseEditModal() {
+    // e.preventDefault();
     this.setState({ 
       showActionModal: false,
       itemId: '',
@@ -384,7 +383,7 @@ class DisplayComponent extends Component {
 
 
     const showSuccessDialog = showDialog ?
-      <DialogModal
+      <Dialog
         dialogText={'Success'}
         showDialog={showDialog}
         handleCloseDialog={this.handleCloseDialog}

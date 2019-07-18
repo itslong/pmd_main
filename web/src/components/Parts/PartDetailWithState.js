@@ -2,9 +2,8 @@ import React, { Component } from 'react';
 
 import { FetchPart, FetchAllTasksRelatedToParts } from '../endpoints';
 import NotFound from '../NotFound';
-import DialogModal from '../DialogModal'
 import EditPartsForm from './EditPartsForm';
-import { Button, Table, DetailsTable, Modal } from '../common';
+import { Button, Table, DetailsTable, Modal, Dialog } from '../common';
 import { renameStaticTableFields, renameStaticObjTableFields } from '../fieldNameAliases';
 
 
@@ -183,7 +182,7 @@ class PartDetailWithState extends Component {
       : '';
 
     const showSuccessDialog = showDialog ?
-      <DialogModal 
+      <Dialog
         dialogText={'Success'}
         showDialog={showDialog}
         handleCloseDialog={this.handleCloseDialog}
