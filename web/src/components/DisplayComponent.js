@@ -376,7 +376,6 @@ class DisplayComponent extends Component {
         handleCloseModal={this.handleCloseEditModal}
         headerText={modalHeaderText}
         actionType={actionType}
-        displayType={displayType}
         itemName={itemName}
         handleConfirmButton={this.handleConfirmDeleteItem}
       >

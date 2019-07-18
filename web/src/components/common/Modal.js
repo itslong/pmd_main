@@ -6,10 +6,10 @@ import { StyledModal } from './styles';
 
 
 
-const Modal = ({ handleCloseModal, handleConfirmButton, displayType, headerText, actionType, children, itemName }) => {
+const Modal = ({ handleCloseModal, handleConfirmButton, headerText, actionType, children, itemName }) => {
   const modalContainerClass = (actionType === 'edit') ? 'edit-modal' : 'del-modal';
 
-  const partsChildrenOrForm = displayType == 'parts' ? children : actionType == 'delete' ?
+  const childrenOrDelete = actionType == 'delete' ?
     <div>
       <p>Are you sure you want to delete: {itemName}?</p>
       <ModalConfirmationForm
@@ -17,7 +17,7 @@ const Modal = ({ handleCloseModal, handleConfirmButton, displayType, headerText,
         handleCancelButton={handleCloseModal}
       />
     </div>
-    : '';
+    : children;
 
   return (
     <StyledModal>
@@ -27,7 +27,7 @@ const Modal = ({ handleCloseModal, handleConfirmButton, displayType, headerText,
             <Button type={'closeBtn'} title={'X'} action={handleCloseModal} />
         </div>
         <div className='modal-body'>
-          { partsChildrenOrForm }
+          { childrenOrDelete }
         </div>
       </div>
     </StyledModal>
