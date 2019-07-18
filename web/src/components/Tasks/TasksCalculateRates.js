@@ -16,8 +16,12 @@ const preciseRound = (x, decimalPlaces) => {
 
 const taskOnlyLaborCost = (taskObj, markupObj) => {
   //subtotal_cost_task_labor 
-  const { estimated_contractor_hours, estimated_asst_hours } = taskObj;
+  const { estimated_contractor_hours, estimated_asst_hours, use_fixed_labor_rate, fixed_labor_rate } = taskObj;
   const { labor_cost_hourly_rate, asst_labor_cost_hourly_rate } = markupObj;
+
+  if (use_fixed_labor_rate) {
+    return fixed_labor_rate;
+  }
 
   const contractor = labor_cost_hourly_rate * estimated_contractor_hours;
   const asst = asst_labor_cost_hourly_rate * estimated_asst_hours;
@@ -44,8 +48,12 @@ const taskOnlyLaborRetail = (taskObj, markupObj) => {
 
 const addonOnlyLaborCost = (addonObj, markupObj) => {
   //subtotal_cost_addon_labor
-  const { estimated_contractor_minutes, estimated_asst_minutes } = addonObj;
+  const { estimated_contractor_minutes, estimated_asst_minutes, use_fixed_labor_rate, fixed_labor_rate } = addonObj;
   const { labor_cost_hourly_rate, asst_labor_cost_hourly_rate } = markupObj;
+
+  if (use_fixed_labor_rate) {
+    return fixed_labor_rate;
+  }
 
   const contractor = (labor_cost_hourly_rate / 60) * estimated_contractor_minutes;
   const asst = (asst_labor_cost_hourly_rate / 60) * estimated_asst_minutes;

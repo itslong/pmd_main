@@ -87,6 +87,8 @@ const StyledTable = styled.table`
 const StyledNavBar = styled.div`
   background-color: black;
   margin-bottom: 10px;
+  padding: 5px 0;
+
   ul {
     display: flex;
     flex-direction: row;
