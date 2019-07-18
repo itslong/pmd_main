@@ -300,8 +300,12 @@ const calculateTasksMainDisplayFields = (taskArr, markupData, displayFields, cal
     let filteredObj = {};
     let calculationObj = {};
 
-    const markup = createSingleMarkupObj(item.tag_types.id, markupData);
+    const { tag_types, related, task_attribute } = item;
+    const { id: tagTypeId } = tag_types;
 
+    const markup = createSingleMarkupObj(tagTypeId, markupData);
+    const taskRelatedParts = related;
+    const taskAttr = task_attribute;
 
     let displayNames = Object.values(displayFields)
     let itemKeys = Object.keys(displayFields)
@@ -319,23 +323,30 @@ const calculateTasksMainDisplayFields = (taskArr, markupData, displayFields, cal
       });
     })
 
-    let taskOnlyTotal = item.task_attribute == 'Task Only' ? taskOnlyTotalCost(calculationObj) : 'N/A';
-    let addonOnlyTotal = item.task_attribute == 'Addon Only' ? addonOnlyTotalCost(calculationObj) : 'N/A';;
-    let taskOnlyRate = item.task_attribute == 'Task Only' ? taskOnlyStandardRate(calculationObj) : 'N/A';
-    let addonOnlyRate = item.task_attribute == 'Addon Only' ? addonOnlyStandardRate(calculationObj) : 'N/A';
+    let taskOnlyTotal = task_attribute == 'Task Only' ? taskOnlyTotalCost(calculationObj) : 'N/A';
+    let addonOnlyTotal = task_attribute == 'Addon Only' ? addonOnlyTotalCost(calculationObj) : 'N/A';;
+    
 
-    if (item.task_attribute == 'Addon And Task' || item.task_attribute == 'Task And Addon') {
+    let taskOnlyValueRate = task_attribute == 'Task Only' ?
+      taxTotalForTaskAddonLaborWithPartsRetail(item, taskRelatedParts, tagTypeId, markupData, 'task') 
+      : 'N/A';
+
+    let addonOnlyValueRate = task_attribute == 'Addon Only' ?
+      taxTotalForTaskAddonLaborWithPartsRetail(item, taskRelatedParts, tagTypeId, markupData, 'addon')
+      : 'N/A';
+
+    if (task_attribute == 'Addon And Task' || task_attribute == 'Task And Addon') {
       taskOnlyTotal = taskOnlyTotalCost(calculationObj);
       addonOnlyTotal = addonOnlyTotalCost(calculationObj);
-      taskOnlyRate = taskOnlyStandardRate(calculationObj);
-      addonOnlyRate = addonOnlyStandardRate(calculationObj);
+      taskOnlyValueRate = taxTotalForTaskAddonLaborWithPartsRetail(item, taskRelatedParts, tagTypeId, markupData, 'task');
+      addonOnlyValueRate = taxTotalForTaskAddonLaborWithPartsRetail(item, taskRelatedParts, tagTypeId, markupData, 'addon') 
     }
 
     Object.assign(filteredObj, {
       'Task Only Total Cost': taskOnlyTotal,
       'Addon Only Total Cost': addonOnlyTotal,
-      'Task Only Standard Rate': taskOnlyRate,
-      'Addon Only Standard Rate': addonOnlyRate,
+      'Task Only Value Rate': taskOnlyValueRate,
+      'Addon Only Value Rate': addonOnlyValueRate,
     });
 
     return filteredObj;
