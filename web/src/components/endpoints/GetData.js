@@ -50,15 +50,13 @@ const FetchAllPartsAdmin = (pageNum=1, pageSize=10) => {
 
   return fetch(endpoint, {headers, })
   .then(response => {
-    if (response.ok) {
-      return response.json();
-    }
-    return Promise.reject(
-      'Promise rejected. Status Code: ' + response.status + ' from this endpoint: ' + endpoint
-    );
+    const { status } = response;
+    const res = response.ok ? response.json() : Promise.reject({ error: status });
+    return res;
   })
   .catch(error => {
-    return Promise.reject('Fetch All Parts Admin Error: ' + error);
+    console.log('Fetch All Parts Admin Error: ', error, ' from this endpoint: ', endpointWithPageQuery.toString())
+    return error;
   })
 };
 
@@ -75,9 +73,12 @@ const FetchPart = (partId) => {
 
   return fetch(endpoint, {headers, })
   .then(response => {
-    return response.json();
+    const { status } = response;
+    const res = response.ok ? response.json() : Promise.reject({ error: status });
+    return res;
   })
   .catch(error => {
+    console.log('Fetch Single Part Error: ', error, ' from this endpoint: ', endpoint.toString())
     return error;
   })
 }
@@ -104,27 +105,14 @@ const CreatePart = (formData) => {
     headers,
   })
   .then(response => {
-    console.log('create part response: ' + JSON.stringify(response))
-    if (response.status !== 201) {
-      // return Promise.reject(
-      //   'Form rejected. Status Code: ' + response.status + ' from this endpoint: ' + endpoint
-      // );
-      return Promise.reject(new Error('fail')).then((response) => {
-        console.log('first response ' + response)
-      }, (error) => {
-        console.log('error itself: ' + error)
-      })
-    }
-
-    return response.json();
+    // future TODO: check for different status code when implementing dupe prevention
+    const { status } = response;
+    const res = response.status === 201 ? response.json() : Promise.reject({ error: status });
+    return res;
   })
   .catch(error => {
-    console.log('the error: ' + JSON.stringify(error))
-    // return Promise.reject('Post Error: ' + error);
-    return Promise.reject({
-        status: response.status,
-        errorMsg: 'In the catch: Form rejected form this endpoint: ' + endpoint
-      })
+    console.log('Part Create error: ', error, ' from this endpoint: ', endpoint.toString());
+    return error;
   })
 };
 
@@ -151,12 +139,15 @@ const UpdatePart = (partId, formData) => {
     headers,
   })
   .then(response => {
-    return response.json();
+    // future TODO: check for different status code when implementing dupe prevention
+    const { status } = response;
+    const res = response.ok ? response.json() : Promise.reject({ error: status });
+    return res;
   })
   .catch(error => {
-    console.log('Updating part failed', error)
+    console.log('Updating part failed ', error)
+    return error;
   })
-
 }
 
 const UpdatePartTagTypes = (partId, formData) => {
@@ -181,10 +172,13 @@ const UpdatePartTagTypes = (partId, formData) => {
     headers,
   })
   .then(response => {
-    return response.json();
+    const { status } = response;
+    const res = response.ok ? response.json() : Promise.reject({ error: status });
+    return res;
   })
   .catch(error => {
-    console.log('Updating failed', error)
+    console.log('Updating Part Tag types failed', error);
+    return error;
   })
 
 }
@@ -256,16 +250,13 @@ const SearchForParts = (searchString) => {
 
   return fetch(endpoint, {headers, })
   .then(response => {
-    if (response.ok) {
-      return response.json();
-    }
-
-    return Promise.reject(
-      'Promise rejected at SearchForParts. Status Code: ' + response.status + ' from this endpoint: ' + endpoint
-    );
+    const { status } = response;
+    const res = response.ok ? response.json() : Promise.reject({ error: status });
+    return res;
   })
   .catch(error => {
-    return Promise.reject('SearchForParts Error: ' + error);
+    console.log('SearchForParts Error: ', error, ' from this endpoint: ', endpoint.toString());
+    return error;
   })
 }
 
@@ -292,16 +283,13 @@ const SearchForItems = (searchString, searchType, pageNum=1, pageSize=10) => {
 
   return fetch(endpointWithPageQuery, {headers, })
   .then(response => {
-    if (response.ok) {
-      return response.json();
-    }
-
-    return Promise.reject(
-      'Promise rejected at SearchForItems. Status Code: ' + response.status + ' from this endpoint: ' + endpoint
-    );
+    const { status } = response;
+    const res = response.ok ? response.json() : Promise.reject({ error: status });
+    return res;
   })
   .catch(error => {
-    return Promise.reject('SearchForParts Error: ' + error);
+    console.log('Promise rejected at SearchForItems: ', error, ' from this endpoint: ', endpointWithPageQuery.toString())
+    return error;
   })
 }
 
@@ -323,15 +311,13 @@ const FetchAllTasks = (pageNum=1, pageSize=10) => {
 
   return fetch(endpointWithPageQuery, {headers, })
   .then(response => {
-    if (response.ok) {
-      return response.json();
-    }
-    return Promise.reject(
-      'Promise rejected. Status Code: ' + response.status + ' from this endpoint: ' + endpoint
-    );
+    const { status } = response;
+    const res = response.ok ? response.json() : Promise.reject({ error: status });
+    return res;
   })
   .catch(error => {
-    return Promise.reject('Fetch All Parts Error: ' + error);
+    console.log('Fetch All Tasks Error: ', error, ' from this endpoint: ', endpointWithPageQuery.toString());
+    return error;
   })
 };
 
@@ -348,9 +334,12 @@ const FetchTask = (taskId) => {
 
   return fetch(endpoint, {headers, })
   .then(response => {
-    return response.json();
+    const { status } = response;
+    const res = response.ok ? response.json() : Promise.reject({ error: status });
+    return res;
   })
   .catch(error => {
+    console.log('Fetch Single Task Error: ', error, ' from this endpoint: ', endpoint.toString())
     return error;
   })
 }
@@ -375,30 +364,16 @@ const CreateTask = (formData) => {
     headers,
   })
   .then(response => {
-    console.log('create task response: ' + JSON.stringify(response))
-    if (response.status !== 201) {
-      // return Promise.reject(
-      //   'Form rejected. Status Code: ' + response.status + ' from this endpoint: ' + endpoint
-      // );
-      return Promise.reject(new Error('Create Task failed')).then((response) => {
-        console.log('Task response: ' + response)
-      }, (error) => {
-        console.log('Task error: ' + error)
-      })
-    }
-
-    return response.json();
+    // future TODO: check for different status code when implementing dupe prevention
+    const { status } = response;
+    const res = response.status === 201 ? response.json() : Promise.reject({ error: status });
+    return res;
   })
   .catch(error => {
-    console.log('the error: ' + JSON.stringify(error))
-    // return Promise.reject('Post Error: ' + error);
-    return Promise.reject({
-        status: response.status,
-        errorMsg: 'In the catch: Create Task form data rejected from this endpoint: ' + endpoint
-      })
+    console.log('Task Create error: ', error, ' from this endpoint: ', endpoint.toString());
+    return error;
   })
 };
-
 
 
 const UpdateTaskOnly = (taskId, formData) => {
@@ -423,6 +398,8 @@ const UpdateTaskOnly = (taskId, formData) => {
     headers,
   })
   .then(response => {
+     // future TODO: check for different status code when implementing dupe prevention
+     // change to Promise.reject if failed.
     const responseStatus = response.ok ? 'Success' : response.json();
     return responseStatus;
   })
@@ -471,18 +448,23 @@ const CreateTaskParts = (taskPartsObj) => {
     'Authorization': `Token ${token}`,
   };
 
-  let options = {
+  const options = {
     method: 'POST',
     mode: 'same-origin',
     body: JSON.stringify(taskPartsObj),
     headers,
   };
 
-  return fetch(endpoint, options).then(response => {
-    return response;
+  return fetch(endpoint, options)
+  .then(response => {
+    // double check the codes
+    const { status } = response;
+    const res = response.ok ? response.json() : Promise.reject({ error: status });
+    return res;
   })
   .catch(error => {
-    return Promise.reject('CreateTaskParts ran into an error: ' + error)
+    console.log('CreateTaskParts ran into an error: ', error);
+    return error;
   })
 };
 
@@ -500,12 +482,13 @@ const FetchAllTasksRelatedToParts = (partId) => {
 
   return fetch(endpointWithFilterQuery, {headers, })
   .then(response => {
-    if (response.ok) {
-      return response.json();
-    }
+    const { status } = response;
+    const res = response.ok ? response.json() : Promise.reject({ error: status });
+    return res;
   })
   .catch(error => {
-    return Promise.reject('FetchAllTasksRelatedToParts encountered an error: ' + error)
+    console.log('FetchAllTasksRelatedToParts encountered an error: ', error, ' from this endpoint: ', endpointWithFilterQuery.toString());
+    return error;
   })
 };
 
@@ -555,15 +538,13 @@ const FetchAllCategories = (pageNum=1, pageSize=10) => {
 
   return fetch(endpointWithPageQuery, {headers, })
   .then(response => {
-    if (response.ok) {
-      return response.json();
-    }
-    return Promise.reject(
-      'Promise rejected. Status Code: ' + response.status + ' from this endpoint: ' + endpoint
-    );
+    const { status } = response;
+    const res = response.ok ? response.json() : Promise.reject({ error: status });
+    return res;
   })
   .catch(error => {
-    return Promise.reject('Fetch All Parts Error: ' + error);
+    console.log('Fetch All Parts Error: ', error, ' from this endpoint: ', endpointWithPageQuery.toString());
+    return error;
   })
 };
 
@@ -580,9 +561,12 @@ const FetchCategory = (categoryId) => {
 
   return fetch(endpoint, {headers, })
   .then(response => {
-    return response.json();
+    const { status } = response;
+    const res = response.ok ? response.json() : Promise.reject({ error: status });
+    return res;
   })
   .catch(error => {
+    console.log('Fetch Single Category Error: ', error, ' from this endpoint: ', endpoint.toString())
     return error;
   })
 }
@@ -607,20 +591,14 @@ const CreateCategory = (formData) => {
     headers,
   })
   .then(response => {
-    if (response.status !== 201) {
-      return Promise.reject(new Error('Create Category failed')).then((response) => {
-      }, (error) => {
-        console.log('Category error: ' + error)
-      })
-    }
-
-    return response.json();
+    // future TODO: check for different status code when implementing dupe prevention
+    const { status } = response;
+    const res = response.status === 201 ? response.json() : Promise.reject({ error: status });
+    return res;
   })
   .catch(error => {
-    return Promise.reject({
-        status: response.status,
-        errorMsg: 'In the catch: Create Category form data rejected from this endpoint: ' + endpoint
-    });
+    console.log('Create Category error: ', error);
+    return error;
   });
 };
 
@@ -646,6 +624,7 @@ const UpdateCategoryAndRelatedTasks = (categoryId, formData) => {
     headers,
   })
   .then(response => {
+    // change to Promise.reject when failing to udpate.
     const responseStatus = response.ok ? 'Success' : response.json();
     return responseStatus;
   })
@@ -675,15 +654,13 @@ const FetchAllJobs = (pageNum=1, pageSize=10) => {
 
   return fetch(endpoint, {headers, })
   .then(response => {
-    if (response.ok) {
-      return response.json();
-    }
-    return Promise.reject(
-      'Promise rejected. Status Code: ' + response.status + ' from this endpoint: ' + endpoint
-    );
+    const { status } = response;
+    const res = response.ok ? response.json() : Promise.reject({ error: status });
+    return res;
   })
   .catch(error => {
-    return Promise.reject('Fetch All Jobs Error: ' + error);
+    console.log('Fetch All Jobs Error: ', error, ' from this endpoint: ', endpoint.toString());
+    return error;
   })
 };
 
@@ -700,15 +677,13 @@ const FetchJob = (jobId) => {
 
   return fetch(endpoint, {headers, })
   .then(response => {
-    if (response.ok) {
-      return response.json();
-    }
-    return Promise.reject(
-      'Promise rejected. Status Code: ' + response.status + ' from this endpoint: ' + endpoint
-    );
+    const { status } = response;
+    const res = response.ok ? response.json() : Promise.reject({ error: status });
+    return res;
   })
   .catch(error => {
-    return Promise.reject('Fetch a single Job Error: ' + error);
+    console.log('Fetch a single Job Error: ', error, ' from this endpoint: ', endpoint.toString());
+    return error;
   })
 }
 
@@ -732,20 +707,14 @@ const CreateJob = (formData) => {
     headers,
   })
   .then(response => {
-    if (response.status !== 201) {
-      return Promise.reject(new Error('Create Job failed')).then((response) => {
-      }, (error) => {
-        console.log('Job error: ' + error)
-      })
-    }
-
-    return response.json();
+    // future TODO: check for different status code when implementing dupe prevention
+    const { status } = response;
+    const res = response.status === 201 ? response.json() : Promise.reject({ error: status });
+    return res;
   })
   .catch(error => {
-    return Promise.reject({
-        status: response.status,
-        errorMsg: 'In the catch: Create Job form data rejected from this endpoint: ' + endpoint
-    });
+    console.log('Create Job error: ', error);
+    return error;
   });
 };
 
@@ -772,6 +741,7 @@ const UpdateJobAndRelatedCategories = (jobId, formData) => {
     headers,
   })
   .then(response => {
+    // change to Promise.reject when failing to update.
     const responseStatus = response.ok ? 'Success' : response.json();
     return responseStatus;
   })
@@ -796,13 +766,13 @@ const GetPartsMarkupPercents = () => {
 
   return fetch(endpoint, {headers, })
   .then(response => {
-    if (response.ok) {
-      return response.json()
-    }
-
-    return Promise.reject(
-     'Parts Markup promise rejected. Status Code: ' + response.status + ' from this endpoint: ' + endpoint
-    );
+    const { status } = response;
+    const res = response.ok ? response.json() : Promise.reject({ error: status });
+    return res;
+  })
+  .catch(error => {
+    console.log('Parts Markup error: ', error, ' from this endpoint: ', endpoint.toString());
+    return error;
   })
 }
 
@@ -818,13 +788,13 @@ const FetchTagTypesChoices = () => {
 
   return fetch(endpoint, {headers, })
   .then(response => {
-    if (response.ok) {
-      return response.json()
-    }
-
-    return Promise.reject(
-     'FetchTagTypesChoices promise rejected. Status Code: ' + response.status + ' from this endpoint: ' + endpoint
-    );
+    const { status } = response;
+    const res = response.ok ? response.json() : Promise.reject({ error: status });
+    return res;
+  })
+  .catch(error => {
+    console.log('FetchTagTypesChoices error: ', error, ' from this endpoint: ', endpoint.toString());
+    return error;
   })
 }
 
