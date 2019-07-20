@@ -4,6 +4,7 @@ import { Link, Redirect } from 'react-router-dom';
 import { CreateJob, FetchTagTypesChoices, CSRFToken } from '../endpoints';
 import { Input, Button, TextArea, Checkbox, Select, Dialog } from '../common';
 import { JOBS_DISPLAY_PATH } from '../frontendBaseRoutes';
+import { IsAuthContext } from '../AppContext';
 
 
 class CreateJobsForm extends Component {
@@ -30,8 +31,19 @@ class CreateJobsForm extends Component {
 
   componentDidMount() {
     let tags = FetchTagTypesChoices();
-    tags.then(tagsChoices => {
+    tags.then(data => {
+      if (data.error) {
+        this.context.updateAuth();
+        return Promise.reject('Session expired.');
+      }
+      return data;
+    })
+    .then(tagsChoices => {
       this.setState({ jobNameOptions: tagsChoices });
+    })
+    .catch(error => {
+      console.log('Create Jobs error: ', error);
+      return error
     });
   }
 
@@ -146,5 +158,7 @@ class CreateJobsForm extends Component {
     )
   }
 }
+
+CreateJobsForm.contextType = IsAuthContext;
 
 export default CreateJobsForm;

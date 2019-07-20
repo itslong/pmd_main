@@ -4,7 +4,7 @@ import Button from './Button';
 import { StyledDialog } from './styles';
 
 
-const Dialog = ({ dialogText, headerText, handleCloseDialog }) => {
+const Dialog = ({ dialogText, handleCloseDialog }) => {
   // needed to dismiss dialog when parent props isn't available, such as when routing back to Display after successful submit.
   const buttonClose = handleCloseDialog ?
     handleCloseDialog

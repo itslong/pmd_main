@@ -4,6 +4,7 @@ import { Link, Redirect } from 'react-router-dom';
 import { FetchTagTypesChoices, CreateTask, CSRFToken } from '../endpoints';
 import { Input, Button, TextArea, Checkbox, Select, Dialog } from '../common';
 import { TASKS_DISPLAY_PATH } from '../frontendBaseRoutes';
+import { IsAuthContext } from '../AppContext';
 import {
   moneyLimitSixRegEx,
   numbersOnlyRegEx,
@@ -83,8 +84,20 @@ class CreateTasksForm extends Component {
 
   componentDidMount() {
     let tags = FetchTagTypesChoices();
-    tags.then(tagsChoices => {
+    tags.then(data => {
+      if (data.error) {
+        this.context.updateAuth();
+        return Promise.reject('Session expired.');
+      }
+
+      return data;
+    })
+    .then(tagsChoices => {
       this.setState({ tagTypesChoices: tagsChoices })
+    })
+    .catch(error => {
+      console.log('Create Task error: ', error);
+      return error;
     });
   }
 
@@ -510,7 +523,8 @@ class CreateTasksForm extends Component {
       </div>
     )
   }
-
 }
+
+CreateTasksForm.contextType = IsAuthContext;
 
 export default CreateTasksForm;

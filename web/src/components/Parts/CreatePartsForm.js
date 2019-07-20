@@ -13,6 +13,7 @@ import { Input, Button, TextArea, Checkbox, Select, Dialog } from '../common';
 import { calculateRetailCost } from './CalculatePartsCustomMarkupField';
 import { PARTS_DISPLAY_PATH } from '../frontendBaseRoutes';
 import { moneyLimitSixRegEx, lettersNumbersHyphenRegEx } from '../helpers';
+import { IsAuthContext } from '../AppContext';
 import {   
   partNameErrorMsg,
   partNumLengthErrorMsg,
@@ -77,16 +78,29 @@ class CreatePartsForm extends Component {
   }
 
   componentDidMount() {
-    Promise.all([
+    const createPart = Promise.all([
       GetPartsMarkupPercents(),
       FetchTagTypesChoices()
-    ])
+    ]);
+
+    createPart.then(data => {
+      if (data[0].error || data[1].error) {
+        this.context.updateAuth();
+        return Promise.reject('Session expired.');
+      }
+
+      return data;
+    })
     .then(([markupData, tagsChoices]) => {
       this.setState({
         partsMarkupData: markupData,
         tagTypesChoices: tagsChoices
       });
     })
+    .catch(error => {
+      console.log('Create Part error: ', error)
+      return error;
+    });
   }
 
   handleClearForm() {
@@ -462,5 +476,7 @@ class CreatePartsForm extends Component {
     );
   }
 }
+
+CreatePartsForm.contextType = IsAuthContext;
 
 export default CreatePartsForm;

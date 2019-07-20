@@ -200,6 +200,7 @@ const StyledDialog = styled(BaseDialogAndModal)`
 
       button {
         width: 40%;
+        padding: 2px 0;
       }
     }
   }

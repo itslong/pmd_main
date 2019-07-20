@@ -4,6 +4,7 @@ import { Link, Redirect } from 'react-router-dom';
 import { CreateCategory, CSRFToken } from '../endpoints';
 import { Input, Button, TextArea, Checkbox, Select, Dialog } from '../common';
 import { CATEGORIES_DISPLAY_PATH } from '../frontendBaseRoutes';
+import { IsAuthContext } from '../AppContext';
 import {
   lettersNumbersHyphenRegEx,
   fieldRequiredErrorMsg,
@@ -43,6 +44,10 @@ class CreateCategoriesForm extends Component {
     this.handleClearForm = this.handleClearForm.bind(this);
     this.toggleModal = this.toggleModal.bind(this);
 
+  }
+
+  componentDidMount() {
+    // does not have a initial api fetch, auth state will have to be checked differently.
   }
 
   handleSubmit(e) {
@@ -246,5 +251,7 @@ class CreateCategoriesForm extends Component {
     )
   }
 }
+
+CreateCategoriesForm.contextType = IsAuthContext;
 
 export default CreateCategoriesForm;
