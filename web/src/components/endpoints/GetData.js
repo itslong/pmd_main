@@ -22,15 +22,13 @@ const FetchAllParts = (pageNum=1, pageSize=10) => {
 
   return fetch(endpointWithPageQuery, {headers, })
   .then(response => {
-    if (response.ok) {
-      return response.json();
-    }
-    return Promise.reject(
-      'Promise rejected. Status Code: ' + response.status + ' from this endpoint: ' + endpoint
-    );
+    const { status } = response;
+    const res = response.ok ? response.json() : Promise.reject({ error: status });
+    return res;
   })
   .catch(error => {
-    return Promise.reject('Fetch All Parts Error: ' + error);
+    console.log('Fetch All Parts Error: ', error, ' from this endpoint: ', endpointWithPageQuery.toString())
+    return error;
   })
 };
 
@@ -842,22 +840,13 @@ const FetchGlobalMarkup = () => {
 
   return fetch(endpoint, {headers, })
   .then(response => {
-    if (response.ok) {
-      return response.json();
-    } else if (response.status == 401 || response.status == 403) {
-      return {
-        status: response.statusText,
-        code: response.status
-      }
-    } 
-    else {
-      throw response;
-    }
+    const { status } = response;
+    const res = response.ok ? response.json() : Promise.reject({ error: status });
+    return res;
   })
   .catch(error => {
-    return Promise.reject(
-     'Global Markup promise rejected. Status Code: ' + error.status + ' from this endpoint: ' + endpoint
-    );
+    console.log('Global Markup Error: ', error, ' from this endpoint: ', endpoint.toString())
+    return error;
   })
 }
 

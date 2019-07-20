@@ -8,6 +8,7 @@ import SearchComponent from './SearchComponent';
 import { FetchGlobalMarkup } from './endpoints';
 import { renameAndRebuildMainDisplayFields } from './CalculationsWithGlobalMarkup';
 import { renameStaticTableFields } from './fieldNameAliases';
+import { IsAuthContext } from './AppContext';
 
 
 class DisplayComponent extends Component {
@@ -68,7 +69,15 @@ class DisplayComponent extends Component {
       FetchGlobalMarkup()
     ]);
 
-    getAllData.then(([data, markupData]) => {
+    getAllData.then((data) => {
+      if (data[0].error || data[1].error) {
+        this.context.updateAuth();
+        return Promise.reject('Session expired.');
+      }
+
+      return data;
+    })
+    .then(([data, markupData]) => {
       if (this._isMounted) {
         this.setState({
           items: data[initDataKeyToParse],
@@ -80,6 +89,10 @@ class DisplayComponent extends Component {
           globalMarkup: markupData
         });        
       }
+    })
+    .catch(error => {
+      console.log('error: ', error);
+      return error;
     });
   }
 
@@ -436,4 +449,7 @@ const singularizeItemNames = {
   'jobs': 'job'
 };
 
-export default withRouter(DisplayComponent);
+const WrappedDisplayComponent = withRouter(DisplayComponent);
+WrappedDisplayComponent.WrappedComponent.contextType = IsAuthContext;
+
+export default WrappedDisplayComponent;

@@ -4,7 +4,7 @@ import { Redirect, withRouter } from 'react-router-dom';
 import MainRoutes from './MainRoutes';
 import NavBar from './NavBar';
 import { LoginForm } from './Auth';
-import { Button } from './common';
+import { Button, Dialog } from './common';
 import { IsAuthContext, UserContext } from './AppContext';
 import { HOME_PATH } from './frontendBaseRoutes';
 
@@ -18,14 +18,17 @@ class AppState extends Component {
 
     this.state = {
       isAuthenticated: isAuth,
-      username: getUsername
+      username: getUsername,
+      displayDialog: false,
     };
 
-    this.updateAuthState = this.updateAuthState.bind(this);
+    this.updateAuthStateFromLoginForm = this.updateAuthStateFromLoginForm.bind(this);
     this.handleLogout = this.handleLogout.bind(this);
+    this.updateAuthStateWhenTokenExpires = this.updateAuthStateWhenTokenExpires.bind(this);
+    this.closeDialogAndRouteToLogin = this.closeDialogAndRouteToLogin.bind(this);
   }
 
-  updateAuthState(authObj) {
+  updateAuthStateFromLoginForm(authObj) {
     const { token, username } = authObj;
     if (token) {
       localStorage.setItem('token', token);
@@ -44,6 +47,20 @@ class AppState extends Component {
     }
   }
 
+  updateAuthStateWhenTokenExpires() {
+    this.setState({
+      displayDialog: true
+    });
+  }
+
+  closeDialogAndRouteToLogin() {
+    this.setState({
+      displayDialog: false,
+    }, () => {
+      this.handleLogout();
+    });
+  }
+
   handleLogout() {
     // localStorage.removeItem('token');
     localStorage.clear();
@@ -55,28 +72,36 @@ class AppState extends Component {
 
 
   render() {
-    const { isAuthenticated, username } = this.state;
+    const { isAuthenticated, username, displayDialog } = this.state;
+    const isAuthContextValues = {
+      localAuthState: isAuthenticated,
+      updateAuth: this.updateAuthStateWhenTokenExpires,
+    };
 
     const loadRoutes = isAuthenticated ?
-        <IsAuthContext.Provider value={isAuthenticated}>
-          <UserContext.Provider value={username}>
-            <NavBar
-              handleLogout={this.handleLogout}
-            />
-            <div className='container'>
-              <MainRoutes />
-            </div>
-          </UserContext.Provider>
-        </IsAuthContext.Provider>
-      : <LoginForm updateAuthState={this.updateAuthState} />;
+      <IsAuthContext.Provider value={isAuthContextValues}>
+        <UserContext.Provider value={username}>
+          <NavBar
+            handleLogout={this.handleLogout}
+          />
+          <div className='container'>
+            <MainRoutes />
+          </div>
+        </UserContext.Provider>
+      </IsAuthContext.Provider>
+    : <LoginForm updateAuthState={this.updateAuthStateFromLoginForm} />;
 
-    // const loadingModal = isLoading ?
-    //   <Modal 
-    //   /> : '';
+    const showExpiredDialog = isAuthenticated && displayDialog ?
+      <Dialog
+        dialogText={'Your session has expired. Please log in again.'}
+        handleCloseDialog={this.closeDialogAndRouteToLogin}
+      />
+      : '';
 
     return (
       <div>
         {loadRoutes}
+        {showExpiredDialog}
       </div>
     )
   }
