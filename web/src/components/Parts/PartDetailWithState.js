@@ -5,6 +5,7 @@ import NotFound from '../NotFound';
 import EditPartsForm from './EditPartsForm';
 import { Button, Table, DetailsTable, Modal, Dialog } from '../common';
 import { renameStaticTableFields, renameStaticObjTableFields } from '../fieldNameAliases';
+import { IsAuthContext } from '../AppContext';
 
 
 class PartDetailWithState extends Component {
@@ -38,7 +39,14 @@ class PartDetailWithState extends Component {
     const partId = this.props.match.params.id;
     let getPart = FetchPart(partId);
 
-    getPart.then(partData => {
+    getPart.then(data => {
+      if (data.error) {
+        this.context.updateAuth();
+        return Promise.reject('Session expired.');
+      }
+      return data;
+    })
+    .then(partData => {
       if (partData.detail === 'Not found.') {
         return this.setState({
           partFound: false,
@@ -55,6 +63,10 @@ class PartDetailWithState extends Component {
         tagTypes: tag_types,
         partFound: true,
       });
+    })
+    .catch(error => {
+      console.log('Part detail error: ', error);
+      return error;
     })
   }
 
@@ -217,5 +229,7 @@ class PartDetailWithState extends Component {
     );
   }
 }
+
+PartDetailWithState.contextType = IsAuthContext;
 
 export default PartDetailWithState;
