@@ -5,6 +5,7 @@ import SearchComponent from '../SearchComponent';
 import { UpdateJobAndRelatedCategories, FetchTagTypesChoices, CSRFToken } from '../endpoints';
 import { JOBS_DISPLAY_PATH } from '../frontendBaseRoutes';
 import { renameStaticTableFields } from '../fieldNameAliases';
+import { IsAuthContext } from '../AppContext';
 
 
 class JobFormFields extends Component {
@@ -56,8 +57,19 @@ class JobFormFields extends Component {
 
   componentDidMount() {
     let tags = FetchTagTypesChoices();
-    tags.then(tagsChoices => {
+    tags.then(data => {
+      if (data.error) {
+        this.context.updateAuth();
+        return Promise.reject('Session expired.');
+      }
+      return data;
+    })
+    .then(tagsChoices => {
       this.setState({ jobNameOptions: tagsChoices });
+    })
+    .catch(error => {
+      console.log('Job fetching Tags error: ', error);
+      return error;
     });
   }
 
@@ -397,7 +409,8 @@ class JobFormFields extends Component {
       </div>
     )
   }
-
 }
+
+JobFormFields.contextType = IsAuthContext;
 
 export default JobFormFields;
