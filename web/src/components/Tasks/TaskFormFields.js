@@ -5,6 +5,7 @@ import SearchComponent from '../SearchComponent';
 import { UpdateTaskRelatedPartsSubmit, FetchGlobalMarkup, CSRFToken } from '../endpoints';
 import { TASKS_DISPLAY_PATH } from '../frontendBaseRoutes';
 import { renameAndRebuildRelatedPartsDisplayFields } from '../CalculationsWithGlobalMarkup';
+import { IsAuthContext } from '../AppContext';
 import { 
   taskDetailRelatedPartsTableFields,
   taskRelatedPartsSearchResultsTableFields,
@@ -115,8 +116,14 @@ class TaskFormFields extends Component {
     const partsIds = this.convertPartsToIds(parts);
 
     const markupData = FetchGlobalMarkup();
-    markupData.then(markupArr => {
-
+    markupData.then(data => {
+      if (data.error) {
+        this.context.updateAuth();
+        return Promise.reject('Session expired.')
+      }
+      return data;
+    })
+    .then(markupArr => {
       this.setState({
         submitPartsAsIds: partsIds,
         tempPartsAsIds: partsIds,
@@ -770,5 +777,7 @@ class TaskFormFields extends Component {
     )
   }
 }
+
+TaskFormFields.contextType = IsAuthContext;
 
 export default TaskFormFields;

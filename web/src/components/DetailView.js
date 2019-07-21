@@ -44,7 +44,14 @@ class DetailView extends Component {
       FetchGlobalMarkup()
     ]);
 
-    getData.then(([data, markupData]) => {
+    getData.then(response => {
+      if (response[0].error || response[1].error) {
+        this.context.updateAuth();
+        return Promise.reject('Session expired.');
+      }
+      return response;
+    })
+    .then(([data, markupData]) => {
       if (data.detail) {
         return
       }
@@ -74,6 +81,10 @@ class DetailView extends Component {
           globalMarkup: markupData
         });        
       }
+    })
+    .catch(error => {
+      console.log('Detail View error: ', error);
+      return error;
     });
   }
 

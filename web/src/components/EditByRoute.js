@@ -3,6 +3,7 @@ import { withRouter, Link } from 'react-router-dom';
 
 import { Button, Modal } from './common';
 import { FetchTagTypesChoices } from './endpoints';
+import { IsAuthContext } from './AppContext';
 
 
 class EditByRoute extends Component {
@@ -26,10 +27,17 @@ class EditByRoute extends Component {
     // fetch by id
     const id = this.props.match.params.id;
 
-    Promise.all([
+    const fetchItemAndTags = Promise.all([
       fetchRoute(id),
       FetchTagTypesChoices(),
     ])
+    .then(data => {
+      if (data[0].error || data[1].error) {
+        this.context.updateAuth();
+        return Promise.reject('Session expired.')
+      }
+      return data;
+    })
     .then(([routeData, tagsChoices]) => {
       if (this._isMounted) {
         this.setState({
@@ -40,7 +48,8 @@ class EditByRoute extends Component {
       }
     })
     .catch(err => {
-      return Promise.reject('Error from fetching a single item: ', err);
+      console.log('Error when routing to edit item: ', err);
+      return err;
     })
   }
 
@@ -98,4 +107,7 @@ class EditByRoute extends Component {
   }
 };
 
-export default withRouter(EditByRoute);
+const WrappedEditByRoute = withRouter(EditByRoute);
+WrappedEditByRoute.WrappedComponent.contextType = IsAuthContext;
+
+export default WrappedEditByRoute;
