@@ -7,6 +7,8 @@ import { SearchForItems } from './endpoints';
 import Pager from './Pager';
 import { SEARCH_RESULTS_PATH } from './frontendBaseRoutes';
 import { renameStaticTableFields } from './fieldNameAliases';
+import { IsAuthContext } from './AppContext';
+
 
 const searchSizeLimits = [10, 30, 50]
 const searchFilterAllOptions = [
@@ -88,7 +90,15 @@ class SearchComponent extends Component {
       const getResults = SearchForItems(searchText, searchType, currentPageNum, currentPageSize);
 
       getResults.then(data => {
-        const { count, total_pages, next, previous, max_page_size, current_page, ...results } = data;
+        if (data.error) {
+          this.context.updateAuth();
+          return Promise.reject('Session expired.');
+        }
+
+        return data;
+      })
+      .then(searchData => {
+        const { count, total_pages, next, previous, max_page_size, current_page, ...results } = searchData;
         this.setState({
           searchResults: results[searchType],
           totalResultsCount: count,
@@ -102,6 +112,9 @@ class SearchComponent extends Component {
         if (shouldUpdateParent) {
           this.props.displayResults();
         }
+      })
+      .catch(error => {
+        return error;
       });
 
     }
@@ -283,7 +296,9 @@ class SearchComponent extends Component {
       </div>
     )  
   }
-  
 };
 
-export default withRouter(SearchComponent);
+const WrappedSearchComponent = withRouter(SearchComponent);
+WrappedSearchComponent.WrappedComponent.contextType = IsAuthContext;
+
+export default WrappedSearchComponent;

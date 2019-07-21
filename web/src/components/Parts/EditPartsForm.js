@@ -9,6 +9,7 @@ import {
   FetchTagTypesChoices,
   CSRFToken
 } from '../endpoints';
+import { IsAuthContext } from '../AppContext';
 import { moneyLimitSixRegEx, lettersNumbersHyphenRegEx } from '../helpers';
 import {   
   partNameErrorMsg,
@@ -82,11 +83,18 @@ class EditPartsForm extends Component {
     const { match, itemId } = this.props;
 
     const id = itemId ? itemId : match.params.id;
-    Promise.all([
+    const partData = Promise.all([
       FetchPart(id),
       GetPartsMarkupPercents(),
       FetchTagTypesChoices(),
     ])
+    .then(data => {
+      if (data[0].error || data[1].error || data[2].error) {
+        this.context.updateAuth();
+        return Promise.reject('Session expired.');
+      }
+      return data;
+    })
     .then(([part, markups, tagsChoices]) => {
       // state.tag_types only accepts array of ints
       const cleanTagTypes = part.tag_types.map(obj => {
@@ -114,6 +122,7 @@ class EditPartsForm extends Component {
     })
     .catch(err => {
       console.log('Error from fetching a single part', err);
+      return err;
     })
   }
 
@@ -532,5 +541,7 @@ class EditPartsForm extends Component {
     );
   }
 }
+
+EditPartsForm.contextType = IsAuthContext;
 
 export default EditPartsForm;
