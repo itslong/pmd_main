@@ -32,10 +32,16 @@ const categoriesSortOptions = [
   {'-name': 'Sort by Category Name: Z-A'},
 ];
 
+const jobsSortOptions = [
+  {name: 'Sort by Job Name: A-Z'},
+  {'-name': 'Sort by Job Name: Z-A'},
+];
+
 const sortOptionProps = {
   'parts': partsSortOptions,
   'tasks': tasksSortOptions,
   'categories': categoriesSortOptions,
+  'jobs': jobsSortOptions,
 };
 
 

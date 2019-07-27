@@ -57,6 +57,9 @@ const fieldNameProperties = {
   'categories': {
     'name': 'Category Name',
   },
+  'jobs': {
+    'name': 'Job Name',
+  },
 };
 
 const fieldNameComparisonTypes = {
@@ -74,6 +77,9 @@ const fieldNameComparisonTypes = {
     'addon_value': 'int',
   },
   'categories': {
+    'name': 'str',
+  },
+  'jobs': {
     'name': 'str',
   },
 };
