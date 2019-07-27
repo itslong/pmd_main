@@ -2,7 +2,7 @@ import React from 'react';
 
 import DisplayComponent from '../DisplayComponent';
 import EditPartsForm from './EditPartsForm';
-import { FetchAllParts, SearchForItems } from '../endpoints';
+import { FetchAllParts, SearchForItems, UpdatePart } from '../endpoints';
 import { partsMainDisplayFields } from '../fieldNameAliases';
 
 
@@ -21,6 +21,7 @@ const PartsDisplay = () => {
       searchEndpoint={SearchForItems}
       tableNumLinks={2}
       mainDisplayFields={partsMainDisplayFields}
+      deleteRoute={UpdatePart}
     >
       <EditPartsForm />
     </DisplayComponent>

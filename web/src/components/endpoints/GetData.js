@@ -141,7 +141,7 @@ const UpdatePart = (partId, formData) => {
   .then(response => {
     // future TODO: check for different status code when implementing dupe prevention
     const { status } = response;
-    const res = response.ok ? response.json() : Promise.reject({ error: status });
+    const res = response.ok ? 'Success' : Promise.reject({ error: status });
     return res;
   })
   .catch(error => {

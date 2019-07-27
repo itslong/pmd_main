@@ -310,16 +310,19 @@ class DisplayComponent extends Component {
     const { deleteRoute } = this.props;
     const { itemId, displayType } = this.state;
 
-    const item = this.getItemById(itemId)
+    const item = this.getItemById(itemId);
 
     let updatedItemData = Object.assign({...item}, {
       is_active: false,
     });
 
-    if (displayType == 'tasks') {
-      const { id: tagTypeId } = item.tag_types;
+    if (displayType == 'tasks' || displayType == 'parts') {
+      const { tag_types } = item;
+      // parts' tag_types is an array while non-parts are single integer (pk) 
+      const tagTypes = displayType == 'tasks' ? tag_types.id : tag_types.map(({ id }) => id);
+
       updatedItemData = Object.assign({...updatedItemData}, {
-        tag_types: tagTypeId,
+        tag_types: tagTypes,
       });
     }
 
