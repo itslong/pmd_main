@@ -1,4 +1,4 @@
-export {default as PrivateRoute } from './PrivateRoute';
+export { default as PrivateRoute } from './PrivateRoute';
 export {
   moneyLimitSixRegEx,
   // itemIdWithDashRegEx,
@@ -31,3 +31,4 @@ export {
   categoryIdHyphensErrorMsg,
   categoryIdLengthErrorMsg
 } from './CategoryFieldsErrorHandling';
+export { default as sortItems } from './sortItems';

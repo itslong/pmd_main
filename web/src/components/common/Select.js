@@ -24,6 +24,7 @@ const Select = (props) => {
                 id={id}
                 key={index}
                 value={val[1]}
+                data={val[0]}
                 label={val[1]}>{val[1]}
               </option>
             )

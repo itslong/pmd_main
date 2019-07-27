@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useContext, Component } from 'react';
 import { Route, Redirect } from 'react-router-dom';
 import { LOGIN_PATH } from '../frontendBaseRoutes';
 import { IsAuthContext } from '../AppContext'; 
@@ -10,7 +10,7 @@ const PrivateRoute = ({ component: Component, ...rest }) => {
   return (
     <Route { ...rest } render={(props) => {
       return (
-        authContext ? <Component {...props} /> : <Redirect to={LOGIN_PATH} />
+        authContext.localAuthState ? <Component {...props} /> : <Redirect to={LOGIN_PATH} />
       )}}
     />
   );
