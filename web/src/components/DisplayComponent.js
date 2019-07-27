@@ -1,7 +1,7 @@
 import React, { Component, cloneElement, Children, useContext } from 'react';
 import { withRouter } from 'react-router-dom';
 
-import { Input, Button, Table, TableRowWithButtons, TableRowWithCheckbox, Modal, Dialog } from './common';
+import { Input, Button, Table, TableRowWithButtons, TableRowWithCheckbox, Modal, Dialog, activeButtonStyle } from './common';
 import { editPathWithId, itemPathWithId } from './frontendBaseRoutes';
 import Pager from './Pager';
 import SearchComponent from './SearchComponent';
@@ -9,6 +9,8 @@ import { FetchGlobalMarkup } from './endpoints';
 import { renameAndRebuildMainDisplayFields } from './CalculationsWithGlobalMarkup';
 import { renameStaticTableFields } from './fieldNameAliases';
 import { IsAuthContext } from './AppContext';
+import { sortItems } from './helpers';
+import SortDisplay from './SortDisplay';
 
 
 class DisplayComponent extends Component {
@@ -36,6 +38,9 @@ class DisplayComponent extends Component {
       displaySearchResults: false,
       globalMarkup: [],
       isPaging: false, // determines if paging and page size used in fetch.
+      isSorted: false,
+      sortBy: '', // 'name', 'value', etc. See SortDisplay.
+      sortAsc: true, //false = desc
     };
 
     // this.handleClickEdit = this.handleClickEdit.bind(this);
@@ -58,6 +63,8 @@ class DisplayComponent extends Component {
     this.displaySearchResults = this.displaySearchResults.bind(this);
     this.resetSearch = this.resetSearch.bind(this);
     this.handleConfirmDeleteItem = this.handleConfirmDeleteItem.bind(this);
+    this.updateSortState = this.updateSortState.bind(this);
+    this.resetSortState = this.resetSortState.bind(this);
   }
 
   componentDidMount() {
@@ -97,7 +104,7 @@ class DisplayComponent extends Component {
   }
 
   componentDidUpdate(prevProps, prevState) {
-    const { itemEditing, isLoaded, currentPageNum, currentPageSize, isPaging } = this.state;
+    const { itemEditing, isLoaded, currentPageNum, currentPageSize, isPaging, sortBy, sortAsc } = this.state;
  
     if (itemEditing !== prevState.itemEditing || prevState.isLoaded === true && isLoaded == false) {
       const { initFetch, initDataKeyToParse, initPageNum, initPageSize} = this.props;
@@ -130,6 +137,10 @@ class DisplayComponent extends Component {
         });
       })
     }
+
+    if (sortAsc !== prevState.sortAsc || sortBy !== prevState.sortBy) {
+      this.filterOutputData();
+    }
   }
 
   componentWillUnmount() {
@@ -137,14 +148,16 @@ class DisplayComponent extends Component {
   }
 
   filterOutputData() {
-    const { items, globalMarkup } = this.state;
+    const { items, globalMarkup, isSorted, sortBy, sortAsc } = this.state;
     const { mainDisplayFields, calculationFields, displayType } = this.props;
 
-    const filteredData = displayType === 'parts' || displayType === 'tasks' ?
+    const renamedData = displayType === 'parts' || displayType === 'tasks' ?
       renameAndRebuildMainDisplayFields(displayType, items, globalMarkup, mainDisplayFields, calculationFields)
       : renameStaticTableFields(items, displayType, 'display');
  
-    return filteredData;  
+    const displayData = sortBy !== '' ? sortItems(displayType, sortBy, sortAsc, renamedData) : renamedData;
+
+    return displayData;
   }
 
   handleClickEditByRoute(e) {
@@ -326,14 +339,39 @@ class DisplayComponent extends Component {
     });
   }
 
+  updateSortState(e) {
+    const selected = e.target.selectedOptions[0];
+    let selectedData = selected.attributes.data.value;
+    let sortOrder = true;
+
+    if (selectedData[0] === '-') {
+      selectedData = selectedData.substring(1);
+      sortOrder = false;
+    }
+
+    this.setState({
+      isSorted: true,
+      sortBy: selectedData,
+      sortAsc: sortOrder,
+    });
+  }
+
+  resetSortState() {
+    this.setState({
+      isSorted: false,
+      sortBy: '',
+      sortAsc: true,
+    });
+  }
+
   render() {
     const { 
       isLoaded, items, showActionModal, itemId, itemName,
       showDialog, actionType, editType, displayType, 
       totalItemsCount, totalPages, previousPage, nextPage, 
-      currentPageNum, currentPageSize, displaySearchResults
+      currentPageNum, currentPageSize, displaySearchResults, sortBy
     } = this.state;
-    const { children, tableRowType, pageSizeLimits, tableNumLinks, adminDisplayFields } = this.props;
+    const { children, tableRowType, pageSizeLimits, tableNumLinks, adminDisplayFields, sortButtonProps } = this.props;
 
     // parts use a modal for edit/delete. Non-parts only use modal for delete.
     const partsChildrenWithProps = displayType == 'parts' ?
@@ -425,13 +463,20 @@ class DisplayComponent extends Component {
 
     return(
       <div>
-        <SearchComponent 
-          searchType={displayType}
-          displayResults={this.displaySearchResults}
-          resetSearch={this.resetSearch}
-          tableConfigProps={searchTableConfigProps}
-          shouldUpdateParent={true}
-        />
+        <div className="search-sort" style={{ display: 'flex', justifyContent: 'space-between' }}>
+          <SearchComponent 
+            searchType={displayType}
+            displayResults={this.displaySearchResults}
+            resetSearch={this.resetSearch}
+            tableConfigProps={searchTableConfigProps}
+            shouldUpdateParent={true}
+          />
+          <SortDisplay
+            displayType={displayType}
+            sortByName={sortBy}
+            updateSortAction={this.updateSortState}
+          />
+        </div>
         { totalItemsDisplay } <br/>
         { pagerNav }
         { table }
