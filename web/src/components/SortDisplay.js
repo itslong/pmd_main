@@ -45,12 +45,23 @@ const sortOptionProps = {
 };
 
 
-const SortDisplay = ({ displayType, sortByName, updateSortAction }) => {
+const SortDisplay = ({ displayType, sortByName, updateSortAction, sortOrder }) => {
   const sortOptions = sortOptionProps[displayType];
+  let optionValue = '';
+
+  if (sortByName !== '') {
+    const sortOrd = sortOrder ? '' : '-';
+    const sortName = sortOrd + sortByName;
+    const optionIndex = sortOptions.findIndex(opts => {
+      return opts[sortName];
+    });
+    optionValue = sortOptions[optionIndex][sortName];
+  }
 
   return (
     <Select
       placeholder={'Sort by...'}
+      value={optionValue}
       options={sortOptions}
       handleChange={updateSortAction}
     />

@@ -154,7 +154,7 @@ class DisplayComponent extends Component {
     const renamedData = displayType === 'parts' || displayType === 'tasks' ?
       renameAndRebuildMainDisplayFields(displayType, items, globalMarkup, mainDisplayFields, calculationFields)
       : renameStaticTableFields(items, displayType, 'display');
- 
+
     const displayData = sortBy !== '' ? sortItems(displayType, sortBy, sortAsc, renamedData) : renamedData;
 
     return displayData;
@@ -372,7 +372,7 @@ class DisplayComponent extends Component {
       isLoaded, items, showActionModal, itemId, itemName,
       showDialog, actionType, editType, displayType, 
       totalItemsCount, totalPages, previousPage, nextPage, 
-      currentPageNum, currentPageSize, displaySearchResults, sortBy
+      currentPageNum, currentPageSize, displaySearchResults, sortBy, sortAsc
     } = this.state;
     const { children, tableRowType, pageSizeLimits, tableNumLinks, adminDisplayFields, sortButtonProps } = this.props;
 
@@ -478,6 +478,7 @@ class DisplayComponent extends Component {
             displayType={displayType}
             sortByName={sortBy}
             updateSortAction={this.updateSortState}
+            sortOrder={sortAsc}
           />
         </div>
         { totalItemsDisplay } <br/>
