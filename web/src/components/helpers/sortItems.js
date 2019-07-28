@@ -13,19 +13,17 @@ const sortItems = (itemType, property, sortOrder, dataArr) => {
 }
 
 const compareNumbers = (property, sortAsc) => {
-  const sortOrder = sortAsc ? 1 : -1;
-
   return (a, b) => {
     const propA = Number(a[property]);
     const propB = Number(b[property]);
-    let result = a[property] - b[property];
+    let result = sortAsc ? propA - propB : propB - propA;
 
-   // push NaN or 'N/A' to the end
+   // push NaN ('N/A') to the end
     if (!isFinite(result)) {
       result = isFinite(propA) ? -1 : 1;
     }
 
-    return result * sortOrder;
+    return result;
   }
 }
 
