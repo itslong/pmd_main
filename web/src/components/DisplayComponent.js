@@ -464,6 +464,15 @@ class DisplayComponent extends Component {
         pageSizeLimits={pageSizeLimits}
       /> : '';
 
+    const sortDisplay = !displaySearchResults ?
+      <SortDisplay
+        displayType={displayType}
+        sortByName={sortBy}
+        updateSortAction={this.updateSortState}
+        sortOrder={sortAsc}
+      />
+      : '';
+
     return(
       <div>
         <div className="search-sort" style={{ display: 'flex', justifyContent: 'space-between' }}>
@@ -474,12 +483,7 @@ class DisplayComponent extends Component {
             tableConfigProps={searchTableConfigProps}
             shouldUpdateParent={true}
           />
-          <SortDisplay
-            displayType={displayType}
-            sortByName={sortBy}
-            updateSortAction={this.updateSortState}
-            sortOrder={sortAsc}
-          />
+          { sortDisplay }
         </div>
         { totalItemsDisplay } <br/>
         { pagerNav }
