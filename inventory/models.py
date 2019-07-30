@@ -145,8 +145,8 @@ class GlobalMarkup(models.Model):
 
 
 class TasksParts(models.Model):
-  task = models.ForeignKey(Tasks, on_delete=models.SET_NULL, blank=True, null=True)
-  part = models.ForeignKey(Parts, on_delete=models.SET_NULL, blank=True, null=True)
+  task = models.ForeignKey(Tasks, on_delete=models.CASCADE, blank=True, null=True)
+  part = models.ForeignKey(Parts, on_delete=models.CASCADE, blank=True, null=True)
   quantity = models.IntegerField()
 
   @property
