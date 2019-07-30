@@ -144,6 +144,11 @@ class EditPartsForm extends Component {
       this.props.itemEdit();
       this.props.handleCloseModal();
       this.props.handleShowDialog();
+      // toggle search to reload with the same search text after updating a part
+      if (this.props.reloadSearchResultsAfterSubmit) {
+        this.props.toggleSearchReload();
+      };
+
     });
   }
 

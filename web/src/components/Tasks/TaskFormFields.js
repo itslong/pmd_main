@@ -513,7 +513,7 @@ class TaskFormFields extends Component {
     } = this.state;
 
     const { tableNumLinks } = this.props;
-    
+
     const {
       taskId: taskIdErr,
       taskName: taskNameErr,

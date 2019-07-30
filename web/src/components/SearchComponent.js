@@ -77,8 +77,8 @@ class SearchComponent extends Component {
 
   componentDidUpdate(prevProps, prevState) {
     let { currentPageNum, currentPageSize, searchText, searchType, searchFilterType, shouldUpdateParent } = this.state;
-    
-    if (currentPageSize != prevState.currentPageSize || currentPageNum != prevState.currentPageNum || (searchText !== prevState.searchText && searchText)) {
+
+    if (currentPageSize != prevState.currentPageSize || currentPageNum != prevState.currentPageNum || (searchText !== prevState.searchText && searchText) || prevProps.reloadSearch !== this.props.reloadSearch) {
       // update pageSize and pageNum only if the searchText changed
       if (searchText !== prevState.searchText) {
         currentPageNum = 1;

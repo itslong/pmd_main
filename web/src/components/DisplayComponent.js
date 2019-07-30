@@ -41,6 +41,7 @@ class DisplayComponent extends Component {
       isSorted: false,
       sortBy: '', // 'name', 'value', etc. See SortDisplay.
       sortAsc: true, //false = desc
+      toggleSearchReload: false, // parts only for now. All non-part edits are not in modal.
     };
 
     // this.handleClickEdit = this.handleClickEdit.bind(this);
@@ -60,7 +61,8 @@ class DisplayComponent extends Component {
     this.handleNextPageClick = this.handleNextPageClick.bind(this);
     this.handlePageSizeLimitClick = this.handlePageSizeLimitClick.bind(this);
     this.handlePageNav = this.handlePageNav.bind(this);
-    this.displaySearchResults = this.displaySearchResults.bind(this);
+    this.displaySearchData = this.displaySearchData.bind(this);
+    this.toggleSearchReloadState = this.toggleSearchReloadState.bind(this);
     this.resetSearch = this.resetSearch.bind(this);
     this.handleConfirmDeleteItem = this.handleConfirmDeleteItem.bind(this);
     this.updateSortState = this.updateSortState.bind(this);
@@ -290,9 +292,15 @@ class DisplayComponent extends Component {
     });
   }
 
-  displaySearchResults() {
+  displaySearchData() {
     this.setState({
       displaySearchResults: true,
+    });
+  }
+
+  toggleSearchReloadState() {
+    this.setState({
+      toggleSearchReload: !this.state.toggleSearchReload
     });
   }
 
@@ -372,7 +380,8 @@ class DisplayComponent extends Component {
       isLoaded, items, showActionModal, itemId, itemName,
       showDialog, actionType, editType, displayType, 
       totalItemsCount, totalPages, previousPage, nextPage, 
-      currentPageNum, currentPageSize, displaySearchResults, sortBy, sortAsc
+      currentPageNum, currentPageSize, displaySearchResults, sortBy, sortAsc,
+      toggleSearchReload
     } = this.state;
     const { children, tableRowType, pageSizeLimits, tableNumLinks, adminDisplayFields, sortButtonProps } = this.props;
 
@@ -384,7 +393,9 @@ class DisplayComponent extends Component {
           handleCloseModal: this.handleCloseEditModal,
           itemEdit: this.handleItemEdit,
           handleShowDialog: this.handleShowDialog,
-          actionType
+          actionType,
+          reloadSearchResultsAfterSubmit: displaySearchResults ? true : false,
+          toggleSearchReload: this.toggleSearchReloadState,
         }
       ))
       : '';
@@ -403,9 +414,9 @@ class DisplayComponent extends Component {
       : `Currently displaying ${items.length} ${this.props.initDataKeyToParse}.`
 
     const searchTableConfigProps = {
-      extraColHeaders: '',
-      extraRowProps: undefined,
-      extraPropsLayout: null
+      extraColHeaders: ['Actions'],
+      extraRowProps: [editButton],
+      extraPropsLayout: 'none'
     };
 
     // remove conditional after admin demo
@@ -478,10 +489,11 @@ class DisplayComponent extends Component {
         <div className="search-sort" style={{ display: 'flex', justifyContent: 'space-between' }}>
           <SearchComponent 
             searchType={displayType}
-            displayResults={this.displaySearchResults}
+            displayResults={this.displaySearchData}
             resetSearch={this.resetSearch}
             tableConfigProps={searchTableConfigProps}
             shouldUpdateParent={true}
+            reloadSearch={toggleSearchReload}
           />
           { sortDisplay }
         </div>
