@@ -3,13 +3,29 @@ from django.urls import path
 from django.http import HttpResponseRedirect
 
 from inventory.models import Parts, Tasks, Categories, Jobs, GlobalMarkup, TagTypesChoices, PartsMarkup
-# Register your models here.
-admin.site.register(Parts)
-admin.site.register(Tasks)
-admin.site.register(Categories)
-admin.site.register(Jobs)
+
 admin.site.register(GlobalMarkup)
 admin.site.register(TagTypesChoices)
+
+
+class PartsAdmin(admin.ModelAdmin):
+  list_display = ('id', 'part_name', 'master_part_num', 'is_active')
+  search_fields = ('id', 'part_name', 'master_part_num')
+
+
+class TasksAdmin(admin.ModelAdmin):
+  list_display = ('id', 'task_id', 'task_name', 'tag_types', 'task_attribute', 'categories', 'is_active')
+  search_fields = ('id', 'task_name', 'task_attribute', 'task_id')
+
+
+class CategoriesAdmin(admin.ModelAdmin):
+  list_display = ('id', 'category_name', 'jobs','is_active')
+  search_fields = ('id', 'category_name')
+
+
+class JobsAdmin(admin.ModelAdmin):
+  list_display = ('id', 'job_name', 'ordering_num','is_active')
+  search_fields = ('id', 'job_name')
 
 
 class PartsMarkupAdmin(admin.ModelAdmin):
@@ -37,4 +53,8 @@ class PartsMarkupAdmin(admin.ModelAdmin):
     self.message_user(request, 'Part(s) with no custom retail have been adjusted: %i' % parts.count())
     return HttpResponseRedirect('../')
 
+admin.site.register(Parts, PartsAdmin)
+admin.site.register(Tasks, TasksAdmin)
+admin.site.register(Categories, CategoriesAdmin)
+admin.site.register(Jobs, JobsAdmin)
 admin.site.register(PartsMarkup, PartsMarkupAdmin)
