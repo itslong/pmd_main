@@ -9,7 +9,7 @@ import {
   renameAndRebuildRelatedPartsDisplayFields,
   createTaskDetailTotalsTableData
 } from './CalculationsWithGlobalMarkup';
-import { renameStaticTableFields, handlePluralNames } from './fieldNameAliases';
+import { renameStaticTableFields, renameStaticObjTableFields } from './fieldNameAliases';
 import { TaskDetailTotalsTable } from './Tasks';
 
 /*
@@ -38,7 +38,7 @@ class DetailView extends Component {
 
   componentDidMount() {
     this._isMounted = true;
-    const { initRoute, itemId, relatedChild, relatedParent } = this.props;
+    const { initRoute, itemId, relatedChild, relatedParent, currentItem } = this.props;
     let getData = Promise.all([
       initRoute(itemId),
       FetchGlobalMarkup()
@@ -61,15 +61,22 @@ class DetailView extends Component {
       const { 
         [relatedParent]: parent,
         [relatedChild]: childArr,
-        tag_types, ...filteredData 
+        ...filteredData 
       } = data;
+      // default tag_name for jobs to null. Jobs do not require a tag_name.
+      let tags = {id: data.id, tag_name: null};
 
-      // tag_types only in Task. Category's tag_types = job's id
-      const tags = !tag_types ?
-        Object.assign({}, {
-          id: data.id,
-          tag_name: 'No job attached to this category.'
-        }) : tag_types;
+      if (currentItem !== 'job') {
+        const { tag_types } = data;
+
+        const tagValue = tag_types == null ? 'This category has not been assigned to a job.' : tag_types.job_name;
+        tags = currentItem == 'category' ?
+          Object.assign({}, {
+            id: data.id,
+            tag_name: tagValue
+          })
+          : tag_types;
+      }
 
       if (this._isMounted) {
         this.setState({
@@ -100,8 +107,23 @@ class DetailView extends Component {
     const filteredData = relatedChild === 'parts' ?
       renameAndRebuildRelatedPartsDisplayFields(relatedChildData, tagTypeId, globalMarkup, relatedTableDisplayFields)
       : renameStaticTableFields(relatedChildData, currentItem, 'child');
-  
+
     return filteredData;
+  }
+
+  renameItemFields() {
+    const { itemData, tagTypes } = this.state;
+    const { tag_name } = tagTypes;
+    const { currentItem } = this.props;
+
+    // merge tagType to itemData if its not a job.
+    const itemObj = currentItem == 'job' ?
+      { ...itemData}
+      : { ...itemData, tag_types: tag_name};
+
+    const renamedData = renameStaticObjTableFields(itemObj, currentItem, 'form');
+
+    return renamedData;
   }
 
   handleClickEditByRoute(e) {
@@ -125,6 +147,7 @@ class DetailView extends Component {
     const { currentItem, fetchType, tableNumLinks } = this.props;
 
     const renamedRelatedChildData = this.filterOutputData();
+    const renamedItemDetailFormData = this.renameItemFields();
 
     const showItemDetail = isLoaded ?
       <div>
@@ -135,8 +158,7 @@ class DetailView extends Component {
           action={this.handleClickEditByRoute}
         />
         <DetailsTable
-          data={itemData}
-          tagTypes={tagTypes}
+          data={renamedItemDetailFormData}
           relatedChild={renamedRelatedChildData}
           relatedParent={relatedParent}
           fetchType={fetchType}

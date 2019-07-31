@@ -7,11 +7,11 @@ const tableStyles = {
   // borderStyle: 'solid'
 };
 // shape of data is a single object
-const DetailsTable = ({ data, tagTypes, relatedChild, relatedParent, fetchType, numberOfLinks }) => {
-  // parts: array; tasks or categories: string. category uses jobs for tag types
-  const tagTypesAsString = (tagTypes.length) ? 
+const DetailsTable = ({ data, tagTypes=null, relatedChild, relatedParent, fetchType, numberOfLinks }) => {
+  // parts: array; non-parts: default to null. tagTypes have been merged with data
+  const tagTypesAsString = (tagTypes !== null && tagTypes.length) ? 
     tagTypes.map(({ tag_name }) => tag_name).join(', ').toString() 
-    : tagTypes.tag_name || tagTypes.job_name || '';
+    : null;
 
   const relatedParentRow = relatedParent ? 
     <tr><td>category</td><td>{relatedParent}</td></tr> 
@@ -25,6 +25,13 @@ const DetailsTable = ({ data, tagTypes, relatedChild, relatedParent, fetchType, 
       numberOfLinks={numberOfLinks}
     /> : '';
 
+  // non-part tagType renaming has been merged into data.
+  const displayTagtypes = tagTypes !== null ?
+    <tr>
+      <td>Tags</td>
+      <td>{tagTypesAsString}</td>
+    </tr>
+    : null;
 
   return (
     <div>
@@ -43,10 +50,7 @@ const DetailsTable = ({ data, tagTypes, relatedChild, relatedParent, fetchType, 
             </tr>
           )
         })}
-        <tr>
-          <td>tag_types</td>
-          <td>{tagTypesAsString}</td>
-        </tr>
+        {displayTagtypes}
         {relatedParentRow}
       </tbody>
     </table>
