@@ -680,7 +680,7 @@ class TaskFormFields extends Component {
           />
 
           <Select
-            title={'Task Attribute'}
+            title={'Task Type'}
             placeholder={'Select a task attribute'}
             value={this.state.task_attribute}
             options={taskAttributeOptions}
@@ -704,21 +704,21 @@ class TaskFormFields extends Component {
 
           <Input 
             type={'text'}
-            title={'Estimated Contractor Hours'}
+            title={'Tech Task Hours'}
             value={this.state.estimated_contractor_hours}
             handleChange={this.handleEstContractorHours}
           />
 
           <Input 
             type={'text'}
-            title={'Estimated Contractor Minutes'}
+            title={'Tech Add On Minutes'}
             value={this.state.estimated_contractor_minutes}
             handleChange={this.handleEstContractorMinutes}
           />
 
           <Input
             type={'text'}
-            title={'Estimated Assistant Hours'}
+            title={'Assistant Task Hours'}
             placeholder={'0.00'}
             value={this.state.estimated_asst_hours}
             handleChange={this.handleEstAssistantHours}
@@ -726,7 +726,7 @@ class TaskFormFields extends Component {
           
           <Input 
             type={'text'}
-            title={'Estimated Assistant Minutes'}
+            title={'Assistant Add On Minutes'}
             placeholder={'0.00'}
             value={this.state.estimated_asst_minutes}
             handleChange={this.handleEstAssistantMinutes}

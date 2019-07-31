@@ -84,8 +84,22 @@ const taskSearchResultsTableFields = {
   categories: 'Category',
 };
 
+// task's item detail, not search or related
 const taskDetailFormFields = {
-
+  id: 'ID',
+  task_id: 'Task ID',
+  task_name: 'Task Name',
+  task_desc: 'Description',
+  task_comments: 'Comment',
+  task_attribute: 'Task Type',
+  tag_types: 'Tags',
+  estimated_contractor_hours: 'Tech Task Hours',
+  estimated_contractor_minutes: 'Tech Add On Minutes',
+  estimated_asst_hours: 'Assistant Task Hours',
+  estimated_asst_minutes: 'Assistant Add On Minutes',
+  fixed_labor_rate: 'Fixed Rate',
+  use_fixed_labor_rate: 'Use Fixed Rate',
+  is_active: 'Task Active'
 };
 
 
@@ -110,7 +124,12 @@ const categorySearchResultsTableFields = {
 };
 
 const categoryDetailFormFields = {
-
+  id: 'ID',
+  category_id: 'Category ID',
+  category_name: 'Category Name',
+  category_desc: 'Description',
+  tag_types: 'Tags',
+  is_active: 'Category Active',
 };
 
 
@@ -127,7 +146,12 @@ const jobRelatedCategoriesTableFields = {
 };
 
 const jobDetailFormFields = {
-
+  id: 'ID',
+  job_id: 'Job ID',
+  job_name: 'Job Name',
+  job_desc: 'Description',
+  ordering_num: 'Ordering',
+  is_active: 'Job Active',
 };
 
 // doubling properties to handle pluralized keys
@@ -138,17 +162,17 @@ const staticDetailTableFields = {
     parent: partDetailRelatedTasksTableFields
   },
   task: {
-    form: '',
+    form: taskDetailFormFields,
     search: taskSearchResultsTableFields,
     child: taskDetailRelatedPartsTableFields,
   },
   category: {
-    form: '',
+    form: categoryDetailFormFields,
     child: categoryDetailRelatedTasksTableFields,
     search: categorySearchResultsTableFields,
   },
   job: {
-    form: '',
+    form: jobDetailFormFields,
     child: jobRelatedCategoriesTableFields,
   },
 };
@@ -188,8 +212,8 @@ const renameStaticTableFields = (resultsArr, targetType, viewType) => {
 
 /*
 dataObj: object. DetailView and DetailTable contains data in object.
-targetType: string. 'parts', 'tasks', 'category/categories'
-viewType: string. 'form, search, child/parent'
+targetType: string. 'part', 'task', 'category/categories'. Singularize name.
+viewType: string. 'form, search, child/parent, etc'
 */
 const renameStaticObjTableFields = (dataObj, targetType, viewType) => {
   const itemKeys = Object.keys(dataObj);
