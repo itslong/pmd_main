@@ -252,11 +252,7 @@ class CategoriesRelatedTasksSerializer(serializers.ModelSerializer):
 class CategoriesExcludedSerializer(serializers.ModelSerializer):
   class Meta:
     model = Categories
-    fields = [
-      'id', 'category_id', 'category_name', 'category_desc', 'tasks_set',
-      'category_heading_one', 'category_heading_two', 'category_heading_three',
-      'category_heading_four', 'category_heading_five', 'category_heading_six'
-    ]
+    fields = ['id', 'category_id', 'category_name', 'category_desc', 'tasks_set']
 
 
 class CategoriesCreateSerializer(serializers.ModelSerializer):
