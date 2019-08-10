@@ -76,7 +76,7 @@ class PartsSearchableList(generics.ListAPIView):
   # filter_backends = (DjangoFilterBackend, )
   filter_backends = (filters.SearchFilter, )
   # filter_fields = ('part_name', 'part_desc')
-  search_fields = ('part_name', 'part_desc')
+  search_fields = ('part_name', 'part_desc', 'master_part_num')
   pagination_class = PartsSearchResultsSetPagination
   permission_classes = (permissions.IsAuthenticated, )
 
@@ -113,7 +113,7 @@ class TasksSearchableList(generics.ListAPIView):
   queryset = Tasks.objects.exclude(is_active=False)
   serializer_class = TasksSearchableListSerializer
   filter_backends = (filters.SearchFilter, )
-  search_fields = ('task_name', 'task_desc')
+  search_fields = ('task_name', 'task_desc', 'task_id')
   pagination_class = TasksSearchResultsSetPagination
   permission_classes = (permissions.IsAuthenticated, )
 
@@ -203,7 +203,7 @@ class CategoriesSearchableList(generics.ListAPIView):
   queryset = Categories.objects.exclude(is_active=False)
   serializer_class = CategoriesSearchableListSerializer
   filter_backends = (filters.SearchFilter, )
-  search_fields = ('category_name', 'category_desc')
+  search_fields = ('category_name', 'category_desc', 'category_id')
   pagination_class = CategoriesSearchResultsSetPagination
   permission_classes = (permissions.IsAuthenticated, )
 
