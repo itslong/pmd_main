@@ -252,7 +252,11 @@ class CategoriesRelatedTasksSerializer(serializers.ModelSerializer):
 class CategoriesExcludedSerializer(serializers.ModelSerializer):
   class Meta:
     model = Categories
-    fields = ['id', 'category_id', 'category_name', 'category_desc', 'tasks_set']
+    fields = [
+      'id', 'category_id', 'category_name', 'category_desc', 'tasks_set',
+      'category_heading_one', 'category_heading_two', 'category_heading_three',
+      'category_heading_four', 'category_heading_five', 'category_heading_six'
+    ]
 
 
 class CategoriesCreateSerializer(serializers.ModelSerializer):
@@ -260,10 +264,15 @@ class CategoriesCreateSerializer(serializers.ModelSerializer):
     model = Categories
     exclude = ['jobs', 'is_active']
 
+
 class CategoriesEditSerializer(serializers.ModelSerializer):
   class Meta:
     model = Categories
-    fields = ['id', 'category_id', 'category_name', 'category_desc', 'tasks_set', 'is_active']
+    fields = [
+      'id', 'category_id', 'category_name', 'category_desc', 'tasks_set', 'is_active',
+      'category_heading_one', 'category_heading_two', 'category_heading_three',
+      'category_heading_four', 'category_heading_five', 'category_heading_six'
+    ]
 
 
 class CategoriesDetailSerializer(serializers.ModelSerializer):
@@ -273,7 +282,11 @@ class CategoriesDetailSerializer(serializers.ModelSerializer):
 
   class Meta:
     model = Categories
-    fields = ['id', 'category_id', 'category_name', 'category_desc','tasks', 'is_active', 'tag_types', 'jobs']
+    fields = [
+      'id', 'category_id', 'category_name', 'category_desc','tasks', 'is_active', 'tag_types', 'jobs',
+      'category_heading_one', 'category_heading_two', 'category_heading_three',
+      'category_heading_four', 'category_heading_five', 'category_heading_six'
+    ]
 
   def to_representation(self, instance):
     response = super().to_representation(instance)
@@ -290,6 +303,7 @@ class CategoriesSearchableListSerializer(serializers.ModelSerializer):
     response = super().to_representation(instance)
     response['jobs'] = JobsExcludedSerializer(instance.jobs).data
     return response
+
 
 class PartsMarkupSerializer(serializers.ModelSerializer):
   class Meta:
