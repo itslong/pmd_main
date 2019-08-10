@@ -13,7 +13,9 @@ import {
   horizontalLayoutStyle,
   categoryNameErrorMsg,
   categoryIdHyphensErrorMsg,
-  categoryIdLengthErrorMsg
+  categoryIdLengthErrorMsg,
+  headingFieldsNames,
+  headingNum
 } from '../helpers';
 
 
@@ -29,6 +31,12 @@ class CategoryFormFields extends Component {
       category_id: data.category_id,
       category_name: data.category_name || '',
       category_desc: data.category_desc || '',
+      category_heading_one: data.category_heading_one || '',
+      category_heading_two: data.category_heading_two || '',
+      category_heading_three: data.category_heading_three || '',
+      category_heading_four: data.category_heading_four || '',
+      category_heading_five: data.category_heading_five || '',
+      category_heading_six: data.category_heading_six || '',
       is_active: data.is_active,
       jobs: data.jobs.job_name || 'No job attached to this category',
       relatedTasksTableIsLoaded: true,
@@ -67,6 +75,7 @@ class CategoryFormFields extends Component {
     this.handleSubmitChanges = this.handleSubmitChanges.bind(this);
     this.handleCancelEdit = this.handleCancelEdit.bind(this);
     this.toggleDialogState = this.toggleDialogState.bind(this);
+    this.handleHeadingsChange = this.handleHeadingsChange.bind(this);
   }
 
   componentDidUpdate(prevProps, prevState) {
@@ -83,6 +92,12 @@ class CategoryFormFields extends Component {
           category_id: newData.category_id,
           category_name: newData.category_name,
           category_desc: newData.category_desc,
+          category_heading_one: newData.category_heading_one,
+          category_heading_two: newData.category_heading_two,
+          category_heading_three: newData.category_heading_three,
+          category_heading_four: newData.category_heading_four,
+          category_heading_five: newData.category_heading_five,
+          category_heading_six: newData.category_heading_six,
           jobs: newData.jobs.job_name || 'No job attached to this category',
           is_active: newData.is_active,
           submitTasksAsIds: cleanTaskIds,
@@ -303,6 +318,10 @@ class CategoryFormFields extends Component {
     this.setState({ toggleDialog: !this.state.toggleDialog })
   }
 
+  handleHeadingsChange(e) {
+    this.setState({ [e.target.name]: e.target.value })
+  }
+
 
   render() {
     const { 
@@ -396,6 +415,22 @@ class CategoryFormFields extends Component {
       />
       : '';
 
+    const headingsFields = headingFieldsNames.map((val, index) => {
+      const catName = 'category_heading_' + headingNum[index];
+
+      return (
+        <Input
+          key={'heading' + index}
+          type={'text'}
+          className={'heading-' + headingNum[index]}
+          title={val}
+          value={this.state[catName]}
+          name={catName}
+          handleChange={this.handleHeadingsChange}
+        />
+      )
+    });
+
     return (
       <div>
         <form>
@@ -438,6 +473,8 @@ class CategoryFormFields extends Component {
             value={this.state.category_desc}
             handleChange={this.handleCategoryDesc}
           />
+
+          {headingsFields}
 
           <Checkbox
             title={'Category Active'}

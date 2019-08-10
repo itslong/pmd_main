@@ -128,6 +128,12 @@ const categoryDetailFormFields = {
   category_id: 'Category ID',
   category_name: 'Category Name',
   category_desc: 'Description',
+  category_heading_one: 'Heading 1',
+  category_heading_two: 'Heading 2',
+  category_heading_three: 'Heading 3',
+  category_heading_four: 'Heading 4',
+  category_heading_five: 'Heading 5',
+  category_heading_six: 'Heading 6',
   tag_types: 'Tags',
   is_active: 'Category Active',
 };

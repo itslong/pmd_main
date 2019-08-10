@@ -13,7 +13,9 @@ import {
   horizontalLayoutStyle,
   categoryNameErrorMsg,
   categoryIdHyphensErrorMsg,
-  categoryIdLengthErrorMsg
+  categoryIdLengthErrorMsg,
+  headingFieldsNames,
+  headingNum,
 } from '../helpers';
 
 
@@ -24,6 +26,12 @@ class CreateCategoriesForm extends Component {
       category_id: '',
       category_name: '',
       category_desc: '',
+      category_heading_one: '',
+      category_heading_two: '',
+      category_heading_three: '',
+      category_heading_four: '',
+      category_heading_five: '',
+      category_heading_six: '',
       redirectAfterSubmit: false,
       formFieldErrors: {
         categoryId: false,
@@ -43,7 +51,7 @@ class CreateCategoriesForm extends Component {
     this.handleSubmit = this.handleSubmit.bind(this);
     this.handleClearForm = this.handleClearForm.bind(this);
     this.toggleModal = this.toggleModal.bind(this);
-
+    this.handleHeadingsChange = this.handleHeadingsChange.bind(this);
   }
 
   componentDidMount() {
@@ -115,6 +123,12 @@ class CreateCategoriesForm extends Component {
       category_id: '',
       category_name: '',
       category_desc: '',
+      category_heading_one: '',
+      category_heading_two: '',
+      category_heading_three: '',
+      category_heading_four: '',
+      category_heading_five: '',
+      category_heading_six: '',
       redirectAfterSubmit: false,
       formFieldErrors: {
         ...this.state.formFieldErrors,
@@ -170,6 +184,11 @@ class CreateCategoriesForm extends Component {
     this.setState({ displaySuccessModal: !this.state.displaySuccessModal })
   }
 
+  handleHeadingsChange(e) {
+    this.setState({ [e.target.name]: e.target.value })
+  }
+
+
   render() {
     const { redirectAfterSubmit, formFieldErrors, formFieldErrorMsgs, displaySuccessModal } = this.state;
     // if (redirectAfterSubmit) {
@@ -192,6 +211,22 @@ class CreateCategoriesForm extends Component {
         dialogText={'Successfully created'}
         handleCloseDialog={this.toggleModal}
       /> : '';
+
+    const headingsFields = headingFieldsNames.map((val, index) => {
+      const catName = 'category_heading_' + headingNum[index];
+
+      return (
+        <Input
+          key={'heading' + index}
+          type={'text'}
+          className={'heading-' + headingNum[index]}
+          title={val}
+          value={this.state[catName]}
+          name={catName}
+          handleChange={this.handleHeadingsChange}
+        />
+      )
+    });
 
     return (
      <div>
@@ -231,6 +266,7 @@ class CreateCategoriesForm extends Component {
             handleChange={this.handleCategoryDesc}
           />
           
+          {headingsFields}
 
           <CSRFToken />
           <p>Select tasks for this category by going to <b>Category -> Edit</b> after submit.</p>

@@ -32,3 +32,7 @@ export {
   categoryIdLengthErrorMsg
 } from './CategoryFieldsErrorHandling';
 export { default as sortItems } from './sortItems';
+export {
+  headingFieldsNames,
+  headingNum,
+} from './CategoryHeadingsFields';
