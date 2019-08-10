@@ -24,9 +24,9 @@ class TagTypesChoices(models.Model):
 
 class Jobs(models.Model):
   # J1, J2, J30, J-302
-  job_id = models.CharField(max_length=10, blank=True)
+  job_id = models.CharField(max_length=100, blank=True)
   # job_name is striclty limited to a single choice. 
-  job_name = models.CharField(max_length=25, choices=TAG_CHOICES)
+  job_name = models.CharField(max_length=255, choices=TAG_CHOICES)
   job_desc = models.CharField(max_length=255, blank=True)
   # the ordering of the tasks matter. Set to CharField for now
   ordering_num = models.CharField(max_length=255, blank=True)
@@ -41,9 +41,15 @@ class Jobs(models.Model):
 
 class Categories(models.Model):
   # CXXXX?
-  category_id = models.CharField(max_length=10, blank=True)
+  category_id = models.CharField(max_length=100, blank=True)
   category_name = models.CharField(max_length=255)
   category_desc = models.CharField(max_length=255, blank=True)
+  category_heading_one = models.CharField(max_length=100, blank=True)
+  category_heading_two = models.CharField(max_length=100, blank=True)
+  category_heading_three = models.CharField(max_length=100, blank=True)
+  category_heading_four = models.CharField(max_length=100, blank=True)
+  category_heading_five = models.CharField(max_length=100, blank=True)
+  category_heading_six = models.CharField(max_length=100, blank=True)
 
   # tag_types is redundant with job's id
   jobs = models.ForeignKey(Jobs, on_delete=models.SET_NULL, blank=True, null=True)
@@ -58,9 +64,9 @@ class Categories(models.Model):
 
 class Parts(models.Model):
   part_name = models.CharField(max_length=255)
-  master_part_num = models.CharField(max_length=10, blank=True)
-  mfg_part_num = models.CharField(max_length=10, blank=True)
-  upc_num = models.CharField(max_length=10, blank=True)
+  master_part_num = models.CharField(max_length=100, blank=True)
+  mfg_part_num = models.CharField(max_length=100, blank=True)
+  upc_num = models.CharField(max_length=100, blank=True)
   part_desc = models.CharField(max_length=255, blank=True)
   tag_types = models.ManyToManyField(TagTypesChoices)
 
@@ -89,7 +95,7 @@ class Tasks(models.Model):
     (ADDON_AND_TASK, 'Addon and Task'),
   )
 
-  task_id = models.CharField(max_length=10)
+  task_id = models.CharField(max_length=100)
   task_name = models.CharField(max_length=255, blank=True)
   task_desc = models.CharField(max_length=255, blank=True)
   task_comments = models.CharField(max_length=255, blank=True)
