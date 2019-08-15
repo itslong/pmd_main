@@ -11,6 +11,7 @@ import { renameStaticTableFields } from './fieldNameAliases';
 import { IsAuthContext } from './AppContext';
 import { sortItems } from './helpers';
 import SortDisplay from './SortDisplay';
+import Filter from './Filter';
 
 
 class DisplayComponent extends Component {
@@ -42,6 +43,8 @@ class DisplayComponent extends Component {
       sortBy: '', // 'name', 'value', etc. See SortDisplay.
       sortAsc: true, //false = desc
       toggleSearchReload: false, // parts only for now. All non-part edits are not in modal.
+      filterBy: '', //'plubming', 'water_heater', etc. See Filter for values
+      isFiltered: false,
     };
 
     // this.handleClickEdit = this.handleClickEdit.bind(this);
@@ -67,6 +70,9 @@ class DisplayComponent extends Component {
     this.handleConfirmDeleteItem = this.handleConfirmDeleteItem.bind(this);
     this.updateSortState = this.updateSortState.bind(this);
     this.resetSortState = this.resetSortState.bind(this);
+
+    this.changeFilter = this.changeFilter.bind(this);
+    this.resetFilter = this.resetFilter.bind(this);
   }
 
   componentDidMount() {
@@ -375,13 +381,28 @@ class DisplayComponent extends Component {
     });
   }
 
+  changeFilter(e) {
+    const selected = e.target.value;
+    this.setState({
+      filterBy: selected,
+      isFiltered: true
+    });
+  }
+
+  resetFilter() {
+    this.setState({
+      filterBy: '',
+      isFiltered: false
+    });
+  }
+
   render() {
     const { 
       isLoaded, items, showActionModal, itemId, itemName,
       showDialog, actionType, editType, displayType, 
       totalItemsCount, totalPages, previousPage, nextPage, 
       currentPageNum, currentPageSize, displaySearchResults, sortBy, sortAsc,
-      toggleSearchReload
+      toggleSearchReload, filterBy
     } = this.state;
     const { children, tableRowType, pageSizeLimits, tableNumLinks, adminDisplayFields, sortButtonProps } = this.props;
 
@@ -484,6 +505,15 @@ class DisplayComponent extends Component {
       />
       : '';
 
+    const shouldAllowFilter = displayType === 'parts' || displayType === 'tasks' ? true : false;
+    const filterDisplay = !displaySearchResults && shouldAllowFilter ?
+      <Filter
+        filterByName={filterBy}
+        changeFilterAction={this.changeFilter}
+        handleResetFilter={this.resetFilter}
+      />
+      : '';
+
     return(
       <div>
         <div className="search-sort" style={{ display: 'flex', justifyContent: 'space-between' }}>
@@ -495,7 +525,10 @@ class DisplayComponent extends Component {
             shouldUpdateParent={true}
             reloadSearch={toggleSearchReload}
           />
-          { sortDisplay }
+          <div style={{ display: 'flex' }}>
+            { sortDisplay }
+            { filterDisplay }
+          </div>
         </div>
         { totalItemsDisplay } <br/>
         { pagerNav }
