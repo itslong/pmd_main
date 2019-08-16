@@ -198,10 +198,11 @@ class TasksExcludedSerializer(serializers.ModelSerializer):
 class TasksSearchableListSerializer(serializers.ModelSerializer):
   class Meta:
     model = Tasks
-    fields = ['id', 'task_id', 'task_name', 'task_attribute']
+    fields = ['id', 'task_id', 'task_name', 'task_attribute', 'tag_types']
 
   def to_representation(self, instance):
     response = super().to_representation(instance)
+    response['tag_types'] = TagTypesChoicesSerializer(instance.tag_types).data
     response['categories'] = CategoriesExcludedSerializer(instance.categories).data
     return response
 
