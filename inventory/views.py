@@ -16,10 +16,17 @@ class TagTypesView(generics.ListAPIView):
 
 
 class PartsExcludedView(generics.ListAPIView):
-  queryset = Parts.objects.exclude(is_active=False).order_by('id')
   serializer_class = PartsExcludedSerializer
   permission_classes = (permissions.IsAuthenticated, )
   pagination_class = PartsCustomResultsSetPagination
+
+  def get_queryset(self):
+    queryset = Parts.objects.exclude(is_active=False)
+    filter_param = self.request.query_params.get('filter', None)
+    if filter_param is not None:
+      queryset = queryset.filter(tag_types__tag_name=filter_param).order_by('id')
+
+    return queryset
 
 
 # demo purposes only. Remove later
@@ -71,21 +78,34 @@ class PartsEditOrDelete(generics.RetrieveUpdateDestroyAPIView):
 
 
 class PartsSearchableList(generics.ListAPIView):
-  queryset = Parts.objects.exclude(is_active=False)
   serializer_class = PartsSearchableListSerializer
-  # filter_backends = (DjangoFilterBackend, )
   filter_backends = (filters.SearchFilter, )
-  # filter_fields = ('part_name', 'part_desc')
   search_fields = ('part_name', 'part_desc', 'master_part_num')
   pagination_class = PartsSearchResultsSetPagination
   permission_classes = (permissions.IsAuthenticated, )
 
+  def get_queryset(self):
+    queryset = Parts.objects.exclude(is_active=False)
+    # FUTURE: check against the value of the 'filter' param to determine which db field to filter
+    filter_param = self.request.query_params.get('filter', None)
+    if filter_param is not None:
+      queryset = queryset.filter(tag_types__tag_name=filter_param).order_by('id')
+
+    return queryset
+
 
 class TasksExcludedView(generics.ListAPIView):
-  queryset = Tasks.objects.exclude(is_active=False)
   serializer_class = TasksExcludedSerializer
   permission_classes = (permissions.IsAuthenticated, )
   pagination_class = TasksCustomResultsSetPagination
+
+  def get_queryset(self):
+    queryset = Tasks.objects.exclude(is_active=False)
+    filter_param = self.request.query_params.get('filter', None)
+    if filter_param is not None:
+      queryset = queryset.filter(tag_types__tag_name=filter_param).order_by('id')
+
+    return queryset
 
 
 class TasksCreate(generics.CreateAPIView):
@@ -110,12 +130,21 @@ class TasksDetailView(generics.RetrieveAPIView):
 
 
 class TasksSearchableList(generics.ListAPIView):
-  queryset = Tasks.objects.exclude(is_active=False)
   serializer_class = TasksSearchableListSerializer
   filter_backends = (filters.SearchFilter, )
   search_fields = ('task_name', 'task_desc', 'task_id')
   pagination_class = TasksSearchResultsSetPagination
   permission_classes = (permissions.IsAuthenticated, )
+
+  def get_queryset(self):
+    queryset = Tasks.objects.exclude(is_active=False)
+    filter_param = self.request.query_params.get('filter', None)
+
+    if filter_param is not None:
+      queryset = queryset.filter(tag_types__tag_name=filter_param).order_by('id')
+
+    return queryset
+
 
 class TasksPartsEdit(generics.RetrieveUpdateAPIView):
   queryset = TasksParts.objects.all()
