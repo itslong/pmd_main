@@ -107,7 +107,8 @@ const taskDetailFormFields = {
 const categoriesMainDisplayFields = {
   id: 'id',
   category_id: 'Category ID',
-  category_name: 'Category Name'
+  category_name: 'Category Name',
+  tag_types: 'Tag Types'
 };
 
 const categoryDetailRelatedTasksTableFields = {
@@ -121,7 +122,7 @@ const categorySearchResultsTableFields = {
   id: 'id',
   category_id: 'Category ID',
   category_name: 'Category Name',
-  jobs: 'Job',
+  jobs: 'Tag Types',
 };
 
 const categoryDetailFormFields = {

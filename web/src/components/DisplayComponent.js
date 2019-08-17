@@ -511,7 +511,7 @@ class DisplayComponent extends Component {
       />
       : '';
 
-    const shouldAllowFilter = displayType === 'parts' || displayType === 'tasks' ? true : false;
+    const shouldAllowFilter = displayType !== 'jobs' ? true : false;
     const filterDisplay = !displaySearchResults && shouldAllowFilter ?
       <Filter
         filterByName={filterBy}

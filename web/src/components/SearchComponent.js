@@ -321,7 +321,7 @@ class SearchComponent extends Component {
         numberOfLinks={1}
       /> : '';
 
-    const shouldAllowFilter = searchType === 'parts' || searchType === 'tasks' ? true : false;
+    const shouldAllowFilter = searchType !== 'jobs' ? true : false;
     const filterDisplay = (searchResults.length > 0) && shouldAllowFilter ?
       <div className={'tag-type-filter-container'} style={tagTypeFilterContainerStyle}>
         <Filter

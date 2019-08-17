@@ -198,13 +198,21 @@ class TasksPartsViewSet(viewsets.ReadOnlyModelViewSet):
 
 
 class CategoriesExcludedView(generics.ListAPIView):
-  queryset = Categories.objects.exclude(is_active=False)
   serializer_class = CategoriesExcludedSerializer
   pagination_class = CategoriesCustomResultsSetPagination
   permission_classes = (permissions.IsAuthenticated, )
 
   def perform_create(self, serializer):
     serializer.save()
+
+  def get_queryset(self):
+    queryset = Categories.objects.exclude(is_active=False)
+
+    filter_param = self.request.query_params.get('filter', None)
+    if filter_param is not None:
+      queryset = queryset.filter(jobs__job_name=filter_param).order_by('id')
+
+    return queryset
 
 
 class CategoriesCreate(generics.CreateAPIView):
@@ -229,12 +237,20 @@ class CategoriesDetailView(generics.RetrieveAPIView):
 
 
 class CategoriesSearchableList(generics.ListAPIView):
-  queryset = Categories.objects.exclude(is_active=False)
   serializer_class = CategoriesSearchableListSerializer
   filter_backends = (filters.SearchFilter, )
   search_fields = ('category_name', 'category_desc', 'category_id')
   pagination_class = CategoriesSearchResultsSetPagination
   permission_classes = (permissions.IsAuthenticated, )
+
+  def get_queryset(self):
+    queryset = Categories.objects.exclude(is_active=False)
+
+    filter_param = self.request.query_params.get('filter', None)
+    if filter_param is not None:
+      queryset = queryset.filter(jobs__job_name=filter_param).order_by('id')
+
+    return queryset
 
 
 class JobsExcludedView(generics.ListAPIView):
