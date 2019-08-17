@@ -13,7 +13,7 @@ const FetchAllParts = (pageNum=1, pageSize=10, filterValue=null) => {
   const currentPageSize = 'page_size=' + pageSize;
   const pageQuery = '?' + currentPageNum + '&' + currentPageSize;
   const filterBy = filterValue ? '&filter=' + filterValue : '';
-  console.log('filter value: ', filterValue)
+
   const endpointWithPageQuery = new URL(endpoint + pageQuery + filterBy);
 
   const token = localStorage.getItem('token');
@@ -35,14 +35,16 @@ const FetchAllParts = (pageNum=1, pageSize=10, filterValue=null) => {
 };
 
 
-const FetchAllPartsAdmin = (pageNum=1, pageSize=10) => {
+const FetchAllPartsAdmin = (pageNum=1, pageSize=10, filterValue=null) => {
   const path = process.env.NODE_ENV === 'development' ? process.env.LOCAL_PATH : PROD_BASE_PATH;
   const endpoint = new URL(path + 'api/parts/admin/');
 
   const currentPageNum = 'page=' + pageNum;
   const currentPageSize = 'page_size=' + pageSize;
   const pageQuery = '?' + currentPageNum + '&' + currentPageSize;
-  const endpointWithPageQuery = endpoint + pageQuery;
+  const filterBy = filterValue ? '&filter=' + filterValue : '';
+
+  const endpointWithPageQuery = new URL(endpoint + pageQuery + filterBy);
 
   const token = localStorage.getItem('token');
   const headers = {
@@ -264,7 +266,7 @@ const SearchForParts = (searchString) => {
 
 
 // searchType: 'parts', 'tasks', etc
-const SearchForItems = (searchString, searchType, pageNum=1, pageSize=10) => {
+const SearchForItems = (searchString, searchType, pageNum=1, pageSize=10, filterValue=null) => {
   const path = process.env.NODE_ENV === 'development' ? process.env.LOCAL_PATH : PROD_BASE_PATH;
   const url = path + 'api/';
   const type = searchType + '-searchable/';
@@ -275,7 +277,9 @@ const SearchForItems = (searchString, searchType, pageNum=1, pageSize=10) => {
   const query = searchString !== '' ? '&search=' + encodeURIComponent(searchString) : '';
 
   const pageQuery = '?' + currentPageNum + '&' + currentPageSize + query;
-  const endpointWithPageQuery = new URL(endpoint + pageQuery);
+  const filterBy = filterValue ? '&filter=' + filterValue : '';
+
+  const endpointWithPageQuery = new URL(endpoint + pageQuery + filterBy);
 
   const token = localStorage.getItem('token');
   const headers = {

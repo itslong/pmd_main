@@ -8,6 +8,7 @@ import Pager from './Pager';
 import { SEARCH_RESULTS_PATH } from './frontendBaseRoutes';
 import { renameStaticTableFields } from './fieldNameAliases';
 import { IsAuthContext } from './AppContext';
+import Filter from './Filter';
 
 
 const searchSizeLimits = [10, 30, 50]
@@ -20,7 +21,15 @@ const searchFilterAllOptions = [
 ];
 
 const searchFilterStyle = {
-  display: 'flex'
+  display: 'flex',
+  width: '100%'
+};
+
+// tagTypesFilter style
+const filterContainerStyle = {
+  display: 'flex',
+  // width: '50%',
+  // justifyContent: 'flex-end'
 };
 
 const searchSelectItemButtonName = {
@@ -38,7 +47,7 @@ class SearchComponent extends Component {
     super(props);
     this.state = {
       searchType: this.props.searchType || 'all',
-      searchFilterType: this.props.searchType,
+      searchFilterType: this.props.searchType, // searchFilterType will eventually be used for global search.
       searchText: '',
       searchResults: [],
       shouldUpdateParent: this.props.shouldUpdateParent || false,
@@ -50,6 +59,9 @@ class SearchComponent extends Component {
       currentPageNum: 1,
       maxPageSize: 10,
       pageSizeLimits: this.props.pageSizeLimits || searchSizeLimits,
+      isPaging: false,
+      tagTypesFiltered: false, 
+      tagTypesFilteredBy: '' // specifc to tag types filter.
     };
 
 
@@ -65,6 +77,9 @@ class SearchComponent extends Component {
     
     this.handleFilterChange = this.handleFilterChange.bind(this);
     this.handleSearchByRoute = this.handleSearchByRoute.bind(this);
+
+    this.changeTagTypeFilter = this.changeTagTypeFilter.bind(this);
+    this.resetTagTypeFIlter = this.resetTagTypeFIlter.bind(this);
   }
 
   componentDidMount() {
@@ -77,18 +92,25 @@ class SearchComponent extends Component {
   }
 
   componentDidUpdate(prevProps, prevState) {
-    let { currentPageNum, currentPageSize, searchText, searchType, searchFilterType, shouldUpdateParent } = this.state;
+    let { 
+      currentPageNum, currentPageSize, isPaging, searchText, 
+      searchType, searchFilterType, shouldUpdateParent, tagTypesFiltered, tagTypesFilteredBy 
+    } = this.state;
 
-    if (currentPageSize != prevState.currentPageSize || currentPageNum != prevState.currentPageNum || (searchText !== prevState.searchText && searchText) || prevProps.reloadSearch !== this.props.reloadSearch) {
+    if (currentPageSize != prevState.currentPageSize ||
+      currentPageNum != prevState.currentPageNum ||
+      (searchText !== prevState.searchText && searchText) ||
+      prevProps.reloadSearch !== this.props.reloadSearch ||
+      tagTypesFilteredBy !== prevState.tagTypesFilteredBy) {
       // update pageSize and pageNum only if the searchText changed
-      if (searchText !== prevState.searchText) {
+      if (searchText !== prevState.searchText || prevState.tagTypesFilteredBy !== tagTypesFilteredBy) {
         currentPageNum = 1;
         currentPageSize = 10;
       }
 
       // const searchEndpoint = (searchFilterType === 'all') ? '' : SearchForItems(searchText, searchType, currentPageNum, currentPageSize);
 
-      const getResults = SearchForItems(searchText, searchType, currentPageNum, currentPageSize);
+      const getResults = SearchForItems(searchText, searchType, currentPageNum, currentPageSize, tagTypesFilteredBy);
 
       getResults.then(data => {
         if (data.error) {
@@ -107,7 +129,8 @@ class SearchComponent extends Component {
           nextPage: next,
           previousPgae: previous,
           maxPageSize: max_page_size,
-          currentPageNum: current_page
+          currentPageNum: current_page,
+          isPaging: false
         });
 
         if (shouldUpdateParent) {
@@ -154,6 +177,7 @@ class SearchComponent extends Component {
   handlePageNav(selectedPage) {
     this.setState({
       currentPageNum: parseInt(selectedPage),
+      isPaging: true,
     });
   }
 
@@ -161,7 +185,10 @@ class SearchComponent extends Component {
     const { currentPageSize } = this.state;
     const newPageSizeVal = parseInt(e.target.textContent);
 
-    this.setState({ currentPageSize: newPageSizeVal });
+    this.setState({ 
+      currentPageSize: newPageSizeVal,
+      isPaging: true
+    });
   }
 
   handlePreviousPageClick() {
@@ -170,6 +197,7 @@ class SearchComponent extends Component {
     if (currentPageNum > 1) {
       this.setState({ 
         currentPageNum: currentPageNum - 1,
+        isPaging: true
       })
     }
   }
@@ -179,6 +207,7 @@ class SearchComponent extends Component {
 
     this.setState({ 
       currentPageNum: currentPageNum + 1,
+      isPaging: true
     })
   }
 
@@ -188,6 +217,7 @@ class SearchComponent extends Component {
       totalResultsPages: 0,
       searchResults: [],
       searchText: null,
+      isPaging: false
     });
 
     if (this.props.resetSearch) {
@@ -213,11 +243,27 @@ class SearchComponent extends Component {
     }
   }
 
+  changeTagTypeFilter(e) {
+    const selected = e.target.value;
+    this.setState({
+      tagTypesFilteredBy: selected,
+      tagTypesFiltered: true
+    });
+  }
+
+  resetTagTypeFIlter() {
+    this.setState({
+      tagTypesFilteredBy: '',
+      tagTypesFiltered: false
+    });
+  }
+
+
   render() {
     const { 
       searchType, searchResults, searchText, displayResultsInParent,
       totalResultsPages, totalResultsCount, currentPageNum, currentPageSize, pageSizeLimits,
-      previousPage, nextPage, shouldUpdateParent, maxPageSize
+      previousPage, nextPage, shouldUpdateParent, maxPageSize, tagTypesFiltered, tagTypesFilteredBy
     } = this.state;
     
     const { tableConfigProps } = this.props;
@@ -278,10 +324,19 @@ class SearchComponent extends Component {
         numberOfLinks={1}
       /> : '';
 
+    const shouldAllowFilter = searchType === 'parts' || searchType === 'tasks' ? true : false;
+    const filterDisplay = (searchResults.length > 0) && shouldAllowFilter ?
+      <Filter
+        filterByName={tagTypesFilteredBy}
+        changeFilterAction={this.changeTagTypeFilter}
+        handleResetFilter={this.resetTagTypeFIlter}
+      />
+      : '';
+
 
     return (
       <div>
-        <div style={searchFilterStyle}>
+        <div className={'search-filter-container'} style={searchFilterStyle}>
           { searchFilterButton }
           <SearchForm
             handleSearchText={this.handleSearchText}
@@ -289,6 +344,9 @@ class SearchComponent extends Component {
             handleSearchAll={this.handleSearchByRoute}
             loadSearchText={loadSearchText}
           />
+          <div className={'filter-container'} style={filterContainerStyle}>
+            { filterDisplay }
+          </div>
         </div>
         { totalResultsDisplay }
         { resultsFoundText }
