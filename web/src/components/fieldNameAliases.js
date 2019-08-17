@@ -81,6 +81,7 @@ const taskSearchResultsTableFields = {
   task_id: 'Task ID',
   task_name: 'Task Name',
   task_attribute: 'Task Type',
+  tag_types: 'Tag Types',
   categories: 'Category',
 };
 
