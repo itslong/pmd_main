@@ -112,13 +112,19 @@ class DisplayComponent extends Component {
   }
 
   componentDidUpdate(prevProps, prevState) {
-    const { itemEditing, isLoaded, currentPageNum, currentPageSize, isPaging, sortBy, sortAsc } = this.state;
+    let { itemEditing, isLoaded, currentPageNum, currentPageSize, isPaging, sortBy, sortAsc, filterBy, isFiltered } = this.state;
  
-    if (itemEditing !== prevState.itemEditing || prevState.isLoaded === true && isLoaded == false) {
+    if (itemEditing !== prevState.itemEditing || (prevState.isLoaded === true && isLoaded == false) || filterBy !== prevState.filterBy) {
       const { initFetch, initDataKeyToParse, initPageNum, initPageSize} = this.props;
 
-      const endpoint = isPaging ?
-        initFetch(currentPageNum, currentPageSize)
+      // only reset page num and init page when filter values change from one to another.
+      if (filterBy && prevState.filterBy !== filterBy) {
+        currentPageNum = initPageNum;
+        currentPageSize = initPageSize;
+      }
+
+      const endpoint = isPaging || isFiltered ?
+        initFetch(currentPageNum, currentPageSize, filterBy)
         : initFetch();
 
       const newPageSize = isPaging ? currentPageSize : initPageSize;

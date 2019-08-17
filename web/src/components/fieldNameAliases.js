@@ -160,6 +160,12 @@ const jobDetailFormFields = {
   is_active: 'Job Active',
 };
 
+const jobSearchResultsTableFields = {
+  id: 'id',
+  job_id: 'Job ID',
+  job_name: 'Job Name'
+};
+
 // doubling properties to handle pluralized keys
 const staticDetailTableFields = {
   part: {
@@ -180,6 +186,7 @@ const staticDetailTableFields = {
   job: {
     form: jobDetailFormFields,
     child: jobRelatedCategoriesTableFields,
+    search: jobSearchResultsTableFields
   },
 };
 
