@@ -20,16 +20,16 @@ const searchFilterAllOptions = [
   {jobs: 'jobs'},
 ];
 
-const searchFilterStyle = {
+const searchFilterContainerStyle = {
   display: 'flex',
   width: '100%'
 };
 
 // tagTypesFilter style
-const filterContainerStyle = {
+const tagTypeFilterContainerStyle = {
   display: 'flex',
-  // width: '50%',
-  // justifyContent: 'flex-end'
+  width: '50%',
+  justifyContent: 'flex-end',
 };
 
 const searchSelectItemButtonName = {
@@ -168,10 +168,7 @@ class SearchComponent extends Component {
     const item = this.state.searchResults.filter(item => {
       return item.id == e.target.id
     });
-    // console.log(JSON.stringify(item))
-    // console.log('the part: ' + JSON.stringify(part))
     this.props.handleAddItem(item[0]);
-
   }
 
   handlePageNav(selectedPage) {
@@ -326,17 +323,19 @@ class SearchComponent extends Component {
 
     const shouldAllowFilter = searchType === 'parts' || searchType === 'tasks' ? true : false;
     const filterDisplay = (searchResults.length > 0) && shouldAllowFilter ?
-      <Filter
-        filterByName={tagTypesFilteredBy}
-        changeFilterAction={this.changeTagTypeFilter}
-        handleResetFilter={this.resetTagTypeFIlter}
-      />
+      <div className={'tag-type-filter-container'} style={tagTypeFilterContainerStyle}>
+        <Filter
+          filterByName={tagTypesFilteredBy}
+          changeFilterAction={this.changeTagTypeFilter}
+          handleResetFilter={this.resetTagTypeFIlter}
+        />
+      </div>
       : '';
 
 
     return (
       <div>
-        <div className={'search-filter-container'} style={searchFilterStyle}>
+        <div className={'search-filter-container'} style={searchFilterContainerStyle}>
           { searchFilterButton }
           <SearchForm
             handleSearchText={this.handleSearchText}
@@ -344,9 +343,7 @@ class SearchComponent extends Component {
             handleSearchAll={this.handleSearchByRoute}
             loadSearchText={loadSearchText}
           />
-          <div className={'filter-container'} style={filterContainerStyle}>
-            { filterDisplay }
-          </div>
+          { filterDisplay }
         </div>
         { totalResultsDisplay }
         { resultsFoundText }

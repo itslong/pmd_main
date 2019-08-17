@@ -9,10 +9,15 @@ const tagOptions = [
   {'misc': 'Misc'},
 ];
 
+const filterStyle = {
+  display: 'flex',
+  maxHeight: '25px',
+};
+
 const Filter = ({ filterByName, changeFilterAction, handleResetFilter }) => {
 
   return (
-    <div style={{ display: 'flex' }}>
+    <div style={filterStyle}>
       <Select
         placeholder={'Filter by...'}
         value={filterByName}
