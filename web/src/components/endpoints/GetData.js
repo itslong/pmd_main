@@ -529,14 +529,16 @@ const RemoveRelatedTaskParts = (taskId) => {
 }
 
 
-const FetchAllCategories = (pageNum=1, pageSize=10) => {
+const FetchAllCategories = (pageNum=1, pageSize=10, filterValue=null) => {
   const path = process.env.NODE_ENV === 'development' ? process.env.LOCAL_PATH : PROD_BASE_PATH;
   const endpoint = path + 'api/categories/';
   
   const currentPageNum = 'page=' + pageNum;
   const currentPageSize = 'page_size=' + pageSize;
   const pageQuery = '?' + currentPageNum + '&' + currentPageSize;
-  const endpointWithPageQuery = new URL(endpoint + pageQuery);
+  const filterBy = filterValue ? '&filter=' + filterValue : '';
+  
+  const endpointWithPageQuery = new URL(endpoint + pageQuery + filterBy);
 
   const token = localStorage.getItem('token');
   const headers = {

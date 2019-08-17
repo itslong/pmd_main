@@ -31,7 +31,6 @@ class SearchForm extends Component {
 
     // do nothing if no search text, even if toggled to 'all'
     if (searchVal === '' || handleSearchAll === null) {
-      console.log('submit search null fired')
       return null;
     }
 
