@@ -26,7 +26,8 @@ const searchFilterStyle = {
 const searchSelectItemButtonName = {
   parts: 'part',
   tasks: 'task',
-  categories: 'category'
+  categories: 'category',
+  jobs: 'job'
 };
 /**
   searchType: pass in 'parts' to restrict to parts or default to all.
