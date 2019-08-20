@@ -22,13 +22,12 @@ const searchFilterAllOptions = [
 
 const searchFilterContainerStyle = {
   display: 'flex',
-  width: '100%'
 };
 
 // tagTypesFilter style
 const tagTypeFilterContainerStyle = {
   display: 'flex',
-  width: '50%',
+  width: '100%',
   justifyContent: 'flex-end',
 };
 
@@ -213,7 +212,7 @@ class SearchComponent extends Component {
       totalResultsCount: 0,
       totalResultsPages: 0,
       searchResults: [],
-      searchText: null,
+      searchText: '',
       isPaging: false
     });
 
@@ -276,7 +275,7 @@ class SearchComponent extends Component {
     const totalResultsDisplay = (totalResultsCount > 0 && searchText.length > 0) ? `Found a total of ${totalResultsCount} ${searchType}.` : '';
 
     const resultsFoundText = (searchText && searchResults.length == 0) ?
-      `Could not find '${searchText}'. Try the name again.`
+      <p>Could not find {searchText}. Try the name again.</p>
       : '';
 
     const tableHeaderText = (searchText && searchResults.length > 0) ?
@@ -322,7 +321,7 @@ class SearchComponent extends Component {
       /> : '';
 
     const shouldAllowFilter = searchType !== 'jobs' ? true : false;
-    const filterDisplay = (searchResults.length > 0) && shouldAllowFilter ?
+    const filterDisplay =  searchText !== '' && shouldAllowFilter ?
       <div className={'tag-type-filter-container'} style={tagTypeFilterContainerStyle}>
         <Filter
           filterByName={tagTypesFilteredBy}
@@ -334,7 +333,7 @@ class SearchComponent extends Component {
 
 
     return (
-      <div>
+      <div className={'outer-search-filter'} style={{ width: '100%' }}>
         <div className={'search-filter-container'} style={searchFilterContainerStyle}>
           { searchFilterButton }
           <SearchForm
