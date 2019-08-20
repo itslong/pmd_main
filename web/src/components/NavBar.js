@@ -12,7 +12,6 @@ import {
   HOME_PATH,
   BASE_PATH,
   PARTS_DISPLAY_PATH,
-  PARTS_DISPLAY_ADMIN_PATH,
   CREATE_PARTS_PATH,
   TASKS_DISPLAY_PATH,
   CREATE_TASKS_PATH,
@@ -61,16 +60,6 @@ const NavBar = ({ handleLogout }) => {
       <ul>
         <li><Link to={HOME_PATH}>Home</Link></li>
         <li><Link to={PARTS_DISPLAY_PATH}>Parts</Link></li>
-        <li>
-          <Link 
-            to={{
-              pathname: PARTS_DISPLAY_ADMIN_PATH,
-              state: { admin: true }
-            }}
-          >
-            Admin Parts: Demo only
-          </Link>
-        </li>
         <li><Link to={TASKS_DISPLAY_PATH}>Tasks</Link></li>
         <li><Link to={CATEGORIES_DISPLAY_PATH}>Categories</Link></li>
         <li><Link to={JOBS_DISPLAY_PATH}>Jobs</Link></li>

@@ -5,7 +5,7 @@ import {
   HOME_PATH,
   BASE_PATH,
   PARTS_DISPLAY_PATH,
-  PARTS_DISPLAY_ADMIN_PATH,
+  // PARTS_DISPLAY_ADMIN_PATH,
   CREATE_PARTS_PATH,
   TASKS_DISPLAY_PATH,
   CREATE_TASKS_PATH,
@@ -41,14 +41,6 @@ const HomeComponent = () => {
         <ul style={ulRow}>
           <li><Link to={PARTS_DISPLAY_PATH}>Parts</Link></li>
           <li>
-            <Link 
-              to={{
-                pathname: PARTS_DISPLAY_ADMIN_PATH,
-                state: { admin: true }
-              }}
-            >
-              Admin Parts: Demo only
-            </Link>
           </li>
         </ul>
         <li><Link to={TASKS_DISPLAY_PATH}>Tasks</Link></li>
