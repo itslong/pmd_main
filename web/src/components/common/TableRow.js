@@ -6,6 +6,10 @@ import Input from './Input';
 
 
 const convertTagTypesToJoinedString = (arrObj) => {
+  // category tag types can be null
+  if (!arrObj) {
+    return '';
+  }
   const value = arrObj.length ? arrObj.map(({ tag_name }) => {
     return tag_name;
   }).join(', ').toString()
