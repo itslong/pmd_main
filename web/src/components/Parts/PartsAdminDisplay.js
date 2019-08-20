@@ -2,14 +2,14 @@ import React from 'react';
 
 import DisplayComponent from '../DisplayComponent';
 import EditPartsForm from './EditPartsForm';
-import { FetchAllPartsAdmin, SearchForItems } from '../endpoints';
+import { SearchForItems } from '../endpoints';
 import { partsMainDisplayFields } from '../fieldNameAliases';
 
 
 const PartsAdminDisplay = () => {
   return (
     <DisplayComponent
-      initFetch={FetchAllPartsAdmin}
+      initFetch={() => {}}
       initDataKeyToParse={'parts'}
       editType={'modal'}
       displayType={'parts'}

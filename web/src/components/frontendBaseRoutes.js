@@ -8,7 +8,7 @@ const BASE_PATH = PATH;
 const HOME_PATH = PATH + '/home';
 
 const PARTS_DISPLAY_PATH = PATH + '/parts';
-const PARTS_DISPLAY_ADMIN_PATH = PATH + '/admin' + '/parts';
+// const PARTS_DISPLAY_ADMIN_PATH = PATH + '/admin' + '/parts';
 const CREATE_PARTS_PATH = PATH + '/create-part';
 const PART_DETAIL_PATH = PATH + '/part/:id';
 const PART_EDIT_PATH = PATH + '/part/edit/:id';
@@ -56,7 +56,7 @@ export {
   BASE_PATH,
   HOME_PATH,
   PARTS_DISPLAY_PATH,
-  PARTS_DISPLAY_ADMIN_PATH,
+  // PARTS_DISPLAY_ADMIN_PATH,
   CREATE_PARTS_PATH,
   PART_DETAIL_PATH,
   PART_EDIT_PATH,

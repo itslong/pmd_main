@@ -8,7 +8,6 @@ import { Route, Switch } from 'react-router-dom';
 // import EditPartsForm from './EditPartsForm';
 import {
   PartsDisplay,
-  PartsAdminDisplay,
   PartDetailWithState,
   CreatePartsForm,
   EditPartsForm 
@@ -68,7 +67,6 @@ const MainRoutes = () => {
         <PrivateRoute path={HOME_PATH} component={HomeComponent} />
         <Route exact path={LOGIN_PATH} component={LoginForm} />
 
-        <PrivateRoute path={PARTS_DISPLAY_ADMIN_PATH} component={PartsAdminDisplay} />
         <PrivateRoute exact path={PARTS_DISPLAY_PATH} component={PartsDisplay} />
         <PrivateRoute exact path={PART_DETAIL_PATH} component={PartDetailWithState} />
         <PrivateRoute path={PART_EDIT_PATH} component={EditPartsForm} />

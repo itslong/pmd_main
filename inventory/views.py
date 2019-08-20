@@ -30,11 +30,11 @@ class PartsExcludedView(generics.ListAPIView):
 
 
 # demo purposes only. Remove later
-class PartsAdminView(generics.ListAPIView):
-  queryset = Parts.objects.all()
-  serializer_class = PartsAdminSerializer
-  permission_classes = (permissions.IsAuthenticated, )
-  pagination_class = PartsCustomResultsSetPagination
+# class PartsAdminView(generics.ListAPIView):
+#   queryset = Parts.objects.all()
+#   serializer_class = PartsAdminSerializer
+#   permission_classes = (permissions.IsAuthenticated, )
+#   pagination_class = PartsCustomResultsSetPagination
 
 
 class PartsCreate(generics.CreateAPIView):

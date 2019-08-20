@@ -6,7 +6,7 @@ from inventory import views, views_dev
 
 urlpatterns = [
   path('parts/', views.PartsExcludedView.as_view()),
-  path('parts/admin/', views.PartsAdminView.as_view()),
+  # path('parts/admin/', views.PartsAdminView.as_view()),
   path('part/create/', views.PartsCreate.as_view()),
   path('part/<int:pk>/', views.PartsDetailView.as_view()),
   path('part/<int:pk>/edit-only/', views.PartsEdit.as_view()),
