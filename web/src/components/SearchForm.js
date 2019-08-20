@@ -72,7 +72,7 @@ class SearchForm extends Component {
       /> : '';
 
     return (
-      <div className={'search-form'} style={{ width: '50%' }}>
+      <div className={'search-form'} style={{ width: '100%' }}>
         <form style={searchBarStyle}>
           <Input
             type={'text'}

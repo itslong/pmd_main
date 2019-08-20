@@ -512,12 +512,19 @@ class DisplayComponent extends Component {
       : '';
 
     const shouldAllowFilter = displayType !== 'jobs' ? true : false;
-    const filterDisplay = !displaySearchResults && shouldAllowFilter ?
+    const filterDisplay = shouldAllowFilter ?
       <Filter
         filterByName={filterBy}
         changeFilterAction={this.changeFilter}
         handleResetFilter={this.resetFilter}
       />
+      : '';
+
+    const sortAndFilterDisplay = !displaySearchResults ?
+      <div className={'sort-and-filter-container'} style={{ display: 'flex', width: '100%', justifyContent: 'flex-end' }}>
+        { sortDisplay }
+        { filterDisplay }
+      </div>
       : '';
 
     return(
@@ -530,11 +537,9 @@ class DisplayComponent extends Component {
             tableConfigProps={searchTableConfigProps}
             shouldUpdateParent={true}
             reloadSearch={toggleSearchReload}
+            displaySearchResults={displaySearchResults}
           />
-          <div style={{ display: 'flex' }}>
-            { sortDisplay }
-            { filterDisplay }
-          </div>
+          { sortAndFilterDisplay }
         </div>
         { totalItemsDisplay } <br/>
         { pagerNav }
