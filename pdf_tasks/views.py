@@ -10,7 +10,8 @@ from decimal import *
 
 from inventory.models import Tasks, Parts, TasksParts, GlobalMarkup, Categories, Jobs
 
-
+'''
+For historical purposes. Will delete after formula bug is squashed.
 def create_parts_with_standard_retail(markup_data):
   """
   standard_retail: material_markup * part's retail cost or custom retail * markup
@@ -278,32 +279,6 @@ def render_json_view(request, limiter=0):
   })
   return response
 
-# remove after testing. # api only
-def view_100(request):
-  response = render_json_view(request, limiter=100)
-  return response
-
-
-def view_400(request):
-  response = render_json_view(request, limiter=400)
-  return response
-
-def view_all(request):
-  response = render_json_view(request, limiter=0)
-  return response
-
-
-def render_100(request):
-  pdf = render_pdf_view(request, limiter=100)
-  return pdf
-
-def render_400(request):
-  pdf = render_pdf_view(request, limiter=400)
-  return pdf
-
-def render_all(request):
-  pdf = render_pdf_view(request, limiter=0)
-  return pdf
 
 
 def tasksparts_dict():
@@ -441,7 +416,7 @@ def render_categories_as_pdf(request):
   if pisaStatus.err:
      return HttpResponse('We had some errors <pre>' + html + '</pre>')
   return response
-
+'''
 
 def calculate_task_labor_obj(task_data, markup):
   task_obj = {}
@@ -501,6 +476,22 @@ def jobs_with_related_categories():
       cid = cat.id
       cat_dict['id'] = cat.id
       cat_dict['category_name'] = cat.category_name
+      cat_dict['headings'] = []
+      headings = cat_dict['headings']
+
+      if len(cat.category_heading_one.strip()) > 0:
+        headings.append(cat.category_heading_one)
+      if len(cat.category_heading_two.strip()) > 0:
+        headings.append(cat.category_heading_two)
+      if len(cat.category_heading_three.strip()) > 0:
+        headings.append(cat.category_heading_three)
+      if len(cat.category_heading_four.strip()) > 0:
+        headings.append(cat.category_heading_four)
+      if len(cat.category_heading_five.strip()) > 0:
+        headings.append(cat.category_heading_five)
+      if len(cat.category_heading_six.strip()) > 0:
+        headings.append(cat.category_heading_six)
+
       cat_dict['task'] = {}
       cat_dict['addon'] = {}
 
