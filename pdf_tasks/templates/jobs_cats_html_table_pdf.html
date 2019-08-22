@@ -5,6 +5,13 @@
       td {
         text-align: center;
       }
+      .headings-container {
+        display: flex;
+      }
+      .headings-container ul {
+        list-style: none;
+        columns: 2;
+      }
     </style>
   </head>
 
@@ -14,6 +21,17 @@
       {% for j, categories in job_data.items %}
         {% for cat, category in categories.items %}
           <p><h3>{{ category.category_name }}</h3></p>
+          
+          {% if category.headings|length > 0 %}
+            <div class="headings-container">
+              <ul>
+              {% for heading in category.headings %}
+                <li>{{ heading }}</li>
+              {% endfor %}
+              </ul>
+            </div>
+          {% endif %}
+
           <p><h4>Task - Total tasks in this category: {{category.task|length}}</h4></p>
           <table>
             <thead>
