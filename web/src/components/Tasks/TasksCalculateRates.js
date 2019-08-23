@@ -335,7 +335,7 @@ const calculateTasksMainDisplayFields = (taskArr, markupData, displayFields, cal
       taxTotalForTaskAddonLaborWithPartsRetail(item, taskRelatedParts, tagTypeId, markupData, 'addon')
       : 'N/A';
 
-    if (task_attribute == 'Addon And Task' || task_attribute == 'Task And Addon') {
+    if (task_attribute == 'Addon And Task') {
       taskOnlyTotal = taskOnlyTotalCost(calculationObj);
       addonOnlyTotal = addonOnlyTotalCost(calculationObj);
       taskOnlyValueRate = taxTotalForTaskAddonLaborWithPartsRetail(item, taskRelatedParts, tagTypeId, markupData, 'task');

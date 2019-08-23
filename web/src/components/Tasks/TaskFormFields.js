@@ -24,11 +24,11 @@ import {
 } from '../helpers';
 
 
-// if this becomes an api call, delete below
+// if this becomes an api call, delete below. Otherwise, must match models.py
 const taskAttributeOptions = [
-  {task_attribute: 'Addon Only'},
-  {task_attribute: 'Task Only'},
-  {task_attribute: 'Addon and Task'},
+  {ADDON_ONLY: 'Addon Only'},
+  {TASK_ONLY: 'Task Only'},
+  {ADDON_AND_TASK: 'Addon And Task'},
 ]
 
 
