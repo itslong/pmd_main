@@ -63,7 +63,7 @@ const taskMainDisplayFields = {
   task_name: 'Task Name',
   tag_types: 'Tag Types',
   categories: 'Categories',
-  task_attribute: 'Task Attributes'
+  task_attribute: 'Task Type'
 };
 
 const taskDetailRelatedPartsTableFields = {
