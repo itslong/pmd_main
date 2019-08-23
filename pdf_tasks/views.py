@@ -437,16 +437,17 @@ def calculate_task_labor_obj(task_data, markup):
 
   tos = markup['misc_tos_retail_hourly_rate']
   labor_markup = 1 + Decimal(markup['standard_labor_markup_percent'] / 100)
-  labor_retail = Decimal(markup['labor_retail_hourly_rate'])
+  cntr_labor_retail = Decimal(markup['labor_retail_hourly_rate'])
+  asst_labor_retail = Decimal(markup['asst_labor_retail_hourly_rate'])
 
   # task only
-  cntr_hours = labor_retail * Decimal(task_data['estimated_contractor_hours'])
-  asst_hours = labor_retail * Decimal(task_data['estimated_asst_hours'])
+  cntr_hours = cntr_labor_retail * Decimal(task_data['estimated_contractor_hours'])
+  asst_hours = asst_labor_retail * Decimal(task_data['estimated_asst_hours'])
   task_val_ret_labor = Decimal(cntr_hours + asst_hours)
 
   # addon only
-  cntr_mins = (labor_retail / 60) * Decimal(task_data['estimated_contractor_minutes'])
-  asst_mins = (labor_retail / 60) * Decimal(task_data['estimated_asst_minutes'])
+  cntr_mins = (cntr_labor_retail / 60) * Decimal(task_data['estimated_contractor_minutes'])
+  asst_mins = (asst_labor_retail / 60) * Decimal(task_data['estimated_asst_minutes'])
   addon_val_ret_labor = Decimal(cntr_mins + asst_mins)
 
 
@@ -461,7 +462,8 @@ def calculate_task_labor_obj(task_data, markup):
 def jobs_with_related_categories():
   markup = dict((m['id'], m) for m in GlobalMarkup.objects.values())
 
-  jobs = Jobs.objects.prefetch_related('categories_set').order_by('ordering_num')
+  # jobs = Jobs.objects.prefetch_related('categories_set').order_by('ordering_num')
+  jobs = Jobs.objects.prefetch_related('categories_set')
   jobs_dict = {}
 
   for job in jobs:
@@ -520,7 +522,7 @@ def jobs_with_related_categories():
         # calc part standard retail or use custom retail
         if item['parts__set_custom_part_cost']:
           qty = item['tasksparts__quantity']
-          part_std_retail = Decimal(item['parts__custom_retail_part_cost']) * part_markup
+          part_std_retail = Decimal(item['parts__custom_retail_part_cost']) * part_markup * qty
         else:
           # some tasks may not contain parts. 
           if item['parts__retail_part_cost'] is None:
@@ -532,7 +534,7 @@ def jobs_with_related_categories():
             # re-set qty when there are parts for the task.
             qty = item['tasksparts__quantity']
             # part * qty
-            part_val_ret_subtotal = qty * item['parts__retail_part_cost']
+            part_val_ret_subtotal = qty * Decimal(item['parts__retail_part_cost'])
           
         part_std_ret_subtotal = qty * part_std_retail
 
@@ -542,43 +544,31 @@ def jobs_with_related_categories():
         part_val_ret_total = round(part_val_ret_subtotal + part_val_ret_tax, 2)
         part_std_ret_total = round(part_std_ret_subtotal + part_val_ret_tax, 2)
 
-        
-        # only calculate task once. calc parts every time.
-        if tid not in dedupe_task_ids:
-          task_obj = calculate_task_labor_obj(item, markup_obj)
-          dedupe_task_ids[tid] = 0
 
-        # determine if both or task only or addon only
-          if task_attr == 'Addon And Task':
-            cat_dict['task'][tid] = task_obj
-            cat_dict['task'][tid]['task_value_rate'] += part_val_ret_total
-            cat_dict['task'][tid]['task_std_rate'] += part_std_ret_total
-            
-            cat_dict['addon'][tid] = task_obj
-            cat_dict['addon'][tid]['addon_value_rate'] += part_val_ret_total 
-            cat_dict['addon'][tid]['addon_std_rate'] += part_std_ret_total
-          elif task_attr == 'Task Only':
-            cat_dict['task'][tid] = task_obj
-            cat_dict['task'][tid]['task_value_rate'] += part_val_ret_total 
-            cat_dict['task'][tid]['task_std_rate'] += part_std_ret_total
-          else:
-            cat_dict['addon'][tid] = task_obj
-            cat_dict['addon'][tid]['addon_value_rate'] += part_val_ret_total
-            cat_dict['addon'][tid]['addon_std_rate'] += part_std_ret_total
+        if task_attr == 'Addon And Task':
+          cat_dict['task'][tid] = cat_dict['task'].get(tid, calculate_task_labor_obj(item, markup_obj))
+          cat_dict['addon'][tid] = cat_dict['addon'].get(tid, calculate_task_labor_obj(item, markup_obj))
+
+          task_obj = cat_dict['task'][tid]
+          addon_obj = cat_dict['addon'][tid]
+
+          task_obj['task_value_rate'] = task_obj.get('task_value_rate', part_val_ret_total) + part_val_ret_total
+          task_obj['task_std_rate'] = task_obj.get('task_std_rate', part_std_ret_total) +  part_std_ret_total
+
+          addon_obj['addon_value_rate'] = addon_obj.get('addon_value_rate', part_val_ret_total) + part_val_ret_total 
+          addon_obj['addon_std_rate'] = addon_obj.get('addon_std_rate', part_std_ret_total) +  part_std_ret_total
+        elif task_attr == 'Task Only':
+          cat_dict['task'][tid] = cat_dict['task'].get(tid, calculate_task_labor_obj(item, markup_obj))
+          task_obj = cat_dict['task'][tid]
+
+          task_obj['task_value_rate'] = task_obj.get('task_value_rate', part_val_ret_total) + part_val_ret_total
+          task_obj['task_std_rate'] = task_obj.get('task_std_rate', part_std_ret_total) +  part_std_ret_total
         else:
-          # this task exists. Add part values only.
-          if task_attr == 'Addon And Task':
-            cat_dict['task'][tid]['task_value_rate'] += part_val_ret_total
-            cat_dict['task'][tid]['task_std_rate'] += part_std_ret_total
+          cat_dict['addon'][tid] = cat_dict['addon'].get(tid, calculate_task_labor_obj(item, markup_obj))
+          addon_obj = cat_dict['addon'][tid]
 
-            cat_dict['addon'][tid]['addon_value_rate'] += part_val_ret_total
-            cat_dict['addon'][tid]['addon_std_rate'] += part_std_ret_total
-          elif task_attr == 'Task Only':
-            cat_dict['task'][tid]['task_value_rate'] += part_val_ret_total
-            cat_dict['task'][tid]['task_std_rate'] += part_std_ret_total
-          else:
-            cat_dict['addon'][tid]['addon_value_rate'] += part_val_ret_total
-            cat_dict['addon'][tid]['addon_std_rate'] += part_std_ret_total
+          addon_obj['addon_value_rate'] = addon_obj.get('addon_value_rate', part_val_ret_total) + part_val_ret_total 
+          addon_obj['addon_std_rate'] = addon_obj.get('addon_std_rate', part_std_ret_total) +  part_std_ret_total
 
       jobs_dict[job.job_name]['job_data'][cid] = cat_dict
 
