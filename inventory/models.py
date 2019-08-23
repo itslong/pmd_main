@@ -87,12 +87,12 @@ class Parts(models.Model):
 class Tasks(models.Model):
   ADDON_ONLY = 'Addon Only'
   TASK_ONLY = 'Task Only'
-  ADDON_AND_TASK = 'Addon and Task' 
+  ADDON_AND_TASK = 'Addon And Task' 
 
   TASK_TYPE_CHOICES = (
     (TASK_ONLY, 'Task Only'),
     (ADDON_ONLY, 'Addon Only'),
-    (ADDON_AND_TASK, 'Addon and Task'),
+    (ADDON_AND_TASK, 'Addon And Task'),
   )
 
   task_id = models.CharField(max_length=100)
