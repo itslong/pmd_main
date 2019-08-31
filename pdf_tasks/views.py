@@ -462,8 +462,8 @@ def calculate_task_labor_obj(task_data, markup):
 def jobs_with_related_categories():
   markup = dict((m['id'], m) for m in GlobalMarkup.objects.values())
 
-  # jobs = Jobs.objects.prefetch_related('categories_set').order_by('ordering_num')
-  jobs = Jobs.objects.prefetch_related('categories_set')
+  jobs = Jobs.objects.prefetch_related('categories_set').order_by('ordering_num')
+  # jobs = Jobs.objects.prefetch_related('categories_set')
   jobs_dict = {}
 
   for job in jobs:
