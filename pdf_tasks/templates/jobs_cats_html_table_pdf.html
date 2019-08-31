@@ -8,18 +8,12 @@
         @frame footer_frame {
           -pdf-frame-content: footer_content;
           left: 270pt;
-          width: 512pt;
           top: 772pt; 
           height: 20pt;
         }
       }
       .table-headings-container td {
         font-size: 14pt;
-        text-align: center;
-      }
-      .headings-container li {
-        font-size: 14pt;
-        list-style-type: none;
         text-align: center;
       }
       .table-data td {
@@ -35,39 +29,26 @@
         {% for cat, category in categories.items %}
           <h2><div style="text-align: center; font-size: 20pt">{{ category.category_name }}</div></h2>
           
-          {% if category.headings|length > 0 and category.headings|length < 4 %}
-            <div class="headings-container">
-              <ul>
-              {% for heading in category.headings %}
-                <li>{{ heading }}</li>
-              {% endfor %}
-              </ul>
-            </div>
-          {% else %}
-            <table class="table-headings-container">
-              <tbody>
-                <tr>
-                  <td><h3>{{ category.headings.0 }}</h3></td>
-                  <td><h3>{{ category.headings.1 }}</h3></td>
-                </tr>
-                <tr>
-                  <td><h3>{{ category.headings.2 }}</h3></td>
-                  <td><h3>{{ category.headings.3 }}</h3></td>
-                </tr>
-                <tr>
-                  <td><h3>{{ category.headings.4 }}</h3></td> 
-                  <td><h3>{{ category.headings.5 }}</h3></td>
-                </tr>
-              </tbody>
-            </table>
-          {% endif %}
+          <table class="table-headings-container">
+            <tr>
+              <td><h3>{{ category.headings.0 }}</h3></td>
+              <td><h3>{{ category.headings.1 }}</h3></td>
+            </tr>
+            <tr>
+              <td><h3>{{ category.headings.2 }}</h3></td>
+              <td><h3>{{ category.headings.3 }}</h3></td>
+            </tr>
+            <tr>
+              <td><h3>{{ category.headings.4 }}</h3></td> 
+              <td><h3>{{ category.headings.5 }}</h3></td>
+            </tr>
+          </table>
 
           <p><h4>Task - Total tasks in this category: {{category.task|length}}</h4></p>
           <table class="table-data">
             <thead>
               <th>Task ID</th>
               <th>Task Name</th>
-              <th>Attribute</th>
               <th>Value Rate</th>
               <th>Standard Rate</th>
             </thead>
@@ -77,7 +58,6 @@
               <tr>
                 <td>{{ tasks.task_id }}</td>
                 <td>{{ tasks.task_name }}</td>
-                <td>{{ tasks.attribute }}</td>
                 <td>{{ tasks.task_value_rate}}</td>
                 <td>{{ tasks.task_std_rate}}</td>
               </tr>
@@ -92,7 +72,6 @@
             <thead>
               <th>Task ID</th>
               <th>Task Name</th>
-              <th>Attribute</th>
               <th>Value Rate</th>
               <th>Standard Rate</th>
             </thead>
@@ -102,7 +81,6 @@
               <tr>
                 <td>{{ addons.task_id }}</td>
                 <td>{{ addons.task_name }}</td>
-                <td>{{ addons.attribute }}</td>
                 <td>{{ addons.addon_value_rate}}</td>
                 <td>{{ addons.addon_std_rate}}</td>
               </tr>
