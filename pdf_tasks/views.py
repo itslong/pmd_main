@@ -478,21 +478,28 @@ def jobs_with_related_categories():
       cid = cat.id
       cat_dict['id'] = cat.id
       cat_dict['category_name'] = cat.category_name
-      cat_dict['headings'] = []
-      headings = cat_dict['headings']
+      cat_dict['headings'] = [
+        cat.category_heading_one,
+        cat.category_heading_two,
+        cat.category_heading_three,
+        cat.category_heading_four,
+        cat.category_heading_five,
+        cat.category_heading_six,
+      ]
+      # headings = cat_dict['headings']
 
-      if len(cat.category_heading_one.strip()) > 0:
-        headings.append(cat.category_heading_one)
-      if len(cat.category_heading_two.strip()) > 0:
-        headings.append(cat.category_heading_two)
-      if len(cat.category_heading_three.strip()) > 0:
-        headings.append(cat.category_heading_three)
-      if len(cat.category_heading_four.strip()) > 0:
-        headings.append(cat.category_heading_four)
-      if len(cat.category_heading_five.strip()) > 0:
-        headings.append(cat.category_heading_five)
-      if len(cat.category_heading_six.strip()) > 0:
-        headings.append(cat.category_heading_six)
+      # if len(cat.category_heading_one.strip()) > 0:
+      #   headings.append(cat.category_heading_one)
+      # if len(cat.category_heading_two.strip()) > 0:
+      #   headings.append(cat.category_heading_two)
+      # if len(cat.category_heading_three.strip()) > 0:
+      #   headings.append(cat.category_heading_three)
+      # if len(cat.category_heading_four.strip()) > 0:
+      #   headings.append(cat.category_heading_four)
+      # if len(cat.category_heading_five.strip()) > 0:
+      #   headings.append(cat.category_heading_five)
+      # if len(cat.category_heading_six.strip()) > 0:
+      #   headings.append(cat.category_heading_six)
 
       cat_dict['task'] = {}
       cat_dict['addon'] = {}
@@ -505,10 +512,7 @@ def jobs_with_related_categories():
         'parts__set_custom_part_cost', 'parts__custom_retail_part_cost', 'tasksparts__quantity'
       )
 
-      dedupe_task_ids = {}
-
       for item in related_tasks_and_parts:
-        # temp_task_obj = {}
         tid = item['id']
         tag_id = item['tag_types']
         task_attr = item['task_attribute']
@@ -572,17 +576,13 @@ def jobs_with_related_categories():
 
       jobs_dict[job.job_name]['job_data'][cid] = cat_dict
 
-  # context = {
-  #   'jobs_data': jobs_dict
-  # }
   return jobs_dict
 
-  # return render(request, 'jobs_cats_pdf.html', context)
 
 # uses <table>
 def jobs_with_related_categories_as_html(request):
   jobs_data = jobs_with_related_categories()
-  # print(jobs_data)
+
   context = {
     'jobs_data': jobs_data
   }
