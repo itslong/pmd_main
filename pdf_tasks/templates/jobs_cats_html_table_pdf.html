@@ -1,28 +1,41 @@
 <html>
   <head>
-    <p>Jobs to Cats to PDF</p>
     <style>
-      td {
+      /* xhtml2pdf specifc params */
+      @page {
+        size: letter portrait;
+        margin: 1cm;
+        @frame footer_frame {
+          -pdf-frame-content: footer_content;
+          left: 270pt;
+          width: 512pt;
+          top: 772pt; 
+          height: 20pt;
+        }
+      }
+      .table-headings-container td {
+        font-size: 14pt;
         text-align: center;
       }
-      .headings-container {
-        display: flex;
+      .headings-container li {
+        font-size: 14pt;
+        list-style-type: none;
+        text-align: center;
       }
-      .headings-container ul {
-        list-style: none;
-        columns: 2;
+      .table-data td {
+        text-align: center;
       }
     </style>
   </head>
 
   <body>
     {% for jd, job_data in jobs_data.items %}
-      <h2>{{ job_data.job_name }}</h2>
+      <h1>{{ job_data.job_name }}</h1>
       {% for j, categories in job_data.items %}
         {% for cat, category in categories.items %}
-          <p><h3>{{ category.category_name }}</h3></p>
+          <h2><div style="text-align: center; font-size: 20pt">{{ category.category_name }}</div></h2>
           
-          {% if category.headings|length > 0 %}
+          {% if category.headings|length > 0 and category.headings|length < 4 %}
             <div class="headings-container">
               <ul>
               {% for heading in category.headings %}
@@ -30,12 +43,28 @@
               {% endfor %}
               </ul>
             </div>
+          {% else %}
+            <table class="table-headings-container">
+              <tbody>
+                <tr>
+                  <td><h3>{{ category.headings.0 }}</h3></td>
+                  <td><h3>{{ category.headings.1 }}</h3></td>
+                </tr>
+                <tr>
+                  <td><h3>{{ category.headings.2 }}</h3></td>
+                  <td><h3>{{ category.headings.3 }}</h3></td>
+                </tr>
+                <tr>
+                  <td><h3>{{ category.headings.4 }}</h3></td> 
+                  <td><h3>{{ category.headings.5 }}</h3></td>
+                </tr>
+              </tbody>
+            </table>
           {% endif %}
 
           <p><h4>Task - Total tasks in this category: {{category.task|length}}</h4></p>
-          <table>
+          <table class="table-data">
             <thead>
-              <th>ID</th>
               <th>Task ID</th>
               <th>Task Name</th>
               <th>Attribute</th>
@@ -46,7 +75,6 @@
             <tbody>
               {% for t, tasks in category.task.items %}
               <tr>
-                <td>{{ tasks.id }}</td>
                 <td>{{ tasks.task_id }}</td>
                 <td>{{ tasks.task_name }}</td>
                 <td>{{ tasks.attribute }}</td>
@@ -60,9 +88,8 @@
 
 
           <p><h4>Addon - Total addons in this category: {{category.addon|length}}</h4></p>
-          <table>
+          <table class="table-data">
             <thead>
-              <th>ID</th>
               <th>Task ID</th>
               <th>Task Name</th>
               <th>Attribute</th>
@@ -73,7 +100,6 @@
             <tbody>
               {% for a, addons in category.addon.items %}
               <tr>
-                <td>{{ addons.id }}</td>
                 <td>{{ addons.task_id }}</td>
                 <td>{{ addons.task_name }}</td>
                 <td>{{ addons.attribute }}</td>
@@ -87,6 +113,8 @@
         {% endfor %}
       {% endfor %}
     {% endfor %}
-
+  <div id="footer_content">
+    Page <pdf:pagenumber> of <pdf:pagecount>
+  </div>
   </body>
 </html>
