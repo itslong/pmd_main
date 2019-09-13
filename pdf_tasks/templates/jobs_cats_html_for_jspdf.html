@@ -1,0 +1,166 @@
+<html>
+  <head>
+    <script>
+      function printWindow() {
+        window.print();
+      }
+    </script>
+    <!-- TESTING ONLY! jspdf ignores css. Add html2canvas -->
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.0/jquery.min.js"></script>
+    <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.3.2/jspdf.min.js"></script> -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.5.3/jspdf.debug.js" integrity="sha384-NaWTHo/8YCBYJ59830LTz/P4aQZK1sS0SneOgAvhsIl3zBu8r9RevNg5lHCHAuQ/" crossorigin="anonymous"></script>
+    <script>
+      function demoFromHTML() {
+        var pdf = new jsPDF({
+          orientation: 'p', 
+          unit: 'pt', 
+          format: 'letter'});
+        // source can be HTML-formatted string, or a reference
+        // to an actual DOM element from which the text will be scraped.
+        // source = $('#data-container')[0];
+        source = document.getElementById('data-container');
+        // we support special element handlers. Register them with jQuery-style 
+        // ID selector for either ID or node name. ("#iAmID", "div", "span" etc.)
+        // There is no support for any other type of selectors 
+        // (class, of compound) at this time.
+        specialElementHandlers = {
+          // element with id of "bypass" - jQuery style selector
+          '#bypassme': function (element, renderer) {
+              // true = "handled elsewhere, bypass text extraction"
+              return true
+          }
+        };
+        margins = {
+          top: 40,
+          bottom: 40,
+          left: 80,
+          width: 1200
+        };
+        // all coords and widths are in jsPDF instance's declared units
+        // 'inches' in this case
+        pdf.fromHTML(
+          source, // HTML string or DOM elem ref.
+          margins.left, // x coord
+          margins.top, { // y coord
+              'width': margins.width, // max width of content on PDF
+              'elementHandlers': specialElementHandlers
+          },
+
+          function (dispose) {
+              // dispose: object with X, Y of the last line add to the PDF 
+              //          this allow the insertion of new lines after html
+              pdf.save('PMD.pdf');
+          }, margins
+        );
+        pdf.setProperties({
+          title: 'PMD_PDF'
+        });
+        pdf.output('dataurlnewwindow');
+      }
+    </script>
+    <style>
+      body {
+        width: 100%;
+      }
+      button {
+        width: 100px;
+        height: 50px;
+        background-color: black;
+        color: white;
+      }
+      .headings-container {
+        columns: 2;
+      }
+      ul li {
+        list-style-type: none;
+
+      }
+      .table-data td {
+        text-align: center;
+      }
+      table {
+        width: 100%;
+        font-size: 10px;
+      }
+      #data-container {
+        width: 100%;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div>
+      <div id="print-window-container">
+        <button onclick="printWindow();">PRINT WINDOW</button>
+        <button onclick="demoFromHTML();">PRINT JSPDF</button>
+      </div>
+      <div id="data-container">
+      {% for jd, job_data in jobs_data.items %}
+        <h1>{{ job_data.job_name }}</h1>
+        {% for j, categories in job_data.items %}
+          {% for cat, category in categories.items %}
+            <h2><div style="text-align: center; font-size: 20pt">{{ category.category_name }}</div></h2>
+            
+            {% if category.headings|length > 0 %}
+              <ul class="headings-container">
+              {% for heading in category.headings %}
+                <li>{{heading}}</li>
+              {% endfor %}
+            </ul>
+            {% endif %}
+
+            <p><h4>Task - Total tasks in this category: {{category.task|length}}</h4></p>
+            <table class="table-data">
+              <thead>
+                <th>Task ID</th>
+                <th>Task Name</th>
+                <th>Value Rate</th>
+                <th>Standard Rate</th>
+              </thead>
+              
+              <tbody>
+                {% for t, tasks in category.task.items %}
+                <tr>
+                  <td>{{ tasks.task_id }}</td>
+                  <td>{{ tasks.task_name }}</td>
+                  <td>{{ tasks.task_value_rate}}</td>
+                  <td>{{ tasks.task_std_rate}}</td>
+                </tr>
+                {% endfor %}
+
+              </tbody>
+            </table>
+
+
+            <p><h4>Addon - Total addons in this category: {{category.addon|length}}</h4></p>
+            <table class="table-data">
+              <thead>
+                <th>Task ID</th>
+                <th>Task Name</th>
+                <th>Value Rate</th>
+                <th>Standard Rate</th>
+              </thead>
+
+              <tbody>
+                {% for a, addons in category.addon.items %}
+                <tr>
+                  <td>{{ addons.task_id }}</td>
+                  <td>{{ addons.task_name }}</td>
+                  <td>{{ addons.addon_value_rate}}</td>
+                  <td>{{ addons.addon_std_rate}}</td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+           <div class="pagebreak" style="page-break-before:always;"> </div>    
+          {% endfor %}
+        {% endfor %}
+      {% endfor %}
+    </div>
+    <div id="footer_content">
+      Page <pdf:pagenumber> of <pdf:pagecount>
+    </div>
+  </div>
+
+  </body>
+</html>

@@ -578,8 +578,7 @@ def jobs_with_related_categories():
 
   return jobs_dict
 
-
-# uses <table>
+# html for the pdf conversion
 def jobs_with_related_categories_as_html(request):
   jobs_data = jobs_with_related_categories()
 
@@ -589,6 +588,7 @@ def jobs_with_related_categories_as_html(request):
   return render(request, 'jobs_cats_html_table_pdf.html', context)
 
 
+# converts the html into a pdf using pisa/xhtml
 def jobs_with_related_categories_as_pdf(request):
   jobs_data = jobs_with_related_categories()
 
@@ -610,35 +610,11 @@ def jobs_with_related_categories_as_pdf(request):
      return HttpResponse('We had some errors <pre>' + html + '</pre>')
   return response
 
-
-
-# no <table> in the html to test for performance
-def jobs_div_table_as_html(request):
+# same html for pdf conversion but using a separate template with jsPDF and html2canvas
+def jobs_with_categories_for_jspdf(request):
   jobs_data = jobs_with_related_categories()
-  # print(jobs_data)
+
   context = {
     'jobs_data': jobs_data
   }
-  return render(request, 'jobs_cats_div_table_pdf.html', context)
-
-
-def jobs_div_table_as_pdf(request):
-  jobs_data = jobs_with_related_categories()
-
-  template_path = 'jobs_cats_div_table_pdf.html'
-  context = {
-    'jobs_data': jobs_data
-  }
-
-  response = HttpResponse(content_type='application/pdf')
-  # response['Content-Disposition'] = 'attachment; filename="pmd-book.pdf"'
-  template = get_template(template_path)
-  html = template.render(context)
-
-  # create a pdf
-  # pisaStatus = pisa.CreatePDF(html, dest=response, link_callback=link_callback)
-  pisaStatus = pisa.CreatePDF(html, dest=response)
-
-  if pisaStatus.err:
-     return HttpResponse('We had some errors <pre>' + html + '</pre>')
-  return response
+  return render(request, 'jobs_cats_html_for_jspdf.html', context)
