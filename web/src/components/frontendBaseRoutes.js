@@ -1,5 +1,6 @@
 // prod settings
-const PROD_BASE_PATH = 'https://pmd-dev.herokuapp.com/';
+// const PROD_BASE_PATH = 'https://pmd-dev.herokuapp.com/';
+const PROD_BASE_PATH = 'https://menupricing.herokuapp.com/';
 const PROD_API_PATH = PROD_BASE_PATH + 'api/';
 
 const PATH = '/app';
