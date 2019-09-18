@@ -1,11 +1,6 @@
 import React from 'react';
 import { Route, Switch } from 'react-router-dom';
 
-// import PartsDisplay from './PartsDisplay';
-// import PartsAdminDisplay from './PartsAdminDisplay';
-// import CreatePartsForm from './CreatePartsForm';
-// import PartDetailWithState from './PartDetailWithState';
-// import EditPartsForm from './EditPartsForm';
 import {
   PartsDisplay,
   PartDetailWithState,

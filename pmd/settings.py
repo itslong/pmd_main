@@ -33,7 +33,7 @@ SECRET_KEY = KEY_VALUE
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['localhost', 'pmd-dev.herokuapp.com']
+ALLOWED_HOSTS = ['localhost', 'pmd-dev.herokuapp.com', 'menupricing.herokuapp.com']
 
 
 # Application definition
@@ -207,6 +207,7 @@ REST_FRAMEWORK = {
 
 CORS_ORIGIN_WHITELIST = [
   'http://localhost:8000',
-  'https://pmd-dev.herokuapp.com'
+  'https://pmd-dev.herokuapp.com',
+  'https://menupricing.herokuapp.com'
 ]
 

@@ -611,10 +611,10 @@ def jobs_with_related_categories_as_pdf(request):
   return response
 
 # same html for pdf conversion but using a separate template with jsPDF and html2canvas
-def jobs_with_categories_for_jspdf(request):
+def jobs_with_categories_to_pdf(request):
   jobs_data = jobs_with_related_categories()
 
   context = {
     'jobs_data': jobs_data
   }
-  return render(request, 'jobs_cats_html_for_jspdf.html', context)
+  return render(request, 'jobs_cats_html_to_pdf.html', context)
