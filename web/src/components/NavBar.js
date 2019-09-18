@@ -43,10 +43,10 @@ const NavBar = ({ handleLogout }) => {
 
 
   // jobs query testing with <table> and <div> tables
-  // const htmlTableHtml = 'assets/html_table/';
-  const htmlTablePdf = 'assets/html_table_as_pdf/'
-  // const navHtmlTable = (process.env.LOCAL_PATH) ? process.env.LOCAL_PATH + htmlTableHtml : PROD_BASE_PATH + htmlTableHtml;
-  const navPdfTable = (process.env.LOCAL_PATH) ? process.env.LOCAL_PATH + htmlTablePdf : PROD_BASE_PATH + htmlTablePdf;
+  const htmlTableHtml = 'assets/html_table/';
+  // const htmlTablePdf = 'assets/html_table_as_pdf/';
+  const navHtmlTable = (process.env.LOCAL_PATH) ? process.env.LOCAL_PATH + htmlTableHtml : PROD_BASE_PATH + htmlTableHtml;
+  // const navPdfTable = (process.env.LOCAL_PATH) ? process.env.LOCAL_PATH + htmlTablePdf : PROD_BASE_PATH + htmlTablePdf;
 
 
   // const divTablePath = 'assets/div_table/';
@@ -63,7 +63,7 @@ const NavBar = ({ handleLogout }) => {
         <li><Link to={TASKS_DISPLAY_PATH}>Tasks</Link></li>
         <li><Link to={CATEGORIES_DISPLAY_PATH}>Categories</Link></li>
         <li><Link to={JOBS_DISPLAY_PATH}>Jobs</Link></li>
-        <li><a href={navPdfTable}>PDF</a></li>
+        <li><a href={navHtmlTable}>PDF</a></li>
 
         <li><Link to={BASE_PATH} onClick={handleLogout}>Logout</Link></li>
         <li><p>Signed in as: {username}</p></li>
