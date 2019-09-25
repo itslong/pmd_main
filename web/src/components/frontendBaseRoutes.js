@@ -2,7 +2,8 @@
 // const PROD_BASE_PATH = 'https://pmd-dev.herokuapp.com/';
 // pmd's new host name
 const PROD_BASE_PATH = window.location.hostname == 'pmd-dev.herokuapp.com' ? 
-'https://pmd-dev.herokuapp.com/' : 'https://menupricing.herokuapp.com/';
+  'https://pmd-dev.herokuapp.com/' : window.location.hostname == 'were-doing-a-test.herokuapp.com' ? 
+  'https://were-doing-a-test.herokuapp.com/' : 'https://menupricing.herokuapp.com/';
 
 const PROD_API_PATH = PROD_BASE_PATH + 'api/';
 
