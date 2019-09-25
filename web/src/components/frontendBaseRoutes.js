@@ -1,6 +1,7 @@
 // prod settings
 // const PROD_BASE_PATH = 'https://pmd-dev.herokuapp.com/';
-// pmd's new host name
+// client: pmd's new host name: menupricing.
+// staging: were-doing-a-test
 const PROD_BASE_PATH = window.location.hostname == 'pmd-dev.herokuapp.com' ? 
   'https://pmd-dev.herokuapp.com/' : window.location.hostname == 'were-doing-a-test.herokuapp.com' ? 
   'https://were-doing-a-test.herokuapp.com/' : 'https://menupricing.herokuapp.com/';

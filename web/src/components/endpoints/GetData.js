@@ -91,13 +91,10 @@ const FetchPart = (partId) => {
 // PostParts
 const CreatePart = (formData) => {
   const path = process.env.NODE_ENV === 'development' ? process.env.LOCAL_PATH : PROD_BASE_PATH;
-  console.log('part api: ', path)
   const endpoint = new URL(path + 'api/part/create/');
   const csrfToken = GetCookie('csrftoken');
 
   const token = localStorage.getItem('token');
-  console.log('token: ', token, ' csrf: ', csrfToken)
-  console.log('form data: ', formData)
   const headers = {
     'Accept': 'application/json',
     'Content-Type': 'application/json',
