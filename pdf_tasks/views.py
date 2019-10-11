@@ -425,17 +425,17 @@ def calculate_task_labor_obj(task_data, markup):
   task_obj['task_name'] = task_data['task_name']
   task_obj['attribute'] = task_data['task_attribute']
   tos = markup['misc_tos_retail_hourly_rate']
-  
+  labor_markup = 1 + Decimal(markup['standard_labor_markup_percent'] / 100)
+
   if task_data['use_fixed_labor_rate']:
     fixed_rate = task_data['fixed_labor_rate']
     task_obj['task_value_rate'] = round(fixed_rate + tos, 2)
-    task_obj['task_std_rate'] = round(fixed_rate + tos, 2)
-    task_obj['addon_value_rate'] = fixed_rate
-    task_obj['addon_std_rate'] = fixed_rate
+    task_obj['task_std_rate'] = round((fixed_rate * labor_markup) + tos, 2)
+    task_obj['addon_value_rate'] = round(fixed_rate, 2)
+    task_obj['addon_std_rate'] = round(fixed_rate * labor_markup, 2)
     return task_obj
 
 
-  labor_markup = 1 + Decimal(markup['standard_labor_markup_percent'] / 100)
   cntr_labor_retail = Decimal(markup['labor_retail_hourly_rate'])
   asst_labor_retail = Decimal(markup['asst_labor_retail_hourly_rate'])
 
