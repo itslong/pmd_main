@@ -424,18 +424,17 @@ def calculate_task_labor_obj(task_data, markup):
   task_obj['task_id'] = task_data['task_id']
   task_obj['task_name'] = task_data['task_name']
   task_obj['attribute'] = task_data['task_attribute']
-
+  tos = markup['misc_tos_retail_hourly_rate']
+  
   if task_data['use_fixed_labor_rate']:
-
     fixed_rate = task_data['fixed_labor_rate']
-    task_obj['task_value_rate'] = fixed_rate
-    task_obj['task_std_rate'] = fixed_rate
+    task_obj['task_value_rate'] = round(fixed_rate + tos, 2)
+    task_obj['task_std_rate'] = round(fixed_rate + tos, 2)
     task_obj['addon_value_rate'] = fixed_rate
     task_obj['addon_std_rate'] = fixed_rate
-    # print('fixed: data: ', task_obj)
     return task_obj
 
-  tos = markup['misc_tos_retail_hourly_rate']
+
   labor_markup = 1 + Decimal(markup['standard_labor_markup_percent'] / 100)
   cntr_labor_retail = Decimal(markup['labor_retail_hourly_rate'])
   asst_labor_retail = Decimal(markup['asst_labor_retail_hourly_rate'])
@@ -451,7 +450,7 @@ def calculate_task_labor_obj(task_data, markup):
   addon_val_ret_labor = Decimal(cntr_mins + asst_mins)
 
 
-  task_obj['task_value_rate'] = round(tos + task_val_ret_labor, 2) #+ part_vr_total
+  task_obj['task_value_rate'] = round(task_val_ret_labor + tos, 2) #+ part_vr_total
   task_obj['task_std_rate'] = round((task_val_ret_labor * labor_markup) + tos, 2) #+ part_std_total
   task_obj['addon_value_rate'] = round(addon_val_ret_labor, 2) #+ part_vr_total
   task_obj['addon_std_rate'] = round(addon_val_ret_labor * labor_markup, 2) #+ part_std_total
@@ -463,7 +462,6 @@ def jobs_with_related_categories():
   markup = dict((m['id'], m) for m in GlobalMarkup.objects.values())
 
   jobs = Jobs.objects.prefetch_related('categories_set').order_by('ordering_num')
-  # jobs = Jobs.objects.prefetch_related('categories_set')
   jobs_dict = {}
 
   for job in jobs:
