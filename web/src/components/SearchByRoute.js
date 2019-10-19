@@ -2,6 +2,7 @@ import React from 'react';
 
 import SearchComponent from './SearchComponent';
 
+// TODO: placeholder for global search
 const SearchByRoute = () => {
   // return (
   //   <SearchComponent

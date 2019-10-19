@@ -8,7 +8,6 @@ export {
   UpdatePart,
   UpdatePartTagTypes,
   DeletePart,
-  // FetchAllPartsAdmin,
   SearchForParts,
   GetPartsMarkupPercents,
   FetchAllTasks,
