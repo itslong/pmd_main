@@ -2,7 +2,7 @@ import React from 'react';
 
 import GetCookie from './GetCookie';
 import { PROD_BASE_PATH } from '../frontendBaseRoutes';
-// define api BASE_URL and PARTS_URL later
+
 
 // Get All Parts
 const FetchAllParts = (pageNum=1, pageSize=10, filterValue=null) => {
@@ -34,35 +34,6 @@ const FetchAllParts = (pageNum=1, pageSize=10, filterValue=null) => {
   })
 };
 
-
-// const FetchAllPartsAdmin = (pageNum=1, pageSize=10, filterValue=null) => {
-//   const path = process.env.NODE_ENV === 'development' ? process.env.LOCAL_PATH : PROD_BASE_PATH;
-//   const endpoint = new URL(path + 'api/parts/admin/');
-
-//   const currentPageNum = 'page=' + pageNum;
-//   const currentPageSize = 'page_size=' + pageSize;
-//   const pageQuery = '?' + currentPageNum + '&' + currentPageSize;
-//   const filterBy = filterValue ? '&filter=' + filterValue : '';
-
-//   const endpointWithPageQuery = new URL(endpoint + pageQuery + filterBy);
-
-//   const token = localStorage.getItem('token');
-//   const headers = {
-//     'Content-Type': 'application/json',
-//     'Authorization': `Token ${token}`,
-//   };
-
-//   return fetch(endpoint, {headers, })
-//   .then(response => {
-//     const { status } = response;
-//     const res = response.ok ? response.json() : Promise.reject({ error: status });
-//     return res;
-//   })
-//   .catch(error => {
-//     console.log('Fetch All Parts Admin Error: ', error, ' from this endpoint: ', endpointWithPageQuery.toString())
-//     return error;
-//   })
-// };
 
 // Get a single Part
 const FetchPart = (partId) => {
@@ -838,7 +809,6 @@ export {
   UpdatePart,
   UpdatePartTagTypes,
   DeletePart,
-  // FetchAllPartsAdmin,
   SearchForParts,
   GetPartsMarkupPercents,
   FetchAllTasks,
